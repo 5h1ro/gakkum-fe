@@ -199,7 +199,7 @@ function PengawasanDaftar() {
                     </Typography>
                 </Grid2>
                 <Grid2 container gap={2} className='w-full md:w-auto'>
-                    {/* <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => navigate('/register/daftar/tambah')}><RiAddLine /> Tambah</Button> */}
+                    <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => navigate('/pengawasan/daftar/tambah')}><RiAddLine /> Tambah</Button>
                 </Grid2>
             </Grid2>
             <Grid2 container className="hidden md:block" marginTop={4}>

@@ -4,26 +4,10 @@ export interface auth_request {
 }
 
 export interface auth_response {
-    status: string;
-    message?: string;
-    data?: {
-        user_data: {
-            "id": number;
-            "name": string;
-            "email": string;
-            "phone_number": string;
-            "verify_at": string | null;
-            "headline": string | null;
-            "image_path": string | null;
-            "role": string;
-            "foul": number;
-            "status": string;
-            "created_at": string;
-            "updated_at": string;
-        },
-        "token": string;
-        message?: string;
-    }
+    access_token: string;
+    id: string;
+    name: string;
+    email: string;
 };
 
 export interface register_request {

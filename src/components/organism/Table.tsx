@@ -67,11 +67,11 @@ function Table(props: TableProps) {
                     borderRadius: '4px',
                 },
                 '.MuiButtonBase-root.MuiPaginationItem-root.Mui-selected': {
-                    bgcolor: '#01B3C1'
+                    bgcolor: '#3c7d21'
                 },
                 '.Mui-selected': {
                     color: '#fff',
-                    bgcolor: '#01B3C1'
+                    bgcolor: '#3c7d21'
                 },
                 '.MuiPaginationItem-text': {
                     padding: '6px 17px',

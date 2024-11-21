@@ -8,10 +8,10 @@ export const themes = createTheme({
     },
     palette: {
         primary: {
-            main: '#01B3C1',
+            main: '#3c7d21',
         },
         secondary: {
-            main: "#DD6502"
+            main: "#3c7d21"
         }
     },
     components: {
@@ -19,24 +19,24 @@ export const themes = createTheme({
             styleOverrides: {
                 root: {
                     "& .MuiInput-underline:after": {
-                        borderBottomColor: '#F1F5F9',
+                        borderBottomColor: '#3c7d21',
                         borderWidth: '2px',
                         borderRadius: '10px'
                     },
                     "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
-                            borderColor: '#F1F5F9',
+                            borderColor: '#3c7d21',
                             borderWidth: '2px',
                             borderRadius: '10px'
                         }
                     },
                     "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: '#F1F5F9',
+                        borderColor: '#3c7d21',
                         borderWidth: '2px',
                         borderRadius: '10px'
                     },
                     "&:hover .MuiOutlinedInput-notchedOutline": {
-                        borderColor: '#01B3C1',
+                        borderColor: '#3c7d21',
                         borderWidth: '2px',
                         borderRadius: '10px'
                     }
@@ -47,24 +47,24 @@ export const themes = createTheme({
             styleOverrides: {
                 root: {
                     "& .MuiInput-underline:after": {
-                        borderBottomColor: '#F1F5F9',
+                        borderBottomColor: '#3c7d21',
                         borderWidth: '2px',
                         borderRadius: '10px'
                     },
                     "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
-                            borderColor: '#F1F5F9',
+                            borderColor: '#3c7d21',
                             borderWidth: '2px',
                             borderRadius: '10px'
                         }
                     },
                     "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: '#F1F5F9',
+                        borderColor: '#3c7d21',
                         borderWidth: '2px',
                         borderRadius: '10px'
                     },
                     "&:hover .MuiOutlinedInput-notchedOutline": {
-                        borderColor: '#01B3C1',
+                        borderColor: '#3c7d21',
                         borderWidth: '2px',
                         borderRadius: '10px'
                     }

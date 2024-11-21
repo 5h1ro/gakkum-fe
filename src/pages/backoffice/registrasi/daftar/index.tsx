@@ -10,11 +10,13 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
 import { snackbarType } from '../../../../interfaces/snackbar.interface';
 import Table from '../../../../components/organism/Table';
+import { useGetRegistrasiQuery } from '../../../../api/register.api';
 
 function RegistrasiDaftar() {
     const navigate = useNavigate();
     const [openFilter, setOpenFilter] = useState<boolean>(false)
     const filterExclude = ['aksi']
+    const { data: registrasi, isLoading: getting, isFetching } = useGetRegistrasiQuery();
     const data = [
         {
             tanggal: "01 Oktober 2024",
@@ -43,7 +45,7 @@ function RegistrasiDaftar() {
             Cell: ({ row }) => row.index + 1,
         },
         {
-            accessorKey: "tanggal",
+            accessorKey: "tanggal_surat",
             header: 'Tanggal',
             muiTableHeadCellProps: {
                 align: 'left',
@@ -58,7 +60,7 @@ function RegistrasiDaftar() {
             }
         },
         {
-            accessorKey: "jenis",
+            accessorKey: "jenis_pengawasan",
             header: 'Jenis',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -138,7 +140,7 @@ function RegistrasiDaftar() {
             }
         },
         {
-            accessorKey: "status",
+            accessorKey: "status_tahapan",
             header: 'Status',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -197,7 +199,7 @@ function RegistrasiDaftar() {
                     bgcolor: 'white'
                 }}>
                     <Stack sx={{ margin: '24px' }}>
-                        <Table openFilter={openFilter} setOpenFilter={setOpenFilter} columns={columns} data={data ?? []} filterExclude={filterExclude}></Table>
+                        <Table openFilter={openFilter} setOpenFilter={setOpenFilter} columns={columns} data={registrasi?.data ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExclude}></Table>
                     </Stack>
                 </Box>
             </Grid2>

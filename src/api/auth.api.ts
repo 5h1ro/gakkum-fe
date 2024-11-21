@@ -12,23 +12,22 @@ export const api_auth = api.injectEndpoints({
                 body: credentials,
             }),
             transformResponse: (response: auth_response, meta: any, arg: any) => {
-                response.status = meta.response.status;
                 return response;
             },
         }),
         login: builder.mutation<auth_response, auth_request>({
             query: (credentials: any) => ({
-                url: "login",
+                url: "auth/login",
                 method: "POST",
                 body: credentials,
             }),
             transformResponse: (response: auth_response, meta: any, arg: any) => {
-                if (response.data) {
-                    setCookie('access_token', response.data?.token ?? '', 30);
-                    setCookie('email', response.data?.user_data?.email ?? '', 30);
-                    setCookie('name', response.data?.user_data?.name ?? '', 30);
-                    setCookie('role', response.data?.user_data?.role ?? '', 30);
-                    setCookie('avatar', response.data?.user_data?.image_path ?? '', 30);
+                if (response) {
+                    setCookie('access_token', response.access_token ?? '', 30);
+                    setCookie('email', response.email ?? '', 30);
+                    setCookie('name', response.name ?? '', 30);
+                    // setCookie('role', response.role ?? '', 30);
+                    // setCookie('avatar', response.image_path ?? '', 30);
                 }
                 return response;
             },
@@ -57,10 +56,7 @@ export const api_auth = api.injectEndpoints({
                 body: credentials,
             }),
             transformResponse: (response: auth_response, meta: any, arg: any) => {
-                setCookie('access_token', response.data?.token ?? '', 30);
-                setCookie('email', response.data?.user_data?.email ?? '', 30);
-                setCookie('name', response.data?.user_data?.name ?? '', 30);
-                setCookie('role', response.data?.user_data?.role ?? '', 30);
+                setCookie('access_token', response.access_token ?? '', 30);
                 return response;
             },
         }),

@@ -120,7 +120,7 @@ const Layout = (props: props) => {
             <List
                 sx={{
                     '&& .Mui-selected, & .MuiListItemButton-root:hover': {
-                        bgcolor: '#01B3C1',
+                        bgcolor: '#3c7d21',
                         borderRadius: '0.375rem',
                         paddingLeft: '12px',
                         paddingRight: '12px',
@@ -136,7 +136,7 @@ const Layout = (props: props) => {
                         bgcolor: 'white',
                         borderRadius: '0.375rem',
                         '&, & .MuiListItemIcon-root': {
-                            color: '#01B3C1',
+                            color: '#3c7d21',
                         },
                     },
                 }}
@@ -174,7 +174,7 @@ const Layout = (props: props) => {
                                 paddingLeft: '12px',
                                 paddingRight: '12px',
                                 '&, & .MuiListItemIcon-root': {
-                                    color: '#01B3C1',
+                                    color: '#3c7d21',
                                 },
                             },
                             '.MuiListItemButton-root': {
@@ -185,7 +185,7 @@ const Layout = (props: props) => {
                                 bgcolor: 'white',
                                 borderRadius: '0.375rem',
                                 '&, & .MuiListItemIcon-root': {
-                                    color: '#01B3C1',
+                                    color: '#3c7d21',
                                 },
                             },
                         }}>
@@ -237,7 +237,7 @@ const Layout = (props: props) => {
                                 paddingLeft: '12px',
                                 paddingRight: '12px',
                                 '&, & .MuiListItemIcon-root': {
-                                    color: '#01B3C1',
+                                    color: '#3c7d21',
                                 },
                             },
                             '.MuiListItemButton-root': {
@@ -248,7 +248,7 @@ const Layout = (props: props) => {
                                 bgcolor: 'white',
                                 borderRadius: '0.375rem',
                                 '&, & .MuiListItemIcon-root': {
-                                    color: '#01B3C1',
+                                    color: '#3c7d21',
                                 },
                             },
                         }}>
@@ -300,7 +300,7 @@ const Layout = (props: props) => {
                                 paddingLeft: '12px',
                                 paddingRight: '12px',
                                 '&, & .MuiListItemIcon-root': {
-                                    color: '#01B3C1',
+                                    color: '#3c7d21',
                                 },
                             },
                             '.MuiListItemButton-root': {
@@ -311,7 +311,7 @@ const Layout = (props: props) => {
                                 bgcolor: 'white',
                                 borderRadius: '0.375rem',
                                 '&, & .MuiListItemIcon-root': {
-                                    color: '#01B3C1',
+                                    color: '#3c7d21',
                                 },
                             },
                         }}>
@@ -335,7 +335,7 @@ const Layout = (props: props) => {
             {/* <List
                 sx={{
                     '&& .Mui-selected, & .MuiListItemButton-root:hover': {
-                        bgcolor: '#01B3C1',
+                        bgcolor: '#3c7d21',
                         borderRadius: '0.375rem',
                         paddingLeft: '12px',
                         paddingRight: '12px',
@@ -351,7 +351,7 @@ const Layout = (props: props) => {
                         bgcolor: 'white',
                         borderRadius: '0.375rem',
                         '&, & .MuiListItemIcon-root': {
-                            color: '#01B3C1',
+                            color: '#3c7d21',
                         },
                     },
                 }}
@@ -378,7 +378,7 @@ const Layout = (props: props) => {
                                 paddingLeft: '12px',
                                 paddingRight: '12px',
                                 '&, & .MuiListItemIcon-root': {
-                                    color: '#01B3C1',
+                                    color: '#3c7d21',
                                 },
                             },
                             '.MuiListItemButton-root': {
@@ -389,7 +389,7 @@ const Layout = (props: props) => {
                                 bgcolor: 'white',
                                 borderRadius: '0.375rem',
                                 '&, & .MuiListItemIcon-root': {
-                                    color: '#01B3C1',
+                                    color: '#3c7d21',
                                 },
                             },
                         }}>
@@ -438,7 +438,7 @@ const Layout = (props: props) => {
                             <Grid2 container gap={2}>
                                 {avatar
                                     ? <img src={avatar} className='font-semibold w-[48px] h-[48px] text-xl rounded-full' />
-                                    : <Avatar sx={{ bgcolor: '#EBFFFD', color: '#01B3C1' }} className='font-semibold w-[48px] h-[48px] text-xl'>{name!.split(' ').map((val, index) => { if (index < 2) return val.charAt(0).toUpperCase() })}</Avatar>
+                                    : <Avatar sx={{ bgcolor: '#EBFFFD', color: '#3c7d21' }} className='font-semibold w-[48px] h-[48px] text-xl'>{name!.split(' ').map((val, index) => { if (index < 2) return val.charAt(0).toUpperCase() })}</Avatar>
                                 }
                                 <Button color="inherit" onClick={handleClickProfile} className='text-general-500'>{auth.user_payload.name ?? 'username'} <ArrowDropDownIcon /></Button>
                             </Grid2>
@@ -464,7 +464,7 @@ const Layout = (props: props) => {
                                                     src={avatar}
                                                 />
                                             </Grid2>
-                                            : <Avatar sx={{ bgcolor: '#EBFFFD', color: '#01B3C1' }} className='font-semibold w-[48px] h-[48px] text-xl'>{name!.split(' ').map((val, index) => { if (index < 2) return val.charAt(0).toUpperCase() })}</Avatar>
+                                            : <Avatar sx={{ bgcolor: '#EBFFFD', color: '#3c7d21' }} className='font-semibold w-[48px] h-[48px] text-xl'>{name!.split(' ').map((val, index) => { if (index < 2) return val.charAt(0).toUpperCase() })}</Avatar>
                                         }
                                     </Grid2>
                                     <Grid2 xs={9} className=''>
@@ -498,7 +498,7 @@ const Layout = (props: props) => {
                             </MenuItem>
                             <MenuItem className='w-[300px] px-4 py-5' onClick={() => {
                                 dispatch(logOut())
-                                navigate('/login')
+                                navigate('/')
                             }}>
                                 <ListItemIcon>
                                     <RiLogoutCircleRLine className='text-danger-500' />

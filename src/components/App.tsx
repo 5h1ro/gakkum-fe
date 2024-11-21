@@ -13,6 +13,8 @@ import PerencanaanInsidental from '../pages/backoffice/perencanaan/insidental';
 import PerencanaanArsip from '../pages/backoffice/perencanaan/arsip';
 import PengawasanDaftar from '../pages/backoffice/pengawasan/daftar';
 import PengawasanAgenda from '../pages/backoffice/pengawasan/agenda';
+import PerencanaanDaftarCreate from '../pages/backoffice/perencanaan/daftar/create';
+import PengawasanDaftarCreate from '../pages/backoffice/pengawasan/daftar/create';
 
 const App = () => {
   return (
@@ -26,11 +28,13 @@ const App = () => {
       <Route path="/register/arsip" element={<RegistrasiArsip />} />
 
       <Route path="/perencanaan/daftar" element={<PerencanaanDaftar />} />
+      <Route path="/perencanaan/daftar/tambah" element={<PerencanaanDaftarCreate />} />
       <Route path="/perencanaan/reguler" element={<PerencanaanReguler />} />
       <Route path="/perencanaan/insidental" element={<PerencanaanInsidental />} />
       <Route path="/perencanaan/arsip" element={<PerencanaanArsip />} />
 
       <Route path="/pengawasan/daftar" element={<PengawasanDaftar />} />
+      <Route path="/pengawasan/daftar/tambah" element={<PengawasanDaftarCreate />} />
       <Route path="/pengawasan/agenda" element={<PengawasanAgenda />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
