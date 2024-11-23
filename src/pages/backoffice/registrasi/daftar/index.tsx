@@ -45,7 +45,6 @@ function RegistrasiDaftar() {
             Cell: ({ row }) => row.index + 1,
         },
         {
-            accessorKey: "tanggal_surat",
             header: 'Tanggal',
             muiTableHeadCellProps: {
                 align: 'left',
@@ -57,10 +56,10 @@ function RegistrasiDaftar() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            }
+            },
+            Cell: ({ row }) => row.original.created_at,
         },
         {
-            accessorKey: "jenis_pengawasan",
             header: 'Jenis',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -73,10 +72,10 @@ function RegistrasiDaftar() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            }
+            },
+            Cell: ({ row }) => row.original.jenis_pengawasan,
         },
         {
-            accessorKey: "nama",
             header: 'Nama',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -89,10 +88,10 @@ function RegistrasiDaftar() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            }
+            },
+            Cell: ({ row }) => row.original.company.name,
         },
         {
-            accessorKey: "alamat",
             header: 'Alamat',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -105,10 +104,10 @@ function RegistrasiDaftar() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            }
+            },
+            Cell: ({ row }) => row.original.company.address,
         },
         {
-            accessorKey: "perkiraan_masalah",
             header: 'Perkiraan masalah',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -121,10 +120,10 @@ function RegistrasiDaftar() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            }
+            },
+            Cell: ({ row }) => row.original.perkiraan_masalah,
         },
         {
-            accessorKey: "dibuat",
             header: 'Dibuat',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -137,7 +136,8 @@ function RegistrasiDaftar() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            }
+            },
+            Cell: ({ row }) => row.original.employee.name,
         },
         {
             accessorKey: "status_tahapan",

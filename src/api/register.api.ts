@@ -7,6 +7,21 @@ export const api_register = api.injectEndpoints({
                 url: 'registrasi',
             }),
         }),
+        getReguler: builder.query<any, void>({
+            query: () => ({
+                url: 'registrasi/reguler',
+            }),
+        }),
+        getInsidental: builder.query<any, void>({
+            query: () => ({
+                url: 'registrasi/insidental',
+            }),
+        }),
+        getArsip: builder.query<any, void>({
+            query: () => ({
+                url: 'registrasi/data-arsip',
+            }),
+        }),
         getStatusData: builder.query<any, void>({
             query: () => ({
                 url: 'status-data',
@@ -92,6 +107,9 @@ export const api_register = api.injectEndpoints({
 
 export const {
     useGetRegistrasiQuery,
+    useGetRegulerQuery,
+    useGetInsidentalQuery,
+    useGetArsipQuery,
     useGetStatusDataQuery,
     useGetBadanUsahaQuery,
     useGetSumberDataQuery,

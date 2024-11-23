@@ -10,31 +10,13 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
 import { snackbarType } from '../../../../interfaces/snackbar.interface';
 import Table from '../../../../components/organism/Table';
+import { useGetArsipQuery } from '../../../../api/register.api';
 
 function RegistrasiArsip() {
     const navigate = useNavigate();
     const [openFilter, setOpenFilter] = useState<boolean>(false)
     const filterExclude = ['aksi']
-    const data = [
-        {
-            tanggal: "01 Oktober 2024",
-            jenis: "Insidental",
-            nama: "PT ABC",
-            alamat: "Bekasi",
-            uraian: "Air sumur bau, tanah menjadi kering dan tandus, tercium aroma tidak sedap pagi hari",
-            dibuat: "Asti",
-            status: "Arsip"
-        },
-        {
-            tanggal: "02 Oktober 2024",
-            jenis: "Reguler",
-            nama: "PT HIJ",
-            alamat: "Kota Bekasi",
-            uraian: "Air Sumur Bau",
-            dibuat: "Meika",
-            status: "Arsip"
-        }
-    ]
+    const { data: arsip, isLoading: getting, isFetching } = useGetArsipQuery();
 
     const columns: MRT_ColumnDef<any>[] = [
         {
@@ -43,7 +25,6 @@ function RegistrasiArsip() {
             Cell: ({ row }) => row.index + 1,
         },
         {
-            accessorKey: "tanggal",
             header: 'Tanggal',
             muiTableHeadCellProps: {
                 align: 'left',
@@ -55,10 +36,10 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            }
+            },
+            Cell: ({ row }) => row.original.created_at,
         },
         {
-            accessorKey: "jenis",
             header: 'Jenis',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -71,10 +52,10 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            }
+            },
+            Cell: ({ row }) => row.original.jenis_pengawasan,
         },
         {
-            accessorKey: "nama",
             header: 'Nama Usaha dan / atau Kegiatan',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -87,10 +68,10 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            }
+            },
+            Cell: ({ row }) => row.original.company.name,
         },
         {
-            accessorKey: "alamat",
             header: 'Alamat Lengkap',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -103,10 +84,10 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            }
+            },
+            Cell: ({ row }) => row.original.company.address,
         },
         {
-            accessorKey: "uraian",
             header: 'Uraian Singkat',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -119,10 +100,10 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            }
+            },
+            Cell: ({ row }) => row.original.perkiraan_masalah,
         },
         {
-            accessorKey: "dibuat",
             header: 'Dibuat',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -135,7 +116,8 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            }
+            },
+            Cell: ({ row }) => row.original.employee.name,
         },
         {
             accessorKey: "status",
@@ -151,24 +133,8 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "aksi",
-            header: 'Aksi',
-            muiTableHeadCellProps: {
-                align: 'left',
             },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            size: 50,
-            Cell: ({ row }) => {
-                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
-                    <RiEyeLine />
-                </IconButton>
-            },
-            enableColumnFilter: false,
+            Cell: ({ row }) => row.original.status_tahapan,
         },
     ];
 
@@ -197,7 +163,7 @@ function RegistrasiArsip() {
                     bgcolor: 'white'
                 }}>
                     <Stack sx={{ margin: '24px' }}>
-                        <Table openFilter={openFilter} setOpenFilter={setOpenFilter} columns={columns} data={data ?? []} filterExclude={filterExclude}></Table>
+                        <Table openFilter={openFilter} setOpenFilter={setOpenFilter} columns={columns} data={arsip?.data ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExclude}></Table>
                     </Stack>
                 </Box>
             </Grid2>
