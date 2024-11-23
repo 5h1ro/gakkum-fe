@@ -15,6 +15,7 @@ import PengawasanDaftar from '../pages/backoffice/pengawasan/daftar';
 import PengawasanAgenda from '../pages/backoffice/pengawasan/agenda';
 import PerencanaanDaftarCreate from '../pages/backoffice/perencanaan/daftar/create';
 import PengawasanDaftarCreate from '../pages/backoffice/pengawasan/daftar/create';
+import RegistrasiDaftarDetail from '../pages/backoffice/registrasi/daftar/detail';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/register/daftar" element={<RegistrasiDaftar />} />
       <Route path="/register/daftar/tambah" element={<RegistrasiDaftarCreate />} />
+      <Route path="/register/daftar/detail/:dataID" element={<RegistrasiDaftarDetail />} />
       <Route path="/register/reguler" element={<RegistrasiReguler />} />
       <Route path="/register/insidental" element={<RegistrasiInsidental />} />
       <Route path="/register/arsip" element={<RegistrasiArsip />} />

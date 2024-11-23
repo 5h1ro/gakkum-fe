@@ -1,8 +1,8 @@
 import { Box, Button, Dialog, DialogContent, DialogContentText, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { RiAddLine, RiArrowLeftLine, RiArrowLeftRightFill, RiContactsBook2Line, RiEyeLine, RiHome5Line } from '@remixicon/react';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
 import { LocalizationProvider, MobileDateTimePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -12,25 +12,14 @@ import CustomTabPanel from '../../../../components/molecules/CustomTabPanel';
 import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
-import { useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery } from '../../../../api/register.api';
+import { useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetDetailPetamasalahQuery, useGetDetailRegistrasiQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
 
-export default function RegistrasiDaftarCreate() {
+export default function RegistrasiDaftarDetail() {
+    const { dataID } = useParams();
     const navigate = useNavigate()
     const { data: statusData } = useGetStatusDataQuery();
     const { data: badanUsaha } = useGetBadanUsahaQuery();
     const { data: sumberDataQuery } = useGetSumberDataQuery();
-    const timDummy = [
-        {
-            name: 'adella',
-            email: 'adella@gmail.com',
-            phoneNumber: 6285123456789
-        },
-        {
-            name: 'henny',
-            email: 'henny@gmail.com',
-            phoneNumber: 6285987654321
-        }
-    ]
     const jenisDokumenRegistrasi = [
         {
             name: 'Peta Masalah / Laporan',
@@ -66,13 +55,6 @@ export default function RegistrasiDaftarCreate() {
     const [tanggalTerbitDPP, setTanggalTerbitDPP] = useState<Moment | null>(null)
     const [berlakuDPP, setBerlakuDPP] = useState<Moment | null>(null)
 
-    const [timOpen, setTimOpen] = useState<boolean>(false)
-    const [timName, setTimName] = useState<string>('')
-    const [timPosition, setTimPosition] = useState<string>('')
-    const [timPic, setTimPic] = useState<string>('')
-    const [timEmail, setTimEmail] = useState<string>('')
-    const [timPhoneNumber, setTimPhoneNumber] = useState<string>('')
-
     const [documentValue, setDocumentValue] = useState(0)
     const [value, setValue] = useState(0)
     const [nomor, setNomor] = useState('')
@@ -91,146 +73,32 @@ export default function RegistrasiDaftarCreate() {
     const [email, setEmail] = useState('')
     const [problem, setProblem] = useState('')
     const [status, setStatus] = useState('')
-    const labels = ['Data']
+    const labels = ['Data', 'Peta Masalah', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
-    const [createRegistrasi, { isLoading }] = useCreateRegistrasiMutation();
-    const onCreate = async () => {
+    const [updateRegistrasi] = useUpdateRegistrasiMutation();
+    const { data: detailRegistrasi } = useGetDetailRegistrasiQuery(dataID!);
+    useEffect(() => {
+        setCompanyId(detailRegistrasi?.data?.company_id ?? '')
+        setTypeId(detailRegistrasi?.data?.jenis_pengawasan ?? '')
+        setStatusId((detailRegistrasi?.data?.status_data_id ?? 0).toString())
+        setProblem(detailRegistrasi?.data?.perkiraan_masalah)
+    }, [detailRegistrasi])
+
+    const onUpdate = async () => {
         const formData = new FormData();
         formData.append('jenis_pengawasan', typeId);
         formData.append('status_data_id', statusId);
         formData.append('company_id', companyId);
         formData.append('perkiraan_masalah', problem);
         try {
-            await createRegistrasi(formData).unwrap();
+            await updateRegistrasi({
+                id: dataID!,
+                data: formData
+            }).unwrap();
             navigate('/register/daftar')
         } catch (error: any) {
         }
     };
-
-    const [openFilter, setOpenFilter] = useState<boolean>(false)
-    const filterExclude = ['aksi']
-    const data = [
-        {
-            nama: "Asti",
-            posisi: "Ketua TIM",
-            pic: true,
-            telepon: "08123456789",
-            email: "Asti@gmail.com",
-        },
-        {
-            nama: "Adella",
-            posisi: "Anggota",
-            pic: false,
-            telepon: "08123456789",
-            email: "Adella@gmail.com"
-        }
-    ]
-    const columns: MRT_ColumnDef<any>[] = [
-        {
-            accessorKey: 'id',
-            header: 'ID',
-            Cell: ({ row }) => row.index + 1,
-        },
-        {
-            accessorKey: "nama",
-            header: 'Tim Pengawasan',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'equals',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "posisi",
-            header: 'Posisi',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "pic",
-            header: 'PIC',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            Cell: ({ row }) => {
-                return row.original.pic ? 'Iya' : 'Tidak';
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "telepon",
-            header: 'Telepon/WA',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "email",
-            header: 'Email',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "aksi",
-            header: 'Aksi',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            size: 50,
-            Cell: ({ row }) => {
-                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
-                    <RiEyeLine />
-                </IconButton>
-            },
-            enableColumnFilter: false,
-        },
-    ];
 
 
     const [openFilterTahapan, setOpenFilterTahapan] = useState<boolean>(false)
@@ -274,759 +142,6 @@ export default function RegistrasiDaftarCreate() {
         },
     ];
 
-
-
-    const [openFilterSanksi, setOpenFilterSanksi] = useState<boolean>(false)
-    const filterExcludeSanksi = ['aksi']
-    const dataSanksi = [
-        {
-            jenis: 'BA Rekomendasi',
-            tanggal: "02/08/2024",
-            nomor: "DLH/12/VIII/2024",
-            diterima: "02/08/2024",
-            batas: "02/08/2024",
-            tindakan: 0,
-        },
-        {
-            jenis: 'BA Hasil Pengawasan',
-            tanggal: "02/09/2024",
-            nomor: "DLH/12/VIII/2024",
-            diterima: "12/09/2024",
-            batas: "02/09/2024",
-            tindakan: 2,
-        }
-    ]
-    const columnsSanksi: MRT_ColumnDef<any>[] = [
-        {
-            accessorKey: 'id',
-            header: 'ID',
-            Cell: ({ row }) => row.index + 1,
-        },
-        {
-            accessorKey: "jenis",
-            header: 'Jenis',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'equals',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "terbit",
-            header: 'Tgl Terbit',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "nomor",
-            header: 'Nomor Surat',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "diterima",
-            header: 'Diterima',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "batas",
-            header: 'Batas Waktu',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "tindakan",
-            header: 'Tindakan',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "aksi",
-            header: 'Aksi',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            size: 50,
-            Cell: ({ row }) => {
-                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
-                    <RiEyeLine />
-                </IconButton>
-            },
-            enableColumnFilter: false,
-        },
-    ];
-
-
-    const [openFilterDokumen, setOpenFilterDokumen] = useState<boolean>(false)
-    const filterExcludeDokumen = ['aksi']
-    const dataDokumen = [
-        {
-            jenis: 'BA Rekomendasi',
-            file: "Peta Masalah",
-            nomor: "DLH/12/VIII/2024",
-            terbit: "02/08/2024",
-            berlaku: "02/08/2024",
-        },
-        {
-            jenis: 'BA Hasil Pengawasan',
-            file: "Peta Masalah",
-            nomor: "DLH/12/VIII/2024",
-            terbit: "12/09/2024",
-            berlaku: "02/09/2024",
-        }
-    ]
-    const columnsDokumen: MRT_ColumnDef<any>[] = [
-        {
-            accessorKey: 'id',
-            header: 'ID',
-            Cell: ({ row }) => row.index + 1,
-        },
-        {
-            accessorKey: "jenis",
-            header: 'Jenis',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'equals',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "file",
-            header: 'Nama File',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "nomor",
-            header: 'Nomor',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "terbit",
-            header: 'Terbit',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "berlaku",
-            header: 'Berlaku',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "aksi",
-            header: 'Aksi',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            size: 50,
-            Cell: ({ row }) => {
-                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
-                    <RiEyeLine />
-                </IconButton>
-            },
-            enableColumnFilter: false,
-        },
-    ];
-
-
-    const [openFilterDokumenRegistrasi, setOpenFilterDokumenRegistrasi] = useState<boolean>(false)
-    const filterExcludeDokumenRegistrasi = ['aksi']
-    const dataDokumenRegistrasi = [
-        {
-            jenis: 'BA Rekomendasi',
-            file: "Peta Masalah",
-            nomor: "DLH/12/VIII/2024",
-            terbit: "02/08/2024",
-            berlaku: "02/08/2024",
-        },
-        {
-            jenis: 'BA Hasil Pengawasan',
-            file: "Peta Masalah",
-            nomor: "DLH/12/VIII/2024",
-            terbit: "12/09/2024",
-            berlaku: "02/09/2024",
-        }
-    ]
-    const columnsDokumenRegistrasi: MRT_ColumnDef<any>[] = [
-        {
-            accessorKey: 'id',
-            header: 'ID',
-            Cell: ({ row }) => row.index + 1,
-        },
-        {
-            accessorKey: "jenis",
-            header: 'Jenis',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'equals',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "file",
-            header: 'Nama File',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "nomor",
-            header: 'Nomor',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "terbit",
-            header: 'Terbit',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "berlaku",
-            header: 'Berlaku',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "aksi",
-            header: 'Aksi',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            size: 50,
-            Cell: ({ row }) => {
-                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
-                    <RiEyeLine />
-                </IconButton>
-            },
-            enableColumnFilter: false,
-        },
-    ];
-
-    const [openFilterDokumenPerusahaan, setOpenFilterDokumenPerusahaan] = useState<boolean>(false)
-    const filterExcludeDokumenPerusahaan = ['aksi']
-    const dataDokumenPerusahaan = [
-        {
-            jenis: 'Akta Pendirian',
-            file: "Akta Pendirian.pdf",
-            nomor: "DLH/12/VIII/2024",
-            terbit: "02/08/2024",
-            berlaku: "02/08/2024",
-        },
-        {
-            jenis: 'NPWP',
-            file: "Akta Pendirian.pdf",
-            nomor: "DLH/12/VIII/2024",
-            terbit: "12/09/2024",
-            berlaku: "02/09/2024",
-        }
-    ]
-    const columnsDokumenPerusahaan: MRT_ColumnDef<any>[] = [
-        {
-            accessorKey: 'id',
-            header: 'ID',
-            Cell: ({ row }) => row.index + 1,
-        },
-        {
-            accessorKey: "jenis",
-            header: 'Jenis',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'equals',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "file",
-            header: 'Nama File',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "nomor",
-            header: 'Nomor',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "terbit",
-            header: 'Terbit',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "berlaku",
-            header: 'Berlaku',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "aksi",
-            header: 'Aksi',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            size: 50,
-            Cell: ({ row }) => {
-                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
-                    <RiEyeLine />
-                </IconButton>
-            },
-            enableColumnFilter: false,
-        },
-    ];
-
-    const [openFilterDokumenPengawasan, setOpenFilterDokumenPengawasan] = useState<boolean>(false)
-    const filterExcludeDokumenPengawasan = ['aksi']
-    const dataDokumenPengawasan = [
-        {
-            jenis: 'SPPR',
-            file: "sppr.pdf",
-            nomor: "DLH/12/VIII/2024",
-            terbit: "02/08/2024",
-            berlaku: "02/08/2024",
-        },
-        {
-            jenis: 'Daftar Hadir Awal',
-            file: "daftar-hadir.pdf",
-            nomor: "DLH/12/VIII/2024",
-            terbit: "12/09/2024",
-            berlaku: "02/09/2024",
-        }
-    ]
-    const columnsDokumenPengawasan: MRT_ColumnDef<any>[] = [
-        {
-            accessorKey: 'id',
-            header: 'ID',
-            Cell: ({ row }) => row.index + 1,
-        },
-        {
-            accessorKey: "jenis",
-            header: 'Jenis',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'equals',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "file",
-            header: 'Nama File',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "nomor",
-            header: 'Nomor',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "terbit",
-            header: 'Terbit',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "berlaku",
-            header: 'Berlaku',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "aksi",
-            header: 'Aksi',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            size: 50,
-            Cell: ({ row }) => {
-                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
-                    <RiEyeLine />
-                </IconButton>
-            },
-            enableColumnFilter: false,
-        },
-    ];
-
-    const [openFilterDokumenPascaPengawasan, setOpenFilterDokumenPascaPengawasan] = useState<boolean>(false)
-    const filterExcludeDokumenPascaPengawasan = ['aksi']
-    const dataDokumenPascaPengawasan = [
-        {
-            jenis: 'SPPR',
-            file: "sppr.pdf",
-            nomor: "DLH/12/VIII/2024",
-            terbit: "02/08/2024",
-            berlaku: "02/08/2024",
-        },
-        {
-            jenis: 'Daftar Hadir Awal',
-            file: "daftar-hadir.pdf",
-            nomor: "DLH/12/VIII/2024",
-            terbit: "12/09/2024",
-            berlaku: "02/09/2024",
-        }
-    ]
-    const columnsDokumenPascaPengawasan: MRT_ColumnDef<any>[] = [
-        {
-            accessorKey: 'id',
-            header: 'ID',
-            Cell: ({ row }) => row.index + 1,
-        },
-        {
-            accessorKey: "jenis",
-            header: 'Jenis',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'equals',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "file",
-            header: 'Nama File',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "nomor",
-            header: 'Nomor',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "terbit",
-            header: 'Terbit',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "berlaku",
-            header: 'Berlaku',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "aksi",
-            header: 'Aksi',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            size: 50,
-            Cell: ({ row }) => {
-                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
-                    <RiEyeLine />
-                </IconButton>
-            },
-            enableColumnFilter: false,
-        },
-    ];
     const { data: registrasi } = useGetRegistrasiQuery();
     const [badanUsahaPetaMasalah, setBadanUsahaPetaMasalah] = useState('')
     const [alamatKantor, setAlamatKantor] = useState('')
@@ -1063,13 +178,44 @@ export default function RegistrasiDaftarCreate() {
     const [petaMasalahD, setPetaMasalahD] = useState('')
     const [petaMasalahE, setPetaMasalahE] = useState('')
     const [petaMasalahF, setPetaMasalahF] = useState('')
-    const [createPetamasalah, { isLoading: isLoadingPetamasalah }] = useCreatePetaMasalahMutation();
-    const onCreatePetamasalah = async () => {
+    const [updatePetamasalah, { isLoading: isLoadingPetamasalah }] = useUpdatePetamasalahMutation();
+    const { data: detailPetamasalah } = useGetDetailPetamasalahQuery(dataID!);
+    useEffect(() => {
+        setBadanUsahaPetaMasalah(detailPetamasalah?.data?.data_id ?? '')
+        setAlamatLokasiKegiatan(detailPetamasalah?.data?.alamat_kegiatan ?? '')
+        setTitikKoordinat(detailPetamasalah?.data?.latitude ?? '')
+        setTitikKoordinat2(detailPetamasalah?.data?.longitude ?? '')
+        setNib(detailPetamasalah?.data?.nib ?? '')
+        setKbu(detailPetamasalah?.data?.kbli ?? '')
+        setJenisKegiatan(detailPetamasalah?.data?.jenis_kegiatan ?? '')
+        setTahunBeroperasi(detailPetamasalah?.data?.tahun_beroprasi ?? '')
+        setStatusPermodalan(detailPetamasalah?.data?.status_permodalan ?? '')
+        setNilaiInvestasi(detailPetamasalah?.data?.nilai_investasi ?? '')
+        setSkalaUsaha(detailPetamasalah?.data?.skala_usaha ?? '')
+        setTotalLuasDiusahakan(detailPetamasalah?.data?.luas_usaha ?? '')
+        setDokumenLingkungan(detailPetamasalah?.data?.dokumen_lingkungan ?? '')
+        setNomorRekomendasi(detailPetamasalah?.data?.nomor_rekomendasi ?? '')
+        setNomorIzinLingkungan(detailPetamasalah?.data?.nomor_izin_lingkungan ?? '')
+        setKapasitasTerpasang(detailPetamasalah?.data?.kapasitas_prod_terpasang ?? '')
+        setKapasitasSenyatanya(detailPetamasalah?.data?.kapasitas_prod_senyatanya ?? '')
+        setBahanBaku(detailPetamasalah?.data?.bahan_baku ?? '')
+        setBahanPenolong(detailPetamasalah?.data?.bahan_penolong ?? '')
+        setPemasaran(detailPetamasalah?.data?.pemasaran ?? '')
+        setKaryawan(detailPetamasalah?.data?.jumlah_karyawan ?? '')
+        setLainnya(detailPetamasalah?.data?.lain_lain ?? '')
+        setSumberData(detailPetamasalah?.data?.sumber_data_id ?? '')
+        setPetaMasalahA(detailPetamasalah?.data?.dokumen_perizinan ?? '')
+        setPetaMasalahB(detailPetamasalah?.data?.pengendalian_pencemaran ?? '')
+        setPetaMasalahC(detailPetamasalah?.data?.pengendalian_pencemaran_udara ?? '')
+        setPetaMasalahD(detailPetamasalah?.data?.pengolahan_limbah_b3 ?? '')
+        setPetaMasalahE(detailPetamasalah?.data?.pengelolaan_sampah ?? '')
+        setPetaMasalahF(detailPetamasalah?.data?.catatan_lainnya ?? '')
+    }, [detailPetamasalah])
+    const onUpdatePetamasalah = async () => {
         const formData = new FormData();
         formData.append('data_id', badanUsahaPetaMasalah);
         formData.append('alamat_kegiatan', alamatLokasiKegiatan);
         formData.append('latitude', titikKoordinat);
-        formData.append('longitude', titikKoordinat2);
         formData.append('longitude', titikKoordinat2);
         formData.append('nib', nib);
         formData.append('kbli', kbu);
@@ -1097,14 +243,17 @@ export default function RegistrasiDaftarCreate() {
         formData.append('pengelolaan_sampah', petaMasalahE);
         formData.append('catatan_lainnya', petaMasalahF);
         try {
-            await createPetamasalah(formData).unwrap();
+            await updatePetamasalah({
+                id: detailPetamasalah?.data?.id ?? '',
+                data: formData
+            }).unwrap();
             navigate('/register/daftar')
         } catch (error: any) {
         }
     };
 
     const [catatanOpen, setCatatanOpen] = useState(false)
-    const [badanUsahaCatatan, setBadanUsahaCatatan] = useState('9d8ac6d0-297b-499f-bf0f-e0344fae59e6')
+    const [badanUsahaCatatan, setBadanUsahaCatatan] = useState(dataID ?? '')
     const [judulCatatan, setJudulCatatan] = useState('')
     const [isiCatatan, setIsiCatatan] = useState('')
     const { data: catatan, isLoading: getting, isFetching } = useGetCatatanQuery(badanUsahaCatatan);
@@ -1500,7 +649,7 @@ export default function RegistrasiDaftarCreate() {
                     <RiArrowLeftLine className="w-8 h-8" color="#000000" />
                 </IconButton>
                 <Typography className="w-10/12 text-4xl font-semibold text-base-dark pt-1">
-                    Tambah Data
+                    Detail Data
                 </Typography>
             </Grid2>
             <Grid2 container rowSpacing={1} columnSpacing={{ xs: 1 }} marginTop={3}>
@@ -1713,7 +862,7 @@ export default function RegistrasiDaftarCreate() {
                                         }
                                     }} />
                             </Grid2> */}
-                            <Button onClick={onCreate} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
+                            <Button onClick={onUpdate} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
                                 Simpan
                             </Button>
                         </Grid2>
@@ -2015,7 +1164,7 @@ export default function RegistrasiDaftarCreate() {
                                         }
                                     }} />
                             </Grid2>
-                            <Button onClick={onCreatePetamasalah} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
+                            <Button onClick={onUpdatePetamasalah} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
                                 Simpan
                             </Button>
                         </Grid2>

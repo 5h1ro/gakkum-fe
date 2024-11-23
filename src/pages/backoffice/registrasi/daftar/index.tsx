@@ -166,7 +166,7 @@ function RegistrasiDaftar() {
             },
             size: 50,
             Cell: ({ row }) => {
-                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
+                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm" onClick={() => navigate(`/register/daftar/detail/${row.original.id}`)}>
                     <RiEyeLine />
                 </IconButton>
             },
