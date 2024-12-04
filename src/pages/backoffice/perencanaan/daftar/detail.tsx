@@ -1,20 +1,22 @@
 import { Box, Button, Dialog, DialogContent, DialogContentText, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { RiAddLine, RiArrowLeftLine, RiArrowLeftRightFill, RiContactsBook2Line, RiEyeLine, RiHome5Line } from '@remixicon/react';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
 import { LocalizationProvider, MobileDateTimePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 import TabPanel from '../../../../components/organism/TabPanel';
 import CustomTabPanel from '../../../../components/molecules/CustomTabPanel';
 import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
-import { useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery } from '../../../../api/register.api';
+import { useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetDetailPetamasalahQuery, useGetDetailRegistrasiQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
+import { useCreateDokumenMutation, useCreateTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery } from '../../../../api/perencanaan.api';
 
-export default function RegistrasiDaftarCreate() {
+export default function PerencanaanDaftarDetail() {
+    const { dataID } = useParams();
     const navigate = useNavigate()
     const { data: statusData } = useGetStatusDataQuery();
     const { data: badanUsaha } = useGetBadanUsahaQuery();
@@ -72,18 +74,156 @@ export default function RegistrasiDaftarCreate() {
     const [email, setEmail] = useState('')
     const [problem, setProblem] = useState('')
     const [status, setStatus] = useState('')
-    const labels = ['Data']
+    const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
-    const [createRegistrasi, { isLoading }] = useCreateRegistrasiMutation();
-    const onCreate = async () => {
+    const [updateRegistrasi] = useUpdateRegistrasiMutation();
+    const { data: detailRegistrasi } = useGetDetailRegistrasiQuery(dataID!);
+    useEffect(() => {
+        setCompanyId(detailRegistrasi?.data?.company_id ?? '')
+        setTypeId(detailRegistrasi?.data?.jenis_pengawasan ?? '')
+        setStatusId((detailRegistrasi?.data?.status_data_id ?? 0).toString())
+        setProblem(detailRegistrasi?.data?.perkiraan_masalah)
+    }, [detailRegistrasi])
+
+    const onUpdate = async () => {
         const formData = new FormData();
         formData.append('jenis_pengawasan', typeId);
         formData.append('status_data_id', statusId);
         formData.append('company_id', companyId);
         formData.append('perkiraan_masalah', problem);
         try {
-            await createRegistrasi(formData).unwrap();
+            await updateRegistrasi({
+                id: dataID!,
+                data: formData
+            }).unwrap();
             navigate('/register/daftar')
+        } catch (error: any) {
+        }
+    };
+
+
+    const { data: tim, isLoading: gettingTim, isFetching: isFetchingTim } = useGetTimQuery(dataID!);
+    const { data: employees } = useGetActiveEmployeeQuery();
+    const [openFilterTim, setOpenFilterTim] = useState<boolean>(false)
+    const filterExcludeTim = ['aksi']
+    const columnsTim: MRT_ColumnDef<any>[] = [
+        {
+            accessorKey: 'id',
+            header: 'ID',
+            Cell: ({ row }) => row.index + 1,
+        },
+        {
+            Cell: ({ row }) => row.original.employee.name,
+            header: 'Tim Pengawasan',
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'equals',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            Cell: ({ row }) => row.original.employee.position,
+            header: 'Posisi',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            accessorKey: "pic",
+            header: 'PIC',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            Cell: ({ row }) => {
+                return row.original.is_pic ? 'Iya' : 'Tidak';
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            Cell: ({ row }) => row.original.employee.phone,
+            header: 'Telepon/WA',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            Cell: ({ row }) => row.original.employee.user.email,
+            header: 'Email',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        // {
+        //     accessorKey: "aksi",
+        //     header: 'Aksi',
+        //     muiTableHeadCellProps: {
+        //         align: 'left',
+        //     },
+        //     muiTableBodyCellProps: {
+        //         align: "left",
+        //     },
+        //     size: 50,
+        //     Cell: ({ row }) => {
+        //         return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
+        //             <RiEyeLine />
+        //         </IconButton>
+        //     },
+        //     enableColumnFilter: false,
+        // },
+    ];
+    const [timOpen, setTimOpen] = useState<boolean>(false)
+    const [timID, setTimID] = useState<string>('')
+    const [timPic, setTimPic] = useState<string>('2')
+    const [createTim, { isLoading: isLoadingTim }] = useCreateTimMutation();
+    const onCreateTim = async () => {
+        const formData = new FormData();
+        formData.append('data_id', dataID!);
+        formData.append('employee_id', timID);
+        formData.append('is_pic', (timPic == '2') ? '0' : '1');
+        try {
+            await createTim(formData).unwrap();
+            navigate('/perencanaan/daftar/')
         } catch (error: any) {
         }
     };
@@ -128,6 +268,7 @@ export default function RegistrasiDaftarCreate() {
             }
         },
     ];
+
     const { data: registrasi } = useGetRegistrasiQuery();
     const [badanUsahaPetaMasalah, setBadanUsahaPetaMasalah] = useState('')
     const [alamatKantor, setAlamatKantor] = useState('')
@@ -164,13 +305,44 @@ export default function RegistrasiDaftarCreate() {
     const [petaMasalahD, setPetaMasalahD] = useState('')
     const [petaMasalahE, setPetaMasalahE] = useState('')
     const [petaMasalahF, setPetaMasalahF] = useState('')
-    const [createPetamasalah, { isLoading: isLoadingPetamasalah }] = useCreatePetaMasalahMutation();
-    const onCreatePetamasalah = async () => {
+    const [updatePetamasalah, { isLoading: isLoadingPetamasalah }] = useUpdatePetamasalahMutation();
+    const { data: detailPetamasalah } = useGetDetailPetamasalahQuery(dataID!);
+    useEffect(() => {
+        setBadanUsahaPetaMasalah(detailPetamasalah?.data?.data_id ?? '')
+        setAlamatLokasiKegiatan(detailPetamasalah?.data?.alamat_kegiatan ?? '')
+        setTitikKoordinat(detailPetamasalah?.data?.latitude ?? '')
+        setTitikKoordinat2(detailPetamasalah?.data?.longitude ?? '')
+        setNib(detailPetamasalah?.data?.nib ?? '')
+        setKbu(detailPetamasalah?.data?.kbli ?? '')
+        setJenisKegiatan(detailPetamasalah?.data?.jenis_kegiatan ?? '')
+        setTahunBeroperasi(detailPetamasalah?.data?.tahun_beroprasi ?? '')
+        setStatusPermodalan(detailPetamasalah?.data?.status_permodalan ?? '')
+        setNilaiInvestasi(detailPetamasalah?.data?.nilai_investasi ?? '')
+        setSkalaUsaha(detailPetamasalah?.data?.skala_usaha ?? '')
+        setTotalLuasDiusahakan(detailPetamasalah?.data?.luas_usaha ?? '')
+        setDokumenLingkungan(detailPetamasalah?.data?.dokumen_lingkungan ?? '')
+        setNomorRekomendasi(detailPetamasalah?.data?.nomor_rekomendasi ?? '')
+        setNomorIzinLingkungan(detailPetamasalah?.data?.nomor_izin_lingkungan ?? '')
+        setKapasitasTerpasang(detailPetamasalah?.data?.kapasitas_prod_terpasang ?? '')
+        setKapasitasSenyatanya(detailPetamasalah?.data?.kapasitas_prod_senyatanya ?? '')
+        setBahanBaku(detailPetamasalah?.data?.bahan_baku ?? '')
+        setBahanPenolong(detailPetamasalah?.data?.bahan_penolong ?? '')
+        setPemasaran(detailPetamasalah?.data?.pemasaran ?? '')
+        setKaryawan(detailPetamasalah?.data?.jumlah_karyawan ?? '')
+        setLainnya(detailPetamasalah?.data?.lain_lain ?? '')
+        setSumberData(detailPetamasalah?.data?.sumber_data_id ?? '')
+        setPetaMasalahA(detailPetamasalah?.data?.dokumen_perizinan ?? '')
+        setPetaMasalahB(detailPetamasalah?.data?.pengendalian_pencemaran ?? '')
+        setPetaMasalahC(detailPetamasalah?.data?.pengendalian_pencemaran_udara ?? '')
+        setPetaMasalahD(detailPetamasalah?.data?.pengolahan_limbah_b3 ?? '')
+        setPetaMasalahE(detailPetamasalah?.data?.pengelolaan_sampah ?? '')
+        setPetaMasalahF(detailPetamasalah?.data?.catatan_lainnya ?? '')
+    }, [detailPetamasalah])
+    const onUpdatePetamasalah = async () => {
         const formData = new FormData();
         formData.append('data_id', badanUsahaPetaMasalah);
         formData.append('alamat_kegiatan', alamatLokasiKegiatan);
         formData.append('latitude', titikKoordinat);
-        formData.append('longitude', titikKoordinat2);
         formData.append('longitude', titikKoordinat2);
         formData.append('nib', nib);
         formData.append('kbli', kbu);
@@ -198,14 +370,17 @@ export default function RegistrasiDaftarCreate() {
         formData.append('pengelolaan_sampah', petaMasalahE);
         formData.append('catatan_lainnya', petaMasalahF);
         try {
-            await createPetamasalah(formData).unwrap();
+            await updatePetamasalah({
+                id: detailPetamasalah?.data?.id ?? '',
+                data: formData
+            }).unwrap();
             navigate('/register/daftar')
         } catch (error: any) {
         }
     };
 
     const [catatanOpen, setCatatanOpen] = useState(false)
-    const [badanUsahaCatatan, setBadanUsahaCatatan] = useState('9d8ac6d0-297b-499f-bf0f-e0344fae59e6')
+    const [badanUsahaCatatan, setBadanUsahaCatatan] = useState(dataID ?? '')
     const [judulCatatan, setJudulCatatan] = useState('')
     const [isiCatatan, setIsiCatatan] = useState('')
     const { data: catatan, isLoading: getting, isFetching } = useGetCatatanQuery(badanUsahaCatatan);
@@ -222,6 +397,150 @@ export default function RegistrasiDaftarCreate() {
         }
     };
 
+
+    const { data: dokumen, isLoading: gettingDokumen, isFetching: isFetchingDokumen } = useGetDokumenQuery(dataID!);
+    const { data: listDokumen } = useGetListDokumenQuery();
+    const [dokumenPerencanaanOpen, setDokumenPerencanaanOpen] = useState<boolean>(false)
+    const [openFilterDokumenPerencanaan, setOpenFilterDokumenPerencanaan] = useState<boolean>(false)
+    const filterExcludeDokumenPerencanaan = ['aksi']
+    const dataDokumenPerencanaan = [
+        {
+            jenis: 'BA Rekomendasi',
+            file: "Peta Masalah",
+            nomor: "DLH/12/VIII/2024",
+            terbit: "02/08/2024",
+            berlaku: "02/08/2024",
+        },
+        {
+            jenis: 'BA Hasil Pengawasan',
+            file: "Peta Masalah",
+            nomor: "DLH/12/VIII/2024",
+            terbit: "12/09/2024",
+            berlaku: "02/09/2024",
+        }
+    ]
+    const columnsDokumenPerencanaan: MRT_ColumnDef<any>[] = [
+        {
+            accessorKey: 'id',
+            header: 'ID',
+            Cell: ({ row }) => row.index + 1,
+        },
+        {
+            Cell: ({ row }) => row.original.dokumen_perencanaan.name,
+            header: 'Jenis',
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'equals',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            Cell: ({ row }) => row.original.lampiran_file,
+            header: 'Nama File',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            Cell: ({ row }) => row.original.nomor_file,
+            header: 'Nomor',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            Cell: ({ row }) => row.original.tanggal_terbit,
+            header: 'Terbit',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            accessorKey: "berlaku",
+            header: 'Berlaku',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            accessorKey: "aksi",
+            header: 'Aksi',
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            size: 50,
+            Cell: ({ row }) => {
+                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
+                    <RiEyeLine />
+                </IconButton>
+            },
+            enableColumnFilter: false,
+        },
+    ];
+    const [jenisDokumen, setJenisDokumen] = useState<string>('')
+    const [nomorDokumen, setNomorDokumen] = useState<string>('')
+    const [tanggalTerbitDokumen, setTanggalTerbitDokumen] = useState<Moment | null>(null)
+    const [berlakuDokumen, setBerlakuDokumen] = useState<Moment | null>(null)
+    const [createDokumen, { isLoading: isLoadingDokumen }] = useCreateDokumenMutation();
+    const onCreateDokumen = async () => {
+        const formData = new FormData();
+        formData.append('data_id', dataID!);
+        formData.append('dokumen_perencanaan_id', jenisDokumen);
+        formData.append('nomor_file', nomorDokumen);
+        formData.append('tanggal_terbit', tanggalTerbitDokumen?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
+        formData.append('berlaku', berlakuDokumen?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
+        formData.append('lampiran_file', 'ada');
+        try {
+            await createDokumen(formData).unwrap();
+            navigate('/perencanaan/daftar/')
+        } catch (error: any) {
+        }
+    };
     return (
         <Layout>
             <Dialog
@@ -596,12 +915,164 @@ export default function RegistrasiDaftarCreate() {
                     </Grid2>
                 </DialogContent>
             </Dialog>
+            <Dialog
+                open={timOpen}
+                onClose={() => setTimOpen(false)}
+                maxWidth={'lg'}
+                sx={{
+                    '.MuiPaper-root': {
+                        borderRadius: '16px',
+                        '@media(minWidth: 960px)': {
+                            paddingX: '64px'
+                        },
+                    }
+                }}
+            >
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                        <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
+                            Tambah Data TIM
+                        </Typography>
+                    </DialogContentText>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">Nama Pengawas <span className='text-danger-600'>*</span></Typography>
+                        <Select
+                            value={timID}
+                            className='rounded-lg mt-2'
+                            fullWidth
+                            onChange={(event) => {
+                                setTimID(event.target.value);
+                                // const tim = timDummy.find((data) => data.name === event.target.value);
+                                // setTimEmail(tim?.email ?? '');
+                                // setTimPhoneNumber(tim?.phoneNumber.toString() ?? '');
+                            }}
+                        >
+                            {
+                                employees?.data?.map((value: any, index: any) => {
+                                    return <MenuItem
+                                        key={`name_${index}`}
+                                        value={value.id}
+                                    >
+                                        {value.name}
+                                    </MenuItem>
+                                })
+                            }
+                        </Select>
+                    </Grid2>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">PIC <span className='text-danger-600'>*</span></Typography>
+                        <Select
+                            value={timPic}
+                            className='rounded-lg mt-2'
+                            fullWidth
+                            onChange={(event) => {
+                                setTimPic(event.target.value);
+                            }}
+                        >
+                            <MenuItem
+                                key={'1'}
+                                value={'yes'}
+                            >
+                                {'Iya'}
+                            </MenuItem>
+                            <MenuItem
+                                key={'2'}
+                                value={'no'}
+                            >
+                                {'Tidak'}
+                            </MenuItem>
+                        </Select>
+                    </Grid2>
+                    <Grid2 container className='flex gap-2 mt-6 justify-center pb-8 md:pb-16'>
+                        <Button onClick={onCreateTim} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white py-4 px-6 rounded-xl gap-3'>
+                            Simpan
+                        </Button>
+                    </Grid2>
+                </DialogContent>
+            </Dialog>
+            <Dialog
+                open={dokumenPerencanaanOpen}
+                onClose={() => setDokumenPerencanaanOpen(false)}
+                maxWidth={'lg'}
+                sx={{
+                    '.MuiPaper-root': {
+                        borderRadius: '16px',
+                        '@media(minWidth: 960px)': {
+                            paddingX: '64px'
+                        },
+                    }
+                }}
+            >
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                        <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
+                            Tambah Dokumen
+                        </Typography>
+                    </DialogContentText>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">Jenis Dokumen <span className='text-danger-600'>*</span></Typography>
+                        <Select
+                            value={jenisDokumen}
+                            className='rounded-lg mt-2'
+                            fullWidth
+                            onChange={(event) => {
+                                setJenisDokumen(event.target.value)
+                            }}
+                        >
+                            {
+                                listDokumen?.data?.map((value: any, index: any) => {
+                                    return <MenuItem
+                                        key={`jenis_dokumen_perusahaan_${index}`}
+                                        value={value.id}
+                                    >
+                                        {value.name}
+                                    </MenuItem>
+                                })
+                            }
+                        </Select>
+                    </Grid2>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">Nomor <span className='text-danger-600'>*</span></Typography>
+                        <TextField value={nomorDokumen} onChange={(data) => setNomorDokumen(data.target.value)} variant="outlined" className='mt-2 w-full' placeholder='Masukkan Nomor Dokumen'
+                            InputProps={{
+                                style: {
+                                    borderRadius: "10px",
+                                }
+                            }} />
+                    </Grid2>
+                    <Grid2 container xs={12} mt={'1rem'}>
+                        <Typography className="text-base-dark w-full">Tanggal Terbit<span className='text-danger-600'>*</span></Typography>
+                        <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <MobileDateTimePicker
+                                ampm={false}
+                                value={tanggalTerbitDokumen}
+                                onChange={(data) => setTanggalTerbitDokumen(data)}
+                                className='mt-2 w-full' />
+                        </LocalizationProvider>
+                    </Grid2>
+                    <Grid2 container xs={12} mt={'1rem'}>
+                        <Typography className="text-base-dark w-full">Berlaku<span className='text-danger-600'>*</span></Typography>
+                        <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <MobileDateTimePicker
+                                ampm={false}
+                                value={berlakuDokumen}
+                                onChange={(data) => setBerlakuDokumen(data)}
+                                className='mt-2 w-full' />
+                        </LocalizationProvider>
+                    </Grid2>
+                    <Grid2 container className='flex gap-2 mt-6 justify-center pb-8 md:pb-16'>
+                        <Button onClick={onCreateDokumen} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white py-4 px-6 rounded-xl gap-3'>
+                            Simpan
+                        </Button>
+                    </Grid2>
+                </DialogContent>
+            </Dialog>
             <Grid2 container alignContent={'center'}>
                 <IconButton onClick={() => navigate('/register/daftar')}>
                     <RiArrowLeftLine className="w-8 h-8" color="#000000" />
                 </IconButton>
                 <Typography className="w-10/12 text-4xl font-semibold text-base-dark pt-1">
-                    Tambah Data
+                    Detail Data
                 </Typography>
             </Grid2>
             <Grid2 container rowSpacing={1} columnSpacing={{ xs: 1 }} marginTop={3}>
@@ -814,7 +1285,7 @@ export default function RegistrasiDaftarCreate() {
                                         }
                                     }} />
                             </Grid2> */}
-                            <Button onClick={onCreate} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
+                            <Button onClick={onUpdate} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
                                 Simpan
                             </Button>
                         </Grid2>
@@ -1116,12 +1587,28 @@ export default function RegistrasiDaftarCreate() {
                                         }
                                     }} />
                             </Grid2>
-                            <Button onClick={onCreatePetamasalah} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
+                            <Button onClick={onUpdatePetamasalah} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
                                 Simpan
                             </Button>
                         </Grid2>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={2}>
+                        <Grid2 container>
+                            <Grid2 xs={12} container className='w-full justify-end'>
+                                <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => setTimOpen(true)}><RiAddLine /> Tambah</Button>
+                            </Grid2>
+                        </Grid2>
+                        <Table openFilter={openFilterTim} setOpenFilter={setOpenFilterTim} columns={columnsTim} data={tim?.data ?? []} state={{ isLoading: gettingTim || isFetchingTim }} filterExclude={filterExcludeTim}></Table>
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={3}>
+                        <Grid2 container>
+                            <Grid2 xs={12} container className='w-full justify-end'>
+                                <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => setDokumenPerencanaanOpen(true)}><RiAddLine /> Tambah</Button>
+                            </Grid2>
+                        </Grid2>
+                        <Table openFilter={openFilterDokumenPerencanaan} setOpenFilter={setOpenFilterDokumenPerencanaan} columns={columnsDokumenPerencanaan} data={dokumen?.data ?? []} state={{ isLoading: gettingDokumen || isFetchingDokumen }} filterExclude={filterExcludeDokumenPerencanaan}></Table>
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={4}>
                         <Grid2 container>
                             <Grid2 xs={12} container className='w-full justify-end'>
                                 <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => setCatatanOpen(true)}><RiAddLine /> Tambah</Button>

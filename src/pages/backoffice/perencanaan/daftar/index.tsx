@@ -10,33 +10,13 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
 import { snackbarType } from '../../../../interfaces/snackbar.interface';
 import Table from '../../../../components/organism/Table';
+import { useGetPerencanaanQuery } from '../../../../api/perencanaan.api';
 
 function PerencanaanDaftar() {
     const navigate = useNavigate();
     const [openFilter, setOpenFilter] = useState<boolean>(false)
+    const { data: perencanaan, isLoading: getting, isFetching } = useGetPerencanaanQuery();
     const filterExclude = ['aksi']
-    const data = [
-        {
-            tanggal: "01 Oktober 2024",
-            jenis: "Insidental",
-            nama: "PT ABC",
-            alamat: "Bekasi",
-            tanggal_surat: "01 Oktober 2024",
-            nomor_sp: "102/GAK/VII/2024",
-            dibuat: "Asti",
-            status: "Draft"
-        },
-        {
-            tanggal: "02 Oktober 2024",
-            jenis: "Reguler",
-            nama: "PT HIJ",
-            alamat: "Kota Bekasi",
-            tanggal_surat: "02 Oktober 2024",
-            nomor_sp: "102/GAK/VII/2024",
-            dibuat: "Meika",
-            status: "Lengkap"
-        }
-    ]
 
     const columns: MRT_ColumnDef<any>[] = [
         {
@@ -45,7 +25,7 @@ function PerencanaanDaftar() {
             Cell: ({ row }) => row.index + 1,
         },
         {
-            accessorKey: "tanggal",
+            accessorKey: "created_at",
             header: 'Tanggal Registrasi',
             muiTableHeadCellProps: {
                 align: 'left',
@@ -60,7 +40,7 @@ function PerencanaanDaftar() {
             }
         },
         {
-            accessorKey: "jenis",
+            accessorKey: "jenis_pengawasan",
             header: 'Jenis',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -76,7 +56,7 @@ function PerencanaanDaftar() {
             }
         },
         {
-            accessorKey: "nama",
+            Cell: ({ row }) => row.original.company.name,
             header: 'Nama Usaha dan / atau Kegiatan',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -92,7 +72,7 @@ function PerencanaanDaftar() {
             }
         },
         {
-            accessorKey: "alamat",
+            Cell: ({ row }) => row.original.company.address,
             header: 'Alamat Lengkap',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -138,7 +118,7 @@ function PerencanaanDaftar() {
             }
         },
         {
-            accessorKey: "dibuat",
+            Cell: ({ row }) => row.original.employee.name,
             header: 'PIC',
             muiTableHeadCellProps: {
                 align: 'left',
@@ -153,7 +133,7 @@ function PerencanaanDaftar() {
             }
         },
         {
-            accessorKey: "status",
+            Cell: ({ row }) => row.original.status_tahapan,
             header: 'Status',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -179,7 +159,7 @@ function PerencanaanDaftar() {
             },
             size: 50,
             Cell: ({ row }) => {
-                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
+                return <IconButton onClick={() => navigate(`/perencanaan/daftar/detail/${row.original.id}`)} className="border-solid border-2 text-primary-600" aria-label="confirm">
                     <RiEyeLine />
                 </IconButton>
             },
@@ -196,7 +176,7 @@ function PerencanaanDaftar() {
                     </Typography>
                 </Grid2>
                 <Grid2 container gap={2} className='w-full md:w-auto'>
-                    <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => navigate('/perencanaan/daftar/tambah')}><RiAddLine /> Tambah</Button>
+                    {/* <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => navigate('/perencanaan/daftar/tambah')}><RiAddLine /> Tambah</Button> */}
                 </Grid2>
             </Grid2>
             <Grid2 container className="hidden md:block" marginTop={4}>
@@ -212,7 +192,7 @@ function PerencanaanDaftar() {
                     bgcolor: 'white'
                 }}>
                     <Stack sx={{ margin: '24px' }}>
-                        <Table openFilter={openFilter} setOpenFilter={setOpenFilter} columns={columns} data={data ?? []} filterExclude={filterExclude}></Table>
+                        <Table openFilter={openFilter} setOpenFilter={setOpenFilter} columns={columns} data={perencanaan?.data ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExclude}></Table>
                     </Stack>
                 </Box>
             </Grid2>

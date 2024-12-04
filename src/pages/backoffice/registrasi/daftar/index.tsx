@@ -17,27 +17,6 @@ function RegistrasiDaftar() {
     const [openFilter, setOpenFilter] = useState<boolean>(false)
     const filterExclude = ['aksi']
     const { data: registrasi, isLoading: getting, isFetching } = useGetRegistrasiQuery();
-    const data = [
-        {
-            tanggal: "01 Oktober 2024",
-            jenis: "Insidental",
-            nama: "PT ABC",
-            alamat: "Bekasi",
-            perkiraan_masalah: "Pengawasan Berkala",
-            dibuat: "Asti",
-            status: "Draft"
-        },
-        {
-            tanggal: "02 Oktober 2024",
-            jenis: "Reguler",
-            nama: "PT HIJ",
-            alamat: "Kota Bekasi",
-            perkiraan_masalah: "Air Sumur Bau",
-            dibuat: "Meika",
-            status: "Lengkap"
-        }
-    ]
-
     const columns: MRT_ColumnDef<any>[] = [
         {
             accessorKey: 'id',

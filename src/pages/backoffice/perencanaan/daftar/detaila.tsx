@@ -12,10 +12,14 @@ import CustomTabPanel from '../../../../components/molecules/CustomTabPanel';
 import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
+import { useCreatePetaMasalahMutation, useGetBadanUsahaQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery } from '../../../../api/register.api';
 
-export default function PerencanaanDaftarCreate() {
+export default function PerencanaanDaftarDetailA() {
     const navigate = useNavigate()
 
+    const { data: statusData } = useGetStatusDataQuery();
+    const { data: badanUsaha } = useGetBadanUsahaQuery();
+    const { data: sumberDataQuery } = useGetSumberDataQuery();
     const timDummy = [
         {
             name: 'adella',
@@ -75,6 +79,8 @@ export default function PerencanaanDaftarCreate() {
     const [nomor, setNomor] = useState('')
     const [date, setDate] = useState<Moment | null>(null)
     const [typeId, setTypeId] = useState('')
+    const [statusId, setStatusId] = useState('')
+    const [companyId, setCompanyId] = useState('')
     const [createdBy, setCreatedBy] = useState('')
     const [name, setName] = useState('')
     const [address, setAddress] = useState('')
@@ -1098,15 +1104,11 @@ export default function PerencanaanDaftarCreate() {
         },
     ];
 
-    const [badanUsaha, setBadanUsaha] = useState('')
-    const [alamatKantor, setAlamatKantor] = useState('')
-    const [kota, setKota] = useState('')
-    const [provinsi, setProvinsi] = useState('')
-    const [penanggungJawab, setPenanggungJawab] = useState('')
-    const [telepon, setTelepon] = useState('')
-    const [emailPetaMasalah, setEmailPetaMasalah] = useState('')
+    const { data: registrasi } = useGetRegistrasiQuery();
+    const [badanUsahaPetaMasalah, setBadanUsahaPetaMasalah] = useState('')
     const [alamatLokasiKegiatan, setAlamatLokasiKegiatan] = useState('')
     const [titikKoordinat, setTitikKoordinat] = useState('')
+    const [titikKoordinat2, setTitikKoordinat2] = useState('')
     const [nib, setNib] = useState('')
     const [kbu, setKbu] = useState('')
     const [jenisKegiatan, setJenisKegiatan] = useState('')
@@ -1132,6 +1134,45 @@ export default function PerencanaanDaftarCreate() {
     const [petaMasalahD, setPetaMasalahD] = useState('')
     const [petaMasalahE, setPetaMasalahE] = useState('')
     const [petaMasalahF, setPetaMasalahF] = useState('')
+    const [createPetamasalah, { isLoading: isLoadingPetamasalah }] = useCreatePetaMasalahMutation();
+    const onCreatePetamasalah = async () => {
+        const formData = new FormData();
+        formData.append('data_id', badanUsahaPetaMasalah);
+        formData.append('alamat_kegiatan', alamatLokasiKegiatan);
+        formData.append('latitude', titikKoordinat);
+        formData.append('longitude', titikKoordinat2);
+        formData.append('longitude', titikKoordinat2);
+        formData.append('nib', nib);
+        formData.append('kbli', kbu);
+        formData.append('jenis_kegiatan', jenisKegiatan);
+        formData.append('tahun_beroprasi', tahunBeroperasi);
+        formData.append('status_permodalan', statusPermodalan);
+        formData.append('nilai_investasi', nilaiInvestasi);
+        formData.append('skala_usaha', skalaUsaha);
+        formData.append('luas_usaha', totalLuasDiusahakan);
+        formData.append('dokumen_lingkungan', dokumenLingkungan);
+        formData.append('nomor_rekomendasi', nomorRekomendasi);
+        formData.append('nomor_izin_lingkungan', nomorIzinLingkungan);
+        formData.append('kapasitas_prod_terpasang', kapasitasTerpasang);
+        formData.append('kapasitas_prod_senyatanya', kapasitasSenyatanya);
+        formData.append('bahan_baku', bahanBaku);
+        formData.append('bahan_penolong', bahanPenolong);
+        formData.append('pemasaran', pemasaran);
+        formData.append('jumlah_karyawan', karyawan);
+        formData.append('lain_lain', lainnya);
+        formData.append('sumber_data_id', sumberData);
+        formData.append('dokumen_perizinan', petaMasalahA);
+        formData.append('pengendalian_pencemaran', petaMasalahB);
+        formData.append('pengendalian_pencemaran_udara', petaMasalahC);
+        formData.append('pengolahan_limbah_b3', petaMasalahD);
+        formData.append('pengelolaan_sampah', petaMasalahE);
+        formData.append('catatan_lainnya', petaMasalahF);
+        try {
+            await createPetamasalah(formData).unwrap();
+            navigate('/register/daftar')
+        } catch (error: any) {
+        }
+    };
     return (
         <Layout>
             <Dialog
@@ -1572,7 +1613,7 @@ export default function PerencanaanDaftarCreate() {
                 <TabPanel icons={[]} labels={labels} value={value} setValue={setValue}>
                     <CustomTabPanel value={value} index={0}>
                         <Grid2 container>
-                            <Grid2 container xs={12}>
+                            {/* <Grid2 container xs={12}>
                                 <Typography className="text-base-dark w-full">Nomor <span className='text-danger-600'>*</span></Typography>
                                 <TextField value={nomor} onChange={(data) => setNomor(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -1590,7 +1631,7 @@ export default function PerencanaanDaftarCreate() {
                                         onChange={(data) => setDate(data)}
                                         className='mt-2 w-full' />
                                 </LocalizationProvider>
-                            </Grid2>
+                            </Grid2> */}
                             <Grid2 container xs={12} mt={'1rem'}>
                                 <Typography className="text-base-dark w-full">Jenis Pengawasan <span className='text-danger-600'>*</span></Typography>
                                 <Select
@@ -1603,19 +1644,68 @@ export default function PerencanaanDaftarCreate() {
                                 >
                                     <MenuItem
                                         key={'1'}
-                                        value={'1'}
+                                        value={'Insidental'}
                                     >
                                         {'Insidental'}
                                     </MenuItem>
                                     <MenuItem
                                         key={'2'}
-                                        value={'2'}
+                                        value={'Reguler'}
                                     >
                                         {'Reguler'}
                                     </MenuItem>
                                 </Select>
                             </Grid2>
                             <Grid2 container xs={12} mt={'1rem'}>
+                                <Typography className="text-base-dark w-full">Status <span className='text-danger-600'>*</span></Typography>
+                                <Select
+                                    value={statusId}
+                                    className='rounded-lg mt-2'
+                                    fullWidth
+                                    onChange={(event) => {
+                                        setStatusId(event.target.value);
+                                    }}
+                                >
+                                    {statusData?.data?.map((data: any) => {
+                                        return <MenuItem
+                                            key={data.id}
+                                            value={data.id}
+                                        >
+                                            {data.name}
+                                        </MenuItem>
+                                    })}
+                                </Select>
+                            </Grid2>
+                            <Grid2 container xs={12} mt={'1rem'}>
+                                <Typography className="text-base-dark w-full">Nama Badan Usaha <span className='text-danger-600'>*</span></Typography>
+                                <Select
+                                    value={companyId}
+                                    className='rounded-lg mt-2'
+                                    fullWidth
+                                    onChange={(event) => {
+                                        setCompanyId(event.target.value);
+                                    }}
+                                >
+                                    {badanUsaha?.data?.map((data: any) => {
+                                        return <MenuItem
+                                            key={data.id}
+                                            value={data.id}
+                                        >
+                                            {data.name}
+                                        </MenuItem>
+                                    })}
+                                </Select>
+                            </Grid2>
+                            <Grid2 container xs={12} mt={'1rem'}>
+                                <Typography className="text-base-dark w-full">Perkiraan Masalah <span className='text-danger-600'>*</span></Typography>
+                                <TextField value={problem} multiline rows={3} onChange={(data) => setProblem(data.target.value)} variant="outlined" className='mt-2 w-full'
+                                    InputProps={{
+                                        style: {
+                                            borderRadius: "10px",
+                                        }
+                                    }} />
+                            </Grid2>
+                            {/* <Grid2 container xs={12} mt={'1rem'}>
                                 <Typography className="text-base-dark w-full">Dibuat Oleh <span className='text-danger-600'>*</span></Typography>
                                 <Select
                                     value={createdBy}
@@ -1728,7 +1818,7 @@ export default function PerencanaanDaftarCreate() {
                                             borderRadius: "10px",
                                         }
                                     }} />
-                            </Grid2>
+                            </Grid2> */}
                             <Button onClick={onCreate} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
                                 Simpan
                             </Button>
@@ -1736,68 +1826,34 @@ export default function PerencanaanDaftarCreate() {
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
                         <Grid2 container>
-                            <Grid2 container xs={12}>
+                            {/* <Grid2 container xs={12}>
                                 <Typography className="text-base-dark w-full">Nama Badan Usaha<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={badanUsaha} onChange={(data) => setBadanUsaha(data.target.value)} variant="outlined" className='mt-2 w-full'
+                                <TextField value={badanUsahaPetaMasalah} onChange={(data) => setBadanUsahaPetaMasalah(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
                                         style: {
                                             borderRadius: "10px",
                                         }
                                     }} />
-                            </Grid2>
-                            <Grid2 container xs={12}>
-                                <Typography className="text-base-dark w-full">Alamat Kantor<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={alamatKantor} onChange={(data) => setAlamatKantor(data.target.value)} variant="outlined" className='mt-2 w-full'
-                                    InputProps={{
-                                        style: {
-                                            borderRadius: "10px",
-                                        }
-                                    }} />
-                            </Grid2>
-                            <Grid2 container xs={12}>
-                                <Typography className="text-base-dark w-full">Kota/Kabupaten<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={kota} onChange={(data) => setKota(data.target.value)} variant="outlined" className='mt-2 w-full'
-                                    InputProps={{
-                                        style: {
-                                            borderRadius: "10px",
-                                        }
-                                    }} />
-                            </Grid2>
-                            <Grid2 container xs={12}>
-                                <Typography className="text-base-dark w-full">Provinsi<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={provinsi} onChange={(data) => setProvinsi(data.target.value)} variant="outlined" className='mt-2 w-full'
-                                    InputProps={{
-                                        style: {
-                                            borderRadius: "10px",
-                                        }
-                                    }} />
-                            </Grid2>
-                            <Grid2 container xs={12}>
-                                <Typography className="text-base-dark w-full">Penanggung Jawab<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={penanggungJawab} onChange={(data) => setPenanggungJawab(data.target.value)} variant="outlined" className='mt-2 w-full'
-                                    InputProps={{
-                                        style: {
-                                            borderRadius: "10px",
-                                        }
-                                    }} />
-                            </Grid2>
-                            <Grid2 container xs={12}>
-                                <Typography className="text-base-dark w-full">Telepon<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={telepon} onChange={(data) => setTelepon(data.target.value)} variant="outlined" className='mt-2 w-full'
-                                    InputProps={{
-                                        style: {
-                                            borderRadius: "10px",
-                                        }
-                                    }} />
-                            </Grid2>
-                            <Grid2 container xs={12}>
-                                <Typography className="text-base-dark w-full">Email<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={emailPetaMasalah} onChange={(data) => setEmailPetaMasalah(data.target.value)} variant="outlined" className='mt-2 w-full'
-                                    InputProps={{
-                                        style: {
-                                            borderRadius: "10px",
-                                        }
-                                    }} />
+                            </Grid2> */}
+                            <Grid2 container xs={12} mt={'1rem'}>
+                                <Typography className="text-base-dark w-full">Nama Badan Usaha <span className='text-danger-600'>*</span></Typography>
+                                <Select
+                                    value={badanUsahaPetaMasalah}
+                                    className='rounded-lg mt-2'
+                                    fullWidth
+                                    onChange={(event) => {
+                                        setBadanUsahaPetaMasalah(event.target.value);
+                                    }}
+                                >
+                                    {registrasi?.data?.map((data: any) => {
+                                        return <MenuItem
+                                            key={data.id}
+                                            value={data.id}
+                                        >
+                                            {data.id}
+                                        </MenuItem>
+                                    })}
+                                </Select>
                             </Grid2>
                             <Grid2 container xs={12}>
                                 <Typography className="text-base-dark w-full">Alamat Lokasi Kegiatan<span className='text-danger-600'>*</span></Typography>
@@ -1809,8 +1865,17 @@ export default function PerencanaanDaftarCreate() {
                                     }} />
                             </Grid2>
                             <Grid2 container xs={12}>
-                                <Typography className="text-base-dark w-full">Titik Koordinat<span className='text-danger-600'>*</span></Typography>
+                                <Typography className="text-base-dark w-full">Titik Koordinat (LATITUDE)<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={titikKoordinat} onChange={(data) => setTitikKoordinat(data.target.value)} variant="outlined" className='mt-2 w-full'
+                                    InputProps={{
+                                        style: {
+                                            borderRadius: "10px",
+                                        }
+                                    }} />
+                            </Grid2>
+                            <Grid2 container xs={12}>
+                                <Typography className="text-base-dark w-full">Titik Koordinat (LONGITUDE)<span className='text-danger-600'>*</span></Typography>
+                                <TextField value={titikKoordinat2} onChange={(data) => setTitikKoordinat2(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
                                         style: {
                                             borderRadius: "10px",
@@ -1979,14 +2044,25 @@ export default function PerencanaanDaftarCreate() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
-                                <Typography className="text-base-dark w-full">Sumber Data<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={sumberData} onChange={(data) => setSumberData(data.target.value)} variant="outlined" className='mt-2 w-full'
-                                    InputProps={{
-                                        style: {
-                                            borderRadius: "10px",
-                                        }
-                                    }} />
+                            <Grid2 container xs={12} mt={'1rem'}>
+                                <Typography className="text-base-dark w-full">Sumber Data <span className='text-danger-600'>*</span></Typography>
+                                <Select
+                                    value={sumberData}
+                                    className='rounded-lg mt-2'
+                                    fullWidth
+                                    onChange={(event) => {
+                                        setSumberData(event.target.value);
+                                    }}
+                                >
+                                    {sumberDataQuery?.data?.map((data: any) => {
+                                        return <MenuItem
+                                            key={data.id}
+                                            value={data.id}
+                                        >
+                                            {data.name}
+                                        </MenuItem>
+                                    })}
+                                </Select>
                             </Grid2>
                             <Typography className='my-4'>
                                 PETA MASALAH
@@ -2045,7 +2121,7 @@ export default function PerencanaanDaftarCreate() {
                                         }
                                     }} />
                             </Grid2>
-                            <Button onClick={onCreate} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
+                            <Button onClick={onCreatePetamasalah} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
                                 Simpan
                             </Button>
                         </Grid2>
