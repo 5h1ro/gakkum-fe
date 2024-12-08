@@ -6,16 +6,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
 import { LocalizationProvider, MobileDateTimePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import moment, { Moment } from 'moment';
+import { Moment } from 'moment';
 import TabPanel from '../../../../components/organism/TabPanel';
 import CustomTabPanel from '../../../../components/molecules/CustomTabPanel';
 import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
-import { useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetDetailPetamasalahQuery, useGetDetailRegistrasiQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
-import { useCreateDokumenMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation } from '../../../../api/perencanaan.api';
+import { useAktifkanDataMutation, useCreateArsipMutation, useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetDetailPetamasalahQuery, useGetDetailRegistrasiQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
 
-export default function PerencanaanDaftarDetail() {
+export default function RegistrasiArsipDetail() {
     const { dataID } = useParams();
     const navigate = useNavigate()
     const { data: statusData } = useGetStatusDataQuery();
@@ -74,7 +73,7 @@ export default function PerencanaanDaftarDetail() {
     const [email, setEmail] = useState('')
     const [problem, setProblem] = useState('')
     const [status, setStatus] = useState('')
-    const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Catatan']
+    const labels = ['Data', 'Peta Masalah', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
     const [updateRegistrasi] = useUpdateRegistrasiMutation();
     const { data: detailRegistrasi } = useGetDetailRegistrasiQuery(dataID!);
@@ -96,166 +95,18 @@ export default function PerencanaanDaftarDetail() {
                 id: dataID!,
                 data: formData
             }).unwrap();
-            navigate('/perencanaan/daftar')
+            navigate('/register/daftar')
         } catch (error: any) {
         }
     };
 
-
-    const [deleteTim] = useDeleteTimMutation();
-    const { data: tim, isLoading: gettingTim, isFetching: isFetchingTim } = useGetTimQuery(dataID!);
-    const { data: employees } = useGetActiveEmployeeQuery();
-    const [openFilterTim, setOpenFilterTim] = useState<boolean>(false)
-    const filterExcludeTim = ['aksi']
-    const columnsTim: MRT_ColumnDef<any>[] = [
-        {
-            accessorKey: 'id',
-            header: 'ID',
-            Cell: ({ row }) => row.index + 1,
-        },
-        {
-            Cell: ({ row }) => row.original.employee.name,
-            header: 'Tim Pengawasan',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'equals',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            Cell: ({ row }) => row.original.employee.position,
-            header: 'Posisi',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "pic",
-            header: 'PIC',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            Cell: ({ row }) => {
-                return row.original.is_pic ? 'Iya' : 'Tidak';
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            Cell: ({ row }) => row.original.employee.phone,
-            header: 'Telepon/WA',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            Cell: ({ row }) => row.original.employee.user.email,
-            header: 'Email',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "aksi",
-            header: 'Aksi',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            size: 50,
-            Cell: ({ row }) => {
-                return <Grid2 container gap={1}>
-                    <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm" onClick={() => {
-                        setIDTim(row.original.id)
-                        setTimID(row.original.employee.id)
-                        setTimPic(row.original.is_pic == '1' ? 'yes' : 'no')
-                        setTimOpen(true)
-                        setTimEdit(true)
-                    }}>
-                        <RiEdit2Fill />
-                    </IconButton>
-                    <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
-                        await deleteTim(row.original.id).unwrap();
-                        window.location.reload();
-                    }}>
-                        <RiDeleteBin2Fill />
-                    </IconButton>
-                </Grid2>
-            },
-            enableColumnFilter: false,
-        },
-    ];
-    const [timOpen, setTimOpen] = useState<boolean>(false)
-    const [timEdit, setTimEdit] = useState<boolean>(false)
-    const [timID, setTimID] = useState<string>('')
-    const [idTim, setIDTim] = useState<string>('')
-    const [timPic, setTimPic] = useState<string>('no')
-    const [createTim, { isLoading: isLoadingTim }] = useCreateTimMutation();
-    const [updateTim] = useUpdateTimMutation();
-    const onCreateTim = async () => {
-        const formData = new FormData();
-        formData.append('data_id', dataID!);
-        formData.append('employee_id', timID);
-        formData.append('is_pic', (timPic == 'yes') ? '1' : '0');
-        try {
-            if (timEdit) {
-                await updateTim({
-                    data: formData,
-                    id: idTim
-                }).unwrap();
-            } else {
-                await createTim(formData).unwrap();
-            }
-            navigate('/perencanaan/daftar')
-        } catch (error: any) {
-        }
-    };
 
     const [openFilterTahapan, setOpenFilterTahapan] = useState<boolean>(false)
-    const [deleteCatatan] = useDeleteCatatanMutation();
     const filterExcludeTahapan = ['aksi']
+    const [deleteCatatan] = useDeleteCatatanMutation();
+    const [catatanEdit, setCatatanEdit] = useState(false)
+    const [updateCatatan] = useUpdateCatatanMutation();
+    const [iDCatatan, setIDCatatan] = useState('')
     const columnsCatatan: MRT_ColumnDef<any>[] = [
         {
             accessorKey: 'id',
@@ -431,7 +282,7 @@ export default function PerencanaanDaftarDetail() {
                 id: detailPetamasalah?.data?.id ?? '',
                 data: formData
             }).unwrap();
-            navigate('/perencanaan/daftar')
+            navigate('/register/daftar')
         } catch (error: any) {
         }
     };
@@ -442,9 +293,6 @@ export default function PerencanaanDaftarDetail() {
     const [isiCatatan, setIsiCatatan] = useState('')
     const { data: catatan, isLoading: getting, isFetching } = useGetCatatanQuery(badanUsahaCatatan);
     const [createCatatan, { isLoading: isLoadingCatatan }] = useCreateCatatanMutation();
-    const [catatanEdit, setCatatanEdit] = useState(false)
-    const [updateCatatan] = useUpdateCatatanMutation();
-    const [iDCatatan, setIDCatatan] = useState('')
     const onCreateCatatan = async () => {
         const formData = new FormData();
         formData.append('data_id', dataID!);
@@ -459,166 +307,24 @@ export default function PerencanaanDaftarDetail() {
             } else {
                 await createCatatan(formData).unwrap();
             }
-            navigate('/perencanaan/daftar')
+            navigate('/register/arsip')
         } catch (error: any) {
         }
     };
 
-
-    const { data: dokumen, isLoading: gettingDokumen, isFetching: isFetchingDokumen } = useGetDokumenQuery(dataID!);
-    const { data: listDokumen } = useGetListDokumenQuery();
-    const [dokumenPerencanaanOpen, setDokumenPerencanaanOpen] = useState<boolean>(false)
-    const [dokumenPerencanaanEdit, setDokumenPerencanaanEdit] = useState<boolean>(false)
-    const [openFilterDokumenPerencanaan, setOpenFilterDokumenPerencanaan] = useState<boolean>(false)
-    const filterExcludeDokumenPerencanaan = ['aksi']
-    const [jenisDokumen, setJenisDokumen] = useState<string>('')
-    const [idDokumen, setIdDokumen] = useState<string>('')
-    const [nomorDokumen, setNomorDokumen] = useState<string>('')
-    const [tanggalTerbitDokumen, setTanggalTerbitDokumen] = useState<Moment | null>(null)
-    const [berlakuDokumen, setBerlakuDokumen] = useState<Moment | null>(null)
-    const [createDokumen, { isLoading: isLoadingDokumen }] = useCreateDokumenMutation();
-    const [updateDokumen] = useUpdateDokumenMutation();
-    const [deleteDokumen] = useDeleteDokumenMutation();
-    const onCreateDokumen = async () => {
+    const [aktifkanOpen, setAktifkanOpen] = useState(false)
+    const [judulAktifkan, setJudulAktifkan] = useState('')
+    const [isiAktifkan, setIsiAktifkan] = useState('')
+    const [createAktifkan] = useAktifkanDataMutation();
+    const onCreateAktifkan = async () => {
         const formData = new FormData();
-        formData.append('data_id', dataID!);
-        formData.append('dokumen_perencanaan_id', jenisDokumen);
-        formData.append('nomor_file', nomorDokumen);
-        formData.append('tanggal_terbit', tanggalTerbitDokumen?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
-        formData.append('berlaku', berlakuDokumen?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
-        formData.append('lampiran_file', 'ada');
         try {
-            if (dokumenPerencanaanEdit) {
-                await updateDokumen({
-                    data: formData,
-                    id: idDokumen
-                }).unwrap();
-            } else {
-                await createDokumen(formData).unwrap();
-            }
-            navigate('/perencanaan/daftar')
+            await createAktifkan({ data: formData, id: dataID! }).unwrap();
+            navigate('/register/daftar')
         } catch (error: any) {
         }
     };
-    const columnsDokumenPerencanaan: MRT_ColumnDef<any>[] = [
-        {
-            accessorKey: 'id',
-            header: 'ID',
-            Cell: ({ row }) => row.index + 1,
-        },
-        {
-            Cell: ({ row }) => row.original.dokumen_perencanaan.name,
-            header: 'Jenis',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'equals',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            Cell: ({ row }) => row.original.lampiran_file,
-            header: 'Nama File',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            Cell: ({ row }) => row.original.nomor_file,
-            header: 'Nomor',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            Cell: ({ row }) => row.original.tanggal_terbit,
-            header: 'Terbit',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "berlaku",
-            header: 'Berlaku',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "aksi",
-            header: 'Aksi',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            size: 50,
-            Cell: ({ row }) => {
-                return <Grid2 container gap={1}>
-                    <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm" onClick={() => {
-                        setJenisDokumen(row.original.dokumen_perencanaan.id)
-                        setNomorDokumen(row.original.nomor_file)
-                        setTanggalTerbitDokumen(moment(row.original.tanggal_terbit))
-                        setBerlakuDokumen(moment(row.original.berlaku))
-                        setIdDokumen(row.original.id)
-                        setDokumenPerencanaanOpen(true)
-                        setDokumenPerencanaanEdit(true)
-                    }}>
-                        <RiEdit2Fill />
-                    </IconButton>
-                    <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
-                        await deleteDokumen(row.original.id).unwrap();
-                        window.location.reload();
-                    }}>
-                        <RiDeleteBin2Fill />
-                    </IconButton>
-                </Grid2>
-            },
-            enableColumnFilter: false,
-        },
-    ];
+
     return (
         <Layout>
             <Dialog
@@ -994,8 +700,8 @@ export default function PerencanaanDaftarDetail() {
                 </DialogContent>
             </Dialog>
             <Dialog
-                open={timOpen}
-                onClose={() => setTimOpen(false)}
+                open={aktifkanOpen}
+                onClose={() => setAktifkanOpen(false)}
                 maxWidth={'lg'}
                 sx={{
                     '.MuiPaper-root': {
@@ -1009,144 +715,36 @@ export default function PerencanaanDaftarDetail() {
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
-                            Tambah Data TIM
+                            Aktifkan
                         </Typography>
                     </DialogContentText>
                     <Grid2 container>
-                        <Typography className="text-base-dark w-full mt-6">Nama Pengawas <span className='text-danger-600'>*</span></Typography>
-                        <Select
-                            value={timID}
-                            className='rounded-lg mt-2'
-                            fullWidth
-                            onChange={(event) => {
-                                setTimID(event.target.value);
-                                // const tim = timDummy.find((data) => data.name === event.target.value);
-                                // setTimEmail(tim?.email ?? '');
-                                // setTimPhoneNumber(tim?.phoneNumber.toString() ?? '');
-                            }}
-                        >
-                            {
-                                employees?.data?.map((value: any, index: any) => {
-                                    return <MenuItem
-                                        key={`name_${index}`}
-                                        value={value.id}
-                                    >
-                                        {value.name}
-                                    </MenuItem>
-                                })
-                            }
-                        </Select>
-                    </Grid2>
-                    <Grid2 container>
-                        <Typography className="text-base-dark w-full mt-6">PIC <span className='text-danger-600'>*</span></Typography>
-                        <Select
-                            value={timPic}
-                            className='rounded-lg mt-2'
-                            fullWidth
-                            onChange={(event) => {
-                                setTimPic(event.target.value);
-                            }}
-                        >
-                            <MenuItem
-                                key={'1'}
-                                value={'yes'}
-                            >
-                                {'Iya'}
-                            </MenuItem>
-                            <MenuItem
-                                key={'2'}
-                                value={'no'}
-                            >
-                                {'Tidak'}
-                            </MenuItem>
-                        </Select>
-                    </Grid2>
-                    <Grid2 container className='flex gap-2 mt-6 justify-center pb-8 md:pb-16'>
-                        <Button onClick={onCreateTim} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white py-4 px-6 rounded-xl gap-3'>
-                            Simpan
-                        </Button>
-                    </Grid2>
-                </DialogContent>
-            </Dialog>
-            <Dialog
-                open={dokumenPerencanaanOpen}
-                onClose={() => setDokumenPerencanaanOpen(false)}
-                maxWidth={'lg'}
-                sx={{
-                    '.MuiPaper-root': {
-                        borderRadius: '16px',
-                        '@media(minWidth: 960px)': {
-                            paddingX: '64px'
-                        },
-                    }
-                }}
-            >
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
-                        <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
-                            Tambah Dokumen
-                        </Typography>
-                    </DialogContentText>
-                    <Grid2 container>
-                        <Typography className="text-base-dark w-full mt-6">Jenis Dokumen <span className='text-danger-600'>*</span></Typography>
-                        <Select
-                            value={jenisDokumen}
-                            className='rounded-lg mt-2'
-                            fullWidth
-                            onChange={(event) => {
-                                setJenisDokumen(event.target.value)
-                            }}
-                        >
-                            {
-                                listDokumen?.data?.map((value: any, index: any) => {
-                                    return <MenuItem
-                                        key={`jenis_dokumen_perusahaan_${index}`}
-                                        value={value.id}
-                                    >
-                                        {value.name}
-                                    </MenuItem>
-                                })
-                            }
-                        </Select>
-                    </Grid2>
-                    <Grid2 container>
-                        <Typography className="text-base-dark w-full mt-6">Nomor <span className='text-danger-600'>*</span></Typography>
-                        <TextField value={nomorDokumen} onChange={(data) => setNomorDokumen(data.target.value)} variant="outlined" className='mt-2 w-full' placeholder='Masukkan Nomor Dokumen'
+                        <Typography className="text-base-dark w-full mt-6">Alasan <span className='text-danger-600'>*</span></Typography>
+                        <TextField value={judulAktifkan} onChange={(data) => setJudulAktifkan(data.target.value)} variant="outlined" className='mt-2 w-full'
                             InputProps={{
                                 style: {
                                     borderRadius: "10px",
                                 }
                             }} />
                     </Grid2>
-                    <Grid2 container xs={12} mt={'1rem'}>
-                        <Typography className="text-base-dark w-full">Tanggal Terbit<span className='text-danger-600'>*</span></Typography>
-                        <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <MobileDateTimePicker
-                                ampm={false}
-                                value={tanggalTerbitDokumen}
-                                onChange={(data) => setTanggalTerbitDokumen(data)}
-                                className='mt-2 w-full' />
-                        </LocalizationProvider>
-                    </Grid2>
-                    <Grid2 container xs={12} mt={'1rem'}>
-                        <Typography className="text-base-dark w-full">Berlaku<span className='text-danger-600'>*</span></Typography>
-                        <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <MobileDateTimePicker
-                                ampm={false}
-                                value={berlakuDokumen}
-                                onChange={(data) => setBerlakuDokumen(data)}
-                                className='mt-2 w-full' />
-                        </LocalizationProvider>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">Alasan <span className='text-danger-600'>*</span></Typography>
+                        <TextField multiline minRows={3} value={isiAktifkan} onChange={(data) => setIsiAktifkan(data.target.value)} variant="outlined" className='mt-2 w-full'
+                            InputProps={{
+                                style: {
+                                    borderRadius: "10px",
+                                }
+                            }} />
                     </Grid2>
                     <Grid2 container className='flex gap-2 mt-6 justify-center pb-8 md:pb-16'>
-                        <Button onClick={onCreateDokumen} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white py-4 px-6 rounded-xl gap-3'>
+                        <Button onClick={onCreateAktifkan} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white py-4 px-6 rounded-xl gap-3'>
                             Simpan
                         </Button>
                     </Grid2>
                 </DialogContent>
             </Dialog>
             <Grid2 container alignContent={'center'}>
-                <IconButton onClick={() => navigate('/perencanaan/daftar')}>
+                <IconButton onClick={() => navigate('/register/daftar')}>
                     <RiArrowLeftLine className="w-8 h-8" color="#000000" />
                 </IconButton>
                 <Typography className="w-10/12 text-4xl font-semibold text-base-dark pt-1">
@@ -1363,8 +961,11 @@ export default function PerencanaanDaftarDetail() {
                                         }
                                     }} />
                             </Grid2> */}
-                            <Button onClick={onUpdate} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
+                            {/* <Button onClick={onUpdate} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
                                 Simpan
+                            </Button> */}
+                            <Button onClick={onCreateAktifkan} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
+                                Aktifkan
                             </Button>
                         </Grid2>
                     </CustomTabPanel>
@@ -1379,7 +980,7 @@ export default function PerencanaanDaftarDetail() {
                                         }
                                     }} />
                             </Grid2> */}
-                            {/* <Grid2 container xs={12} mt={'1rem'}>
+                            <Grid2 container xs={12} mt={'1rem'}>
                                 <Typography className="text-base-dark w-full">Nama Badan Usaha <span className='text-danger-600'>*</span></Typography>
                                 <Select
                                     value={badanUsahaPetaMasalah}
@@ -1398,7 +999,7 @@ export default function PerencanaanDaftarDetail() {
                                         </MenuItem>
                                     })}
                                 </Select>
-                            </Grid2> */}
+                            </Grid2>
                             <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Alamat Lokasi Kegiatan<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={alamatLokasiKegiatan} onChange={(data) => setAlamatLokasiKegiatan(data.target.value)} variant="outlined" className='mt-2 w-full'
@@ -1665,41 +1266,12 @@ export default function PerencanaanDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Button onClick={onUpdatePetamasalah} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
+                            {/* <Button onClick={onUpdatePetamasalah} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
                                 Simpan
-                            </Button>
+                            </Button> */}
                         </Grid2>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={2}>
-                        <Grid2 container>
-                            <Grid2 xs={12} container className='w-full justify-end'>
-                                <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => {
-                                    setTimID('')
-                                    setTimPic('1')
-                                    setTimOpen(true)
-                                    setTimEdit(false)
-                                }}><RiAddLine /> Tambah</Button>
-                            </Grid2>
-                        </Grid2>
-                        <Table openFilter={openFilterTim} setOpenFilter={setOpenFilterTim} columns={columnsTim} data={tim?.data ?? []} state={{ isLoading: gettingTim || isFetchingTim }} filterExclude={filterExcludeTim}></Table>
-                    </CustomTabPanel>
-                    <CustomTabPanel value={value} index={3}>
-                        <Grid2 container>
-                            <Grid2 xs={12} container className='w-full justify-end'>
-                                <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => {
-                                    setJenisDokumen('')
-                                    setNomorDokumen('')
-                                    setTanggalTerbitDokumen(moment(''))
-                                    setBerlakuDokumen(moment(''))
-                                    setIdDokumen('')
-                                    setDokumenPerencanaanOpen(true)
-                                    setDokumenPerencanaanEdit(false)
-                                }}><RiAddLine /> Tambah</Button>
-                            </Grid2>
-                        </Grid2>
-                        <Table openFilter={openFilterDokumenPerencanaan} setOpenFilter={setOpenFilterDokumenPerencanaan} columns={columnsDokumenPerencanaan} data={dokumen?.data ?? []} state={{ isLoading: gettingDokumen || isFetchingDokumen }} filterExclude={filterExcludeDokumenPerencanaan}></Table>
-                    </CustomTabPanel>
-                    <CustomTabPanel value={value} index={4}>
                         <Grid2 container>
                             <Grid2 xs={12} container className='w-full justify-end'>
                                 <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => {

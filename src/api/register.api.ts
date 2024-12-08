@@ -83,10 +83,10 @@ export const api_register = api.injectEndpoints({
             },
         }),
         createPetaMasalah: builder.mutation<any, any>({
-            query: (credentials: FormData) => ({
+            query: (data: any) => ({
                 url: `peta-masalah/create`,
                 method: "POST",
-                body: credentials,
+                body: data.data,
             }),
             transformResponse: (response: any, meta: any, arg: any) => {
                 return response;
@@ -97,6 +97,52 @@ export const api_register = api.injectEndpoints({
                 url: `catatan/create`,
                 method: "POST",
                 body: credentials,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        updateCatatan: builder.mutation<any, any>({
+            query: ({ data, id }) => ({
+                url: `catatan/update/${id}`,
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        deleteCatatan: builder.mutation<any, string>({
+            query: (id: string) => ({
+                url: `catatan/delete/${id}`,
+                method: "DELETE",
+            }),
+        }),
+        createArsip: builder.mutation<any, { data: FormData, id: string }>({
+            query: ({ data, id }) => ({
+                url: `registrasi/arsip/${id}`,
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        aktifkanData: builder.mutation<any, { data: FormData, id: string }>({
+            query: ({ data, id }) => ({
+                url: `registrasi/aktif/${id}`,
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        eskalasi: builder.mutation<any, { data: FormData, id: string }>({
+            query: ({ data, id }) => ({
+                url: `registrasi/eskalasi/${id}`,
+                method: "POST",
+                body: data,
             }),
             transformResponse: (response: any, meta: any, arg: any) => {
                 return response;
@@ -120,5 +166,10 @@ export const {
     useUpdateRegistrasiMutation,
     useCreatePetaMasalahMutation,
     useUpdatePetamasalahMutation,
-    useCreateCatatanMutation
+    useUpdateCatatanMutation,
+    useDeleteCatatanMutation,
+    useCreateCatatanMutation,
+    useCreateArsipMutation,
+    useAktifkanDataMutation,
+    useEskalasiMutation
 } = api_register;

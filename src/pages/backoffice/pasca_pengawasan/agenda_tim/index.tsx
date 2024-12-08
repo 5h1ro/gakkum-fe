@@ -7,7 +7,7 @@ import { gapi } from "gapi-script";
 import { useEffect, useState } from 'react';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-function PengawasanAgenda() {
+function PascaPengawasanAgendaTim() {
     const [events, setEvents] = useState([]);
     const localizer = momentLocalizer(moment);
     const CLIENT_ID = "49338518240-h05l0si2q6kh1n6bbn2vrrai5mprrev0.apps.googleusercontent.com";
@@ -51,7 +51,7 @@ function PengawasanAgenda() {
             <Grid2 container justifyContent={'space-between'}>
                 <Grid2 container alignContent={'center'}>
                     <Typography className="text-3xl font-semibold text-base-dark mt-[-2px] md:mt-0 md:text-4xl">
-                        Pengawasan &gt; Agenda
+                        PascaPengawasan &gt; Agenda TIM
                     </Typography>
                 </Grid2>
                 <Grid2 container gap={2} className='w-full md:w-auto'>
@@ -70,4 +70,4 @@ function PengawasanAgenda() {
     );
 };
 
-export default PengawasanAgenda;
+export default PascaPengawasanAgendaTim;

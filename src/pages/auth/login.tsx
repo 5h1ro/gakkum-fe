@@ -69,7 +69,7 @@ const Login = () => {
     };
 
     return (
-        <GoogleOAuthProvider clientId="49338518240-h05l0si2q6kh1n6bbn2vrrai5mprrev0.apps.googleusercontent.com">
+        <>
 
             <Snackbar
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={showSnackbar.isOpen} autoHideDuration={6000} onClose={() => setShowSnackbar({ isOpen: false, message: '', status: 'error' })}>
@@ -172,12 +172,12 @@ const Login = () => {
                                             </Button>
                                         )}
 
-                                        <GoogleLogin
+                                        {/* <GoogleLogin
                                             onSuccess={handleGoogleLoginSuccess}
                                             onError={() => {
                                                 console.log("Login Failed");
                                             }}
-                                        />
+                                        /> */}
                                     </Stack>
                                 </form>
                             </CardContent>
@@ -188,7 +188,7 @@ const Login = () => {
                     <Typography fontSize={16} fontWeight={500} className='text-base-dark text-center px-2'>Copyright ©2024 Gakkum, All rights Reserved</Typography>
                 </Grid>
             </Box>
-        </GoogleOAuthProvider>
+        </>
     );
 }
 

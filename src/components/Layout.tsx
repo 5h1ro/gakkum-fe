@@ -34,6 +34,7 @@ import { useAuth } from '../hooks/auth.hook';
 import { props } from '../interfaces/props.interface';
 import { logOut } from '../slices/auth.slice';
 import { getCookie } from '../utils/cookies';
+import { Settings } from '@mui/icons-material';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -57,9 +58,10 @@ const Layout = (props: props) => {
     const [mobileOpen, setMobileOpen] = React.useState<boolean>(false);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [openContactMenu, setOpenContactMenu] = React.useState(false);
-    const [openRegisterMenu, setOpenRegisterMenu] = React.useState(true);
-    const [openPerencanaanMenu, setOpenPerencanaanMenu] = React.useState(true);
-    const [openPengawasanMenu, setOpenPengawasanMenu] = React.useState(true);
+    const [openRegisterMenu, setOpenRegisterMenu] = React.useState(false);
+    const [openPerencanaanMenu, setOpenPerencanaanMenu] = React.useState(false);
+    const [openPengawasanMenu, setOpenPengawasanMenu] = React.useState(false);
+    const [openPascaPengawasanMenu, setOpenPascaPengawasanMenu] = React.useState(false);
 
     const openProfile = Boolean(anchorEl);
 
@@ -90,7 +92,11 @@ const Layout = (props: props) => {
         setSidebarCollapse(false)
         setOpenPengawasanMenu(!openPengawasanMenu);
     };
-    const name = 'Nurhakiki';
+    const handlePascaPengawasanMenu = () => {
+        setSidebarCollapse(false)
+        setOpenPascaPengawasanMenu(!openPascaPengawasanMenu);
+    };
+    const name = getCookie('name');
     const avatar = getCookie('avatar');
     const drawer = (
         <>
@@ -162,7 +168,7 @@ const Layout = (props: props) => {
                             <RiGlobalLine className="ml-[2px]" />
                         </ListItemIcon>
                         <ListItemText primary='Register' hidden={sidebarCollapse} />
-                        {!sidebarCollapse ? openRegisterMenu || `${fullpath[1]}/${fullpath[2]}` === 'register/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'register/reguler' || `${fullpath[1]}/${fullpath[2]}` === 'register/insidental' || `${fullpath[1]}/${fullpath[2]}` === 'register/arsip' ? <ExpandLess /> : <ExpandMore /> : ''}
+                        {openRegisterMenu || `${fullpath[1]}/${fullpath[2]}` === 'register/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'register/reguler' || `${fullpath[1]}/${fullpath[2]}` === 'register/insidental' || `${fullpath[1]}/${fullpath[2]}` === 'register/arsip' ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
                 </ListItem>
                 <Collapse in={openRegisterMenu || `${fullpath[1]}/${fullpath[2]}` === 'register/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'register/reguler' || `${fullpath[1]}/${fullpath[2]}` === 'register/insidental' || `${fullpath[1]}/${fullpath[2]}` === 'register/arsip'} timeout="auto" unmountOnExit>
@@ -225,7 +231,7 @@ const Layout = (props: props) => {
                             <RiGlobalLine className="ml-[2px]" />
                         </ListItemIcon>
                         <ListItemText primary='Perencanaan' hidden={sidebarCollapse} />
-                        {!sidebarCollapse ? openPerencanaanMenu || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/reguler' || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/insidental' || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/arsip' ? <ExpandLess /> : <ExpandMore /> : ''}
+                        {openPerencanaanMenu || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/reguler' || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/insidental' || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/arsip' ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
                 </ListItem>
                 <Collapse in={openPerencanaanMenu || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/reguler' || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/insidental' || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/arsip'} timeout="auto" unmountOnExit>
@@ -288,10 +294,10 @@ const Layout = (props: props) => {
                             <RiGlobalLine className="ml-[2px]" />
                         </ListItemIcon>
                         <ListItemText primary='Pengawasan' hidden={sidebarCollapse} />
-                        {!sidebarCollapse ? openPengawasanMenu || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/agenda' ? <ExpandLess /> : <ExpandMore /> : ''}
+                        {!sidebarCollapse ? openPengawasanMenu || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/agenda' || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/agenda-tim' || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/arsip' ? <ExpandLess /> : <ExpandMore /> : ''}
                     </ListItemButton>
                 </ListItem>
-                <Collapse in={openPengawasanMenu || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/agenda'} timeout="auto" unmountOnExit>
+                <Collapse in={openPengawasanMenu || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/agenda' || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/agenda-tim' || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/arsip'} timeout="auto" unmountOnExit>
                     <List component="div"
                         sx={{
                             '&& .Mui-selected, & .MuiListItemButton-root:hover': {
@@ -324,13 +330,101 @@ const Layout = (props: props) => {
                         </ListItem>
                         <ListItem>
                             <ListItemButton className='ml-16'
+                                component={NavLink} to="/pengawasan/agenda-tim" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengawasan/agenda-tim'}
+                            >
+                                <ListItemText primary='Agenda TIM' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemButton className='ml-16'
                                 component={NavLink} to="/pengawasan/daftar" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengawasan/daftar'}
                             >
                                 <ListItemText primary='Daftar' />
                             </ListItemButton>
                         </ListItem>
+                        <ListItem>
+                            <ListItemButton className='ml-16'
+                                component={NavLink} to="/pengawasan/arsip" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengawasan/arsip'}
+                            >
+                                <ListItemText primary='Arsip' />
+                            </ListItemButton>
+                        </ListItem>
                     </List>
                 </Collapse>
+                <ListItem>
+                    <ListItemButton onClick={handlePascaPengawasanMenu} selected={currentLocation === 'pasca-pengawasan'}>
+                        <ListItemIcon>
+                            <RiGlobalLine className="ml-[2px]" />
+                        </ListItemIcon>
+                        <ListItemText primary='Pasca Pengawasan' hidden={sidebarCollapse} />
+                        {!sidebarCollapse ? openPascaPengawasanMenu || `${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/agenda' || `${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/agenda-tim' || `${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/arsip' ? <ExpandLess /> : <ExpandMore /> : ''}
+                    </ListItemButton>
+                </ListItem>
+                <Collapse in={openPascaPengawasanMenu || `${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/agenda' || `${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/agenda-tim' || `${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/arsip'} timeout="auto" unmountOnExit>
+                    <List component="div"
+                        sx={{
+                            '&& .Mui-selected, & .MuiListItemButton-root:hover': {
+                                bgcolor: 'white',
+                                borderRadius: '0.375rem',
+                                paddingLeft: '12px',
+                                paddingRight: '12px',
+                                '&, & .MuiListItemIcon-root': {
+                                    color: '#3c7d21',
+                                },
+                            },
+                            '.MuiListItemButton-root': {
+                                paddingLeft: '12px',
+                                paddingRight: '12px',
+                            },
+                            '& .Mui-selected:hover': {
+                                bgcolor: 'white',
+                                borderRadius: '0.375rem',
+                                '&, & .MuiListItemIcon-root': {
+                                    color: '#3c7d21',
+                                },
+                            },
+                        }}>
+                        <ListItem>
+                            <ListItemButton className='ml-16'
+                                component={NavLink} to="/pasca-pengawasan/agenda" selected={`${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/agenda'}
+                            >
+                                <ListItemText primary='Agenda' />
+                            </ListItemButton>
+                        </ListItem>
+                        {/* <ListItem>
+                            <ListItemButton className='ml-16'
+                                component={NavLink} to="/pasca-pengawasan/agenda-tim" selected={`${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/agenda-tim'}
+                            >
+                                <ListItemText primary='Agenda TIM' />
+                            </ListItemButton>
+                        </ListItem> */}
+                        <ListItem>
+                            <ListItemButton className='ml-16'
+                                component={NavLink} to="/pasca-pengawasan/daftar" selected={`${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/daftar'}
+                            >
+                                <ListItemText primary='Daftar' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemButton className='ml-16'
+                                component={NavLink} to="/pasca-pengawasan/arsip" selected={`${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/arsip'}
+                            >
+                                <ListItemText primary='Sanksi' />
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                </Collapse>
+                <ListItem>
+                    <ListItemButton
+                        component={NavLink} to="/pengaturan"
+                        selected={currentLocation === 'pengaturan'}
+                    >
+                        <ListItemIcon>
+                            <Settings className="ml-[2px]" />
+                        </ListItemIcon>
+                        <ListItemText primary='Pengaturan' hidden={sidebarCollapse} />
+                    </ListItemButton>
+                </ListItem>
             </List>
             {/* <List
                 sx={{
@@ -472,22 +566,22 @@ const Layout = (props: props) => {
                                     </Grid2>
                                 </Grid2>
                             </MenuItem>
-                            <MenuItem className='w-[300px] px-4 py-5' onClick={() => {
+                            {/* <MenuItem className='w-[300px] px-4 py-5' onClick={() => {
                                 navigate('/dashboard')
                             }}>
                                 <ListItemIcon>
                                     <RiHome5Line className='text-general-500' />
                                 </ListItemIcon>
                                 <ListItemText primary="Beranda" className="text-general-500" />
-                            </MenuItem>
-                            <MenuItem className='w-[300px] px-4 py-5' onClick={() => {
+                            </MenuItem> */}
+                            {/* <MenuItem className='w-[300px] px-4 py-5' onClick={() => {
                                 navigate('/cek-hasil')
                             }}>
                                 <ListItemIcon>
                                     <RiFileSearchLine className='text-general-500' />
                                 </ListItemIcon>
                                 <ListItemText primary="Cek Hasil Psikotes" className="text-general-500" />
-                            </MenuItem>
+                            </MenuItem> */}
                             <MenuItem className='w-[300px] px-4 py-5' onClick={() => {
                                 navigate('/profil')
                             }}>

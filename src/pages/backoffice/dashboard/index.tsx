@@ -7,12 +7,43 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { useAuth } from "../../../hooks/auth.hook";
 import Layout from "../../../components/Layout";
+import Card1 from "../../../components/molecules/Card1";
 
 function Dashboard() {
     const auth = useAuth();
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState<Moment | null>(null);
     const [endDate, setEndDate] = useState<Moment | null>(null);
+
+    const data = [
+        {
+            name: 'Register',
+            total: 0,
+            image: '/icons/paper.svg',
+            hidden: false
+        },
+        {
+            name: 'Perencanaan',
+            total: 0,
+            image: '/icons/paper.svg',
+            hidden: false
+        },
+        {
+            name: 'Pengawasan',
+            total: 0,
+            image: '/icons/paper.svg',
+            hidden: false
+        },
+        {
+            name: 'Pasca Pengawasan',
+            total: 0,
+            image: '/icons/paper.svg',
+            hidden: false
+        },
+    ];
+    let card1 = data.map(function (data, index) {
+        return <Card1 image={data.image} name={data.name} total={parseInt(data.total.toString())} index={index} key={data.name} hidden={data.hidden}></Card1>;
+    });
     return (
         <Layout>
             <Typography className="text-4xl font-semibold text-base-dark mb-6">
@@ -41,6 +72,9 @@ function Dashboard() {
                         />
                     </Box>
                 </LocalizationProvider>
+            </Grid2>
+            <Grid2 container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }} marginTop={'1rem'}>
+                {card1}
             </Grid2>
         </Layout >
     )

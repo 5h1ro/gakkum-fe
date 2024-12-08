@@ -35,10 +35,8 @@ const authSlice = createSlice({
         builder.addMatcher(
             api_auth.endpoints.login.matchFulfilled,
             (state, { payload }) => {
-                state.accessToken = payload.data?.message ?? '';
-                state.name = payload.data?.message ?? '';
-                state.email = payload.data?.message ?? '';
-                state.role = payload.data?.message ?? '';
+                state.name = payload?.name ?? '';
+                state.email = payload?.email ?? '';
             }
         );
     },

@@ -22,6 +22,22 @@ export const api_perencanaan = api.injectEndpoints({
                 return response;
             },
         }),
+        updateTim: builder.mutation<any, any>({
+            query: ({ data, id }) => ({
+                url: `tim-pengawas/update/${id}`,
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        deleteTim: builder.mutation<any, string>({
+            query: (id: string) => ({
+                url: `tim-pengawas/delete/${id}`,
+                method: "DELETE",
+            }),
+        }),
         getTim: builder.query<any, string>({
             query: (dataID: string) => ({
                 url: `tim-pengawas/data/${dataID}`,
@@ -47,6 +63,22 @@ export const api_perencanaan = api.injectEndpoints({
                 return response;
             },
         }),
+        updateDokumen: builder.mutation<any, any>({
+            query: ({ data, id }) => ({
+                url: `perencanaan/dokumen/update/${id}`,
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        deleteDokumen: builder.mutation<any, string>({
+            query: (id: string) => ({
+                url: `perencanaan/dokumen/delete/${id}`,
+                method: "DELETE",
+            }),
+        }),
     })
 });
 
@@ -57,5 +89,9 @@ export const {
     useGetTimQuery,
     useGetDokumenQuery,
     useGetListDokumenQuery,
-    useCreateDokumenMutation
+    useCreateDokumenMutation,
+    useUpdateTimMutation,
+    useDeleteTimMutation,
+    useUpdateDokumenMutation,
+    useDeleteDokumenMutation
 } = api_perencanaan;

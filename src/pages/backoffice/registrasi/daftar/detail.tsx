@@ -1,6 +1,6 @@
 import { Box, Button, Dialog, DialogContent, DialogContentText, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { RiAddLine, RiArrowLeftLine, RiArrowLeftRightFill, RiContactsBook2Line, RiEyeLine, RiHome5Line } from '@remixicon/react';
+import { RiAddLine, RiArrowLeftLine, RiArrowLeftRightFill, RiContactsBook2Line, RiDeleteBin2Fill, RiEdit2Fill, RiEditFill, RiEyeLine, RiHome5Line } from '@remixicon/react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
@@ -12,7 +12,8 @@ import CustomTabPanel from '../../../../components/molecules/CustomTabPanel';
 import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
-import { useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetDetailPetamasalahQuery, useGetDetailRegistrasiQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
+import { useCreateArsipMutation, useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useDeleteCatatanMutation, useEskalasiMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetDetailPetamasalahQuery, useGetDetailRegistrasiQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
+import { useGetActiveEmployeeQuery } from '../../../../api/perencanaan.api';
 
 export default function RegistrasiDaftarDetail() {
     const { dataID } = useParams();
@@ -20,6 +21,7 @@ export default function RegistrasiDaftarDetail() {
     const { data: statusData } = useGetStatusDataQuery();
     const { data: badanUsaha } = useGetBadanUsahaQuery();
     const { data: sumberDataQuery } = useGetSumberDataQuery();
+    const { data: employee } = useGetActiveEmployeeQuery();
     const jenisDokumenRegistrasi = [
         {
             name: 'Peta Masalah / Laporan',
@@ -140,6 +142,37 @@ export default function RegistrasiDaftarDetail() {
                 variant: 'outlined',
             }
         },
+        {
+            accessorKey: "aksi",
+            header: 'Aksi',
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            size: 50,
+            Cell: ({ row }) => {
+                return <Grid2 container gap={1}>
+                    <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm" onClick={() => {
+                        setJudulCatatan(row.original.judul)
+                        setIsiCatatan(row.original.isi)
+                        setIDCatatan(row.original.id)
+                        setCatatanOpen(true)
+                        setCatatanEdit(true)
+                    }}>
+                        <RiEdit2Fill />
+                    </IconButton>
+                    <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
+                        await deleteCatatan(row.original.id).unwrap();
+                        window.location.reload();
+                    }}>
+                        <RiDeleteBin2Fill />
+                    </IconButton>
+                </Grid2>
+            },
+            enableColumnFilter: false,
+        },
     ];
 
     const { data: registrasi } = useGetRegistrasiQuery();
@@ -178,7 +211,7 @@ export default function RegistrasiDaftarDetail() {
     const [petaMasalahD, setPetaMasalahD] = useState('')
     const [petaMasalahE, setPetaMasalahE] = useState('')
     const [petaMasalahF, setPetaMasalahF] = useState('')
-    const [updatePetamasalah, { isLoading: isLoadingPetamasalah }] = useUpdatePetamasalahMutation();
+    const [updatePetamasalah, { isLoading: isLoadingPetamasalah }] = useCreatePetaMasalahMutation();
     const { data: detailPetamasalah } = useGetDetailPetamasalahQuery(dataID!);
     useEffect(() => {
         setBadanUsahaPetaMasalah(detailPetamasalah?.data?.data_id ?? '')
@@ -213,7 +246,7 @@ export default function RegistrasiDaftarDetail() {
     }, [detailPetamasalah])
     const onUpdatePetamasalah = async () => {
         const formData = new FormData();
-        formData.append('data_id', badanUsahaPetaMasalah);
+        formData.append('data_id', dataID!);
         formData.append('alamat_kegiatan', alamatLokasiKegiatan);
         formData.append('latitude', titikKoordinat);
         formData.append('longitude', titikKoordinat2);
@@ -253,18 +286,58 @@ export default function RegistrasiDaftarDetail() {
     };
 
     const [catatanOpen, setCatatanOpen] = useState(false)
-    const [badanUsahaCatatan, setBadanUsahaCatatan] = useState(dataID ?? '')
+    const [catatanEdit, setCatatanEdit] = useState(false)
+    // const [badanUsahaCatatan, setBadanUsahaCatatan] = useState(dataID ?? '')
     const [judulCatatan, setJudulCatatan] = useState('')
     const [isiCatatan, setIsiCatatan] = useState('')
-    const { data: catatan, isLoading: getting, isFetching } = useGetCatatanQuery(badanUsahaCatatan);
+    const [iDCatatan, setIDCatatan] = useState('')
+    const { data: catatan, isLoading: getting, isFetching } = useGetCatatanQuery(dataID!);
     const [createCatatan, { isLoading: isLoadingCatatan }] = useCreateCatatanMutation();
+    const [deleteCatatan] = useDeleteCatatanMutation();
+    const [updateCatatan] = useUpdateCatatanMutation();
     const onCreateCatatan = async () => {
         const formData = new FormData();
-        formData.append('data_id', badanUsahaCatatan);
+        formData.append('data_id', dataID!);
         formData.append('judul', judulCatatan);
         formData.append('isi', isiCatatan);
         try {
-            await createCatatan(formData).unwrap();
+            if (catatanEdit) {
+                await updateCatatan({
+                    data: formData,
+                    id: iDCatatan
+                }).unwrap();
+            } else {
+                await createCatatan(formData).unwrap();
+            }
+            navigate('/register/daftar')
+        } catch (error: any) {
+        }
+    };
+
+    const [arsipOpen, setArsipOpen] = useState(false)
+    const [alasanArsip, setAlasanArsip] = useState('')
+    const [createArsip] = useCreateArsipMutation();
+    const onCreateArsip = async () => {
+        const formData = new FormData();
+        formData.append('alasan_arsip', alasanArsip);
+        try {
+            await createArsip({ data: formData, id: dataID! }).unwrap();
+            navigate('/register/daftar')
+        } catch (error: any) {
+        }
+    };
+    const [eskalasiOpen, setEskalasiOpen] = useState(false)
+    const [nomorSPEskalasi, setNomorSPEskalasi] = useState('')
+    const [picEskalasi, setPicEskalasi] = useState('')
+    const [dateEskalasi, setDateEskalasi] = useState<Moment | null>(null)
+    const [createEskalasi] = useEskalasiMutation();
+    const onCreateEskalasi = async () => {
+        const formData = new FormData();
+        formData.append('nomor_sp', nomorSPEskalasi);
+        formData.append('tanggal_surat', dateEskalasi!.format('Y-M-D'));
+        formData.append('pic_employee_id', picEskalasi);
+        try {
+            await createEskalasi({ data: formData, id: dataID! }).unwrap();
             navigate('/register/daftar')
         } catch (error: any) {
         }
@@ -596,10 +669,10 @@ export default function RegistrasiDaftarDetail() {
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
-                            Tambah Catatan
+                            Catatan
                         </Typography>
                     </DialogContentText>
-                    <Grid2 container>
+                    {/* <Grid2 container>
                         <Typography className="text-base-dark w-full mt-6">Nama Badan Usaha <span className='text-danger-600'>*</span></Typography>
                         <Select
                             value={badanUsahaCatatan}
@@ -618,7 +691,7 @@ export default function RegistrasiDaftarDetail() {
                                 </MenuItem>
                             })}
                         </Select>
-                    </Grid2>
+                    </Grid2> */}
                     <Grid2 container>
                         <Typography className="text-base-dark w-full mt-6">Judul <span className='text-danger-600'>*</span></Typography>
                         <TextField value={judulCatatan} onChange={(data) => setJudulCatatan(data.target.value)} variant="outlined" className='mt-2 w-full'
@@ -630,7 +703,7 @@ export default function RegistrasiDaftarDetail() {
                     </Grid2>
                     <Grid2 container>
                         <Typography className="text-base-dark w-full mt-6">Isi <span className='text-danger-600'>*</span></Typography>
-                        <TextField value={isiCatatan} onChange={(data) => setIsiCatatan(data.target.value)} variant="outlined" className='mt-2 w-full'
+                        <TextField minRows={3} multiline value={isiCatatan} onChange={(data) => setIsiCatatan(data.target.value)} variant="outlined" className='mt-2 w-full'
                             InputProps={{
                                 style: {
                                     borderRadius: "10px",
@@ -639,6 +712,106 @@ export default function RegistrasiDaftarDetail() {
                     </Grid2>
                     <Grid2 container className='flex gap-2 mt-6 justify-center pb-8 md:pb-16'>
                         <Button onClick={onCreateCatatan} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white py-4 px-6 rounded-xl gap-3'>
+                            Simpan
+                        </Button>
+                    </Grid2>
+                </DialogContent>
+            </Dialog>
+            <Dialog
+                open={arsipOpen}
+                onClose={() => setArsipOpen(false)}
+                maxWidth={'lg'}
+                sx={{
+                    '.MuiPaper-root': {
+                        borderRadius: '16px',
+                        '@media(minWidth: 960px)': {
+                            paddingX: '64px'
+                        },
+                    }
+                }}
+            >
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                        <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
+                            Arsip
+                        </Typography>
+                    </DialogContentText>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">Alasan <span className='text-danger-600'>*</span></Typography>
+                        <TextField multiline minRows={3} value={alasanArsip} onChange={(data) => setAlasanArsip(data.target.value)} variant="outlined" className='mt-2 w-full'
+                            InputProps={{
+                                style: {
+                                    borderRadius: "10px",
+                                }
+                            }} />
+                    </Grid2>
+                    <Grid2 container className='flex gap-2 mt-6 justify-center pb-8 md:pb-16'>
+                        <Button onClick={onCreateArsip} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white py-4 px-6 rounded-xl gap-3'>
+                            Simpan
+                        </Button>
+                    </Grid2>
+                </DialogContent>
+            </Dialog>
+            <Dialog
+                open={eskalasiOpen}
+                onClose={() => setEskalasiOpen(false)}
+                maxWidth={'lg'}
+                sx={{
+                    '.MuiPaper-root': {
+                        borderRadius: '16px',
+                        '@media(minWidth: 960px)': {
+                            paddingX: '64px'
+                        },
+                    }
+                }}
+            >
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                        <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
+                            Eskalasi
+                        </Typography>
+                    </DialogContentText>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">Tanggal Surat <span className='text-danger-600'>*</span></Typography>
+                        <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <MobileDateTimePicker
+                                ampm={false}
+                                value={dateEskalasi}
+                                onChange={(data) => setDateEskalasi(data)}
+                                className='mt-2 w-full' />
+                        </LocalizationProvider>
+                    </Grid2>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">Nomor SP <span className='text-danger-600'>*</span></Typography>
+                        <TextField value={nomorSPEskalasi} onChange={(data) => setNomorSPEskalasi(data.target.value)} variant="outlined" className='mt-2 w-full'
+                            InputProps={{
+                                style: {
+                                    borderRadius: "10px",
+                                }
+                            }} />
+                    </Grid2>
+                    <Grid2 container xs={12} mt={'1rem'}>
+                        <Typography className="text-base-dark w-full">PIC <span className='text-danger-600'>*</span></Typography>
+                        <Select
+                            value={picEskalasi}
+                            className='rounded-lg mt-2'
+                            fullWidth
+                            onChange={(event) => {
+                                setPicEskalasi(event.target.value);
+                            }}
+                        >
+                            {employee?.data?.map((data: any) => {
+                                return <MenuItem
+                                    key={data.id}
+                                    value={data.id}
+                                >
+                                    {data.name}
+                                </MenuItem>
+                            })}
+                        </Select>
+                    </Grid2>
+                    <Grid2 container className='flex gap-2 mt-6 justify-center pb-8 md:pb-16'>
+                        <Button onClick={onCreateEskalasi} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white py-4 px-6 rounded-xl gap-3'>
                             Simpan
                         </Button>
                     </Grid2>
@@ -865,6 +1038,12 @@ export default function RegistrasiDaftarDetail() {
                             <Button onClick={onUpdate} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
                                 Simpan
                             </Button>
+                            <Button onClick={() => setArsipOpen(true)} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
+                                Arsip
+                            </Button>
+                            <Button onClick={() => setEskalasiOpen(true)} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
+                                Eskalasi
+                            </Button>
                         </Grid2>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
@@ -878,7 +1057,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2> */}
-                            <Grid2 container xs={12} mt={'1rem'}>
+                            {/* <Grid2 container xs={12} mt={'1rem'}>
                                 <Typography className="text-base-dark w-full">Nama Badan Usaha <span className='text-danger-600'>*</span></Typography>
                                 <Select
                                     value={badanUsahaPetaMasalah}
@@ -893,12 +1072,12 @@ export default function RegistrasiDaftarDetail() {
                                             key={data.id}
                                             value={data.id}
                                         >
-                                            {data.id}
+                                            {data.company.name}
                                         </MenuItem>
                                     })}
                                 </Select>
-                            </Grid2>
-                            <Grid2 container xs={12}>
+                            </Grid2> */}
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Alamat Lokasi Kegiatan<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={alamatLokasiKegiatan} onChange={(data) => setAlamatLokasiKegiatan(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -907,7 +1086,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Titik Koordinat (LATITUDE)<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={titikKoordinat} onChange={(data) => setTitikKoordinat(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -916,7 +1095,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Titik Koordinat (LONGITUDE)<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={titikKoordinat2} onChange={(data) => setTitikKoordinat2(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -925,7 +1104,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">NIB<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={nib} onChange={(data) => setNib(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -934,7 +1113,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">KBU (Perizinan Usaha)<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={kbu} onChange={(data) => setKbu(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -943,7 +1122,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Jenis Kegiatan (UKL-UPL)<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={jenisKegiatan} onChange={(data) => setJenisKegiatan(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -952,7 +1131,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Tahun Beroperasi<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={tahunBeroperasi} onChange={(data) => setTahunBeroperasi(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -961,7 +1140,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Status Permodalan<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={statusPermodalan} onChange={(data) => setStatusPermodalan(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -970,7 +1149,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Nilai Investasi<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={nilaiInvestasi} onChange={(data) => setNilaiInvestasi(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -979,7 +1158,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Skala Usaha<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={skalaUsaha} onChange={(data) => setSkalaUsaha(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -988,7 +1167,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Total Luas Diusahakan<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={totalLuasDiusahakan} onChange={(data) => setTotalLuasDiusahakan(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -997,7 +1176,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Dokumen Lingkungan<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={dokumenLingkungan} onChange={(data) => setDokumenLingkungan(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -1006,7 +1185,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Nomor Rekomendasi<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={nomorRekomendasi} onChange={(data) => setNomorRekomendasi(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -1015,7 +1194,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Nomor Izin Lingkungan<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={nomorIzinLingkungan} onChange={(data) => setNomorIzinLingkungan(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -1024,7 +1203,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Kapasitas Prod. Terpasang<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={kapasitasTerpasang} onChange={(data) => setKapasitasTerpasang(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -1033,7 +1212,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Kapasitas Prod. Senyatanya<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={kapasitasSenyatanya} onChange={(data) => setKapasitasSenyatanya(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -1042,7 +1221,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Bahan Baku<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={bahanBaku} onChange={(data) => setBahanBaku(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -1051,7 +1230,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Bahan Penolong<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={bahanPenolong} onChange={(data) => setBahanPenolong(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -1060,7 +1239,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Pemasaran / Distribusi<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={pemasaran} onChange={(data) => setPemasaran(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -1069,7 +1248,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Jumlah Karyawan<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={karyawan} onChange={(data) => setKaryawan(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -1078,7 +1257,7 @@ export default function RegistrasiDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">Lain-lain<span className='text-danger-600'>*</span></Typography>
                                 <TextField value={lainnya} onChange={(data) => setLainnya(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
@@ -1107,57 +1286,57 @@ export default function RegistrasiDaftarDetail() {
                                     })}
                                 </Select>
                             </Grid2>
-                            <Typography className='my-4'>
+                            <Typography className='my-4 font-bold text-2xl'>
                                 PETA MASALAH
                             </Typography>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">a. Pemeriksaan Dokumen Perizinan Lingkungan<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={petaMasalahA} onChange={(data) => setPetaMasalahA(data.target.value)} variant="outlined" className='mt-2 w-full'
+                                <TextField multiline minRows={3} value={petaMasalahA} onChange={(data) => setPetaMasalahA(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
                                         style: {
                                             borderRadius: "10px",
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">b. Pemeriksaan terhadap Pengendalian Pencemaran Air<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={petaMasalahB} onChange={(data) => setPetaMasalahB(data.target.value)} variant="outlined" className='mt-2 w-full'
+                                <TextField multiline minRows={3} value={petaMasalahB} onChange={(data) => setPetaMasalahB(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
                                         style: {
                                             borderRadius: "10px",
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">c. Pemeriksaan terhadap Pengendalian Pencemaran Udara<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={petaMasalahC} onChange={(data) => setPetaMasalahC(data.target.value)} variant="outlined" className='mt-2 w-full'
+                                <TextField multiline minRows={3} value={petaMasalahC} onChange={(data) => setPetaMasalahC(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
                                         style: {
                                             borderRadius: "10px",
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">d. Pemeriksaan terhadap Pengolahan Limbah B3<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={petaMasalahD} onChange={(data) => setPetaMasalahD(data.target.value)} variant="outlined" className='mt-2 w-full'
+                                <TextField multiline minRows={3} value={petaMasalahD} onChange={(data) => setPetaMasalahD(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
                                         style: {
                                             borderRadius: "10px",
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">e. Pemeriksaan terhadap Pengelolaan Sampah Sejenis Sampah Rumah<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={petaMasalahE} onChange={(data) => setPetaMasalahE(data.target.value)} variant="outlined" className='mt-2 w-full'
+                                <TextField multiline minRows={3} value={petaMasalahE} onChange={(data) => setPetaMasalahE(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
                                         style: {
                                             borderRadius: "10px",
                                         }
                                     }} />
                             </Grid2>
-                            <Grid2 container xs={12}>
+                            <Grid2 container xs={12} marginTop={'8px'}>
                                 <Typography className="text-base-dark w-full">f. Catatan Lainnya<span className='text-danger-600'>*</span></Typography>
-                                <TextField value={petaMasalahF} onChange={(data) => setPetaMasalahF(data.target.value)} variant="outlined" className='mt-2 w-full'
+                                <TextField multiline minRows={3} value={petaMasalahF} onChange={(data) => setPetaMasalahF(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
                                         style: {
                                             borderRadius: "10px",
@@ -1172,7 +1351,12 @@ export default function RegistrasiDaftarDetail() {
                     <CustomTabPanel value={value} index={2}>
                         <Grid2 container>
                             <Grid2 xs={12} container className='w-full justify-end'>
-                                <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => setCatatanOpen(true)}><RiAddLine /> Tambah</Button>
+                                <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => {
+                                    setJudulCatatan('')
+                                    setIsiCatatan('')
+                                    setCatatanEdit(false)
+                                    setCatatanOpen(true)
+                                }}><RiAddLine /> Tambah</Button>
                             </Grid2>
                         </Grid2>
                         <Table openFilter={openFilterTahapan} setOpenFilter={setOpenFilterTahapan} columns={columnsCatatan} data={catatan?.data ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeTahapan}></Table>

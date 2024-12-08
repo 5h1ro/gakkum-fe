@@ -10,13 +10,33 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
 import { snackbarType } from '../../../../interfaces/snackbar.interface';
 import Table from '../../../../components/organism/Table';
-import { useGetArsipQuery } from '../../../../api/register.api';
 
-function RegistrasiArsip() {
+function PascaPengawasanDaftar() {
     const navigate = useNavigate();
     const [openFilter, setOpenFilter] = useState<boolean>(false)
     const filterExclude = ['aksi']
-    const { data: arsip, isLoading: getting, isFetching } = useGetArsipQuery();
+    const data = [
+        {
+            tanggal: "01 Oktober 2024",
+            jenis: "Insidental",
+            nama: "PT ABC",
+            tahapan: "Pengawasan",
+            alamat: "Bekasi",
+            aktifitas_terakhir: '1 Oktober 2024',
+            dibuat: "Asti",
+            tim: "Anggota Tim, Anggota Tim, Anggota Tim, Anggota Tim"
+        },
+        {
+            tanggal: "02 Oktober 2024",
+            jenis: "Reguler",
+            nama: "PT HIJ",
+            tahapan: "Pembahasan",
+            alamat: "Kota Bekasi",
+            aktifitas_terakhir: '1 Oktober 2024',
+            dibuat: "Meika",
+            tim: "Anggota Tim, Anggota Tim, Anggota Tim, Anggota Tim"
+        }
+    ]
 
     const columns: MRT_ColumnDef<any>[] = [
         {
@@ -25,7 +45,8 @@ function RegistrasiArsip() {
             Cell: ({ row }) => row.index + 1,
         },
         {
-            header: 'Tanggal',
+            accessorKey: "tanggal",
+            header: 'Tanggal Mulai',
             muiTableHeadCellProps: {
                 align: 'left',
             },
@@ -36,10 +57,10 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            },
-            Cell: ({ row }) => row.original.created_at,
+            }
         },
         {
+            accessorKey: "jenis",
             header: 'Jenis',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -52,10 +73,10 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            },
-            Cell: ({ row }) => row.original.jenis_pengawasan,
+            }
         },
         {
+            accessorKey: "nama",
             header: 'Nama Usaha dan / atau Kegiatan',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -68,10 +89,10 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            },
-            Cell: ({ row }) => row.original.company.name,
+            }
         },
         {
+            accessorKey: "alamat",
             header: 'Alamat Lengkap',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -84,11 +105,11 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            },
-            Cell: ({ row }) => row.original.company.address,
+            }
         },
         {
-            header: 'Uraian Singkat',
+            accessorKey: "tahapan",
+            header: 'Taha[an',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
                 align: 'left',
@@ -100,11 +121,11 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            },
-            Cell: ({ row }) => row.original.perkiraan_masalah,
+            }
         },
         {
-            header: 'Dibuat',
+            accessorKey: "aktifitas_terakhir",
+            header: 'Aktifitas Terakhir',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
                 align: 'left',
@@ -116,12 +137,11 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
-            },
-            Cell: ({ row }) => row.original.employee.name,
+            }
         },
         {
-            accessorKey: "status",
-            header: 'Status',
+            accessorKey: "dibuat",
+            header: 'PIC',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
                 align: 'left',
@@ -133,8 +153,23 @@ function RegistrasiArsip() {
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
+            }
+        },
+        {
+            accessorKey: "tim",
+            header: 'Tim Pengawas',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
             },
-            Cell: ({ row }) => row.original.status_tahapan,
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
         },
         {
             accessorKey: "aksi",
@@ -147,7 +182,7 @@ function RegistrasiArsip() {
             },
             size: 50,
             Cell: ({ row }) => {
-                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm" onClick={() => navigate(`/register/arsip/detail/${row.original.id}`)}>
+                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
                     <RiEyeLine />
                 </IconButton>
             },
@@ -160,11 +195,11 @@ function RegistrasiArsip() {
             <Grid2 container justifyContent={'space-between'}>
                 <Grid2 container alignContent={'center'}>
                     <Typography className="text-3xl font-semibold text-base-dark mt-[-2px] md:mt-0 md:text-4xl">
-                        Registrasi &gt; Arsip
+                        Pasca Pengawasan &gt; Daftar
                     </Typography>
                 </Grid2>
                 <Grid2 container gap={2} className='w-full md:w-auto'>
-                    {/* <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => navigate('/register/daftar/tambah')}><RiAddLine /> Tambah</Button> */}
+                    <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => navigate('/pengawasan/daftar/tambah')}><RiAddLine /> Tambah</Button>
                 </Grid2>
             </Grid2>
             <Grid2 container className="hidden md:block" marginTop={4}>
@@ -180,7 +215,7 @@ function RegistrasiArsip() {
                     bgcolor: 'white'
                 }}>
                     <Stack sx={{ margin: '24px' }}>
-                        <Table openFilter={openFilter} setOpenFilter={setOpenFilter} columns={columns} data={arsip?.data ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExclude}></Table>
+                        <Table openFilter={openFilter} setOpenFilter={setOpenFilter} columns={columns} data={data ?? []} filterExclude={filterExclude}></Table>
                     </Stack>
                 </Box>
             </Grid2>
@@ -188,4 +223,4 @@ function RegistrasiArsip() {
     );
 };
 
-export default RegistrasiArsip;
+export default PascaPengawasanDaftar;
