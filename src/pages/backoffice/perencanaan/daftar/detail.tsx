@@ -12,7 +12,7 @@ import CustomTabPanel from '../../../../components/molecules/CustomTabPanel';
 import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
-import { useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetDetailPetamasalahQuery, useGetDetailRegistrasiQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
+import { useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetDetailPetamasalahQuery, useGetDetailPerencanaanQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
 import { useCreateDokumenMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation } from '../../../../api/perencanaan.api';
 
 export default function PerencanaanDaftarDetail() {
@@ -77,7 +77,7 @@ export default function PerencanaanDaftarDetail() {
     const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
     const [updateRegistrasi] = useUpdateRegistrasiMutation();
-    const { data: detailRegistrasi, isLoading: getting, isFetching } = useGetDetailRegistrasiQuery(dataID!);
+    const { data: detailRegistrasi, isLoading: getting, isFetching } = useGetDetailPerencanaanQuery(dataID!);
     useEffect(() => {
         setCompanyId(detailRegistrasi?.data?.company_id ?? '')
         setTypeId(detailRegistrasi?.data?.jenis_pengawasan ?? '')
@@ -1693,7 +1693,7 @@ export default function PerencanaanDaftarDetail() {
                                 }}><RiAddLine /> Tambah</Button>
                             </Grid2>
                         </Grid2>
-                        <Table openFilter={openFilterDokumenPerencanaan} setOpenFilter={setOpenFilterDokumenPerencanaan} columns={columnsDokumenPerencanaan} data={detailRegistrasi?.data?.dokumen_perencanaan ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeDokumenPerencanaan}></Table>
+                        <Table openFilter={openFilterDokumenPerencanaan} setOpenFilter={setOpenFilterDokumenPerencanaan} columns={columnsDokumenPerencanaan} data={detailRegistrasi?.data?.dokumen ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeDokumenPerencanaan}></Table>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={4}>
                         <Grid2 container>
