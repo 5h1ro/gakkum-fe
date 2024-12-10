@@ -77,12 +77,42 @@ export default function PerencanaanDaftarDetail() {
     const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
     const [updateRegistrasi] = useUpdateRegistrasiMutation();
-    const { data: detailRegistrasi } = useGetDetailRegistrasiQuery(dataID!);
+    const { data: detailRegistrasi, isLoading: getting, isFetching } = useGetDetailRegistrasiQuery(dataID!);
     useEffect(() => {
         setCompanyId(detailRegistrasi?.data?.company_id ?? '')
         setTypeId(detailRegistrasi?.data?.jenis_pengawasan ?? '')
         setStatusId((detailRegistrasi?.data?.status_data_id ?? 0).toString())
         setProblem(detailRegistrasi?.data?.perkiraan_masalah)
+
+        setBadanUsahaPetaMasalah(detailRegistrasi?.data?.peta_masalah?.data_id ?? '')
+        setAlamatLokasiKegiatan(detailRegistrasi?.data?.peta_masalah?.alamat_kegiatan ?? '')
+        setTitikKoordinat(detailRegistrasi?.data?.peta_masalah?.latitude ?? '')
+        setTitikKoordinat2(detailRegistrasi?.data?.peta_masalah?.longitude ?? '')
+        setNib(detailRegistrasi?.data?.peta_masalah?.nib ?? '')
+        setKbu(detailRegistrasi?.data?.peta_masalah?.kbli ?? '')
+        setJenisKegiatan(detailRegistrasi?.data?.peta_masalah?.jenis_kegiatan ?? '')
+        setTahunBeroperasi(detailRegistrasi?.data?.peta_masalah?.tahun_beroprasi ?? '')
+        setStatusPermodalan(detailRegistrasi?.data?.peta_masalah?.status_permodalan ?? '')
+        setNilaiInvestasi(detailRegistrasi?.data?.peta_masalah?.nilai_investasi ?? '')
+        setSkalaUsaha(detailRegistrasi?.data?.peta_masalah?.skala_usaha ?? '')
+        setTotalLuasDiusahakan(detailRegistrasi?.data?.peta_masalah?.luas_usaha ?? '')
+        setDokumenLingkungan(detailRegistrasi?.data?.peta_masalah?.dokumen_lingkungan ?? '')
+        setNomorRekomendasi(detailRegistrasi?.data?.peta_masalah?.nomor_rekomendasi ?? '')
+        setNomorIzinLingkungan(detailRegistrasi?.data?.peta_masalah?.nomor_izin_lingkungan ?? '')
+        setKapasitasTerpasang(detailRegistrasi?.data?.peta_masalah?.kapasitas_prod_terpasang ?? '')
+        setKapasitasSenyatanya(detailRegistrasi?.data?.peta_masalah?.kapasitas_prod_senyatanya ?? '')
+        setBahanBaku(detailRegistrasi?.data?.peta_masalah?.bahan_baku ?? '')
+        setBahanPenolong(detailRegistrasi?.data?.peta_masalah?.bahan_penolong ?? '')
+        setPemasaran(detailRegistrasi?.data?.peta_masalah?.pemasaran ?? '')
+        setKaryawan(detailRegistrasi?.data?.peta_masalah?.jumlah_karyawan ?? '')
+        setLainnya(detailRegistrasi?.data?.peta_masalah?.lain_lain ?? '')
+        setSumberData(detailRegistrasi?.data?.peta_masalah?.sumber_data_id ?? '')
+        setPetaMasalahA(detailRegistrasi?.data?.peta_masalah?.dokumen_perizinan ?? '')
+        setPetaMasalahB(detailRegistrasi?.data?.peta_masalah?.pengendalian_pencemaran ?? '')
+        setPetaMasalahC(detailRegistrasi?.data?.peta_masalah?.pengendalian_pencemaran_udara ?? '')
+        setPetaMasalahD(detailRegistrasi?.data?.peta_masalah?.pengolahan_limbah_b3 ?? '')
+        setPetaMasalahE(detailRegistrasi?.data?.peta_masalah?.pengelolaan_sampah ?? '')
+        setPetaMasalahF(detailRegistrasi?.data?.peta_masalah?.catatan_lainnya ?? '')
     }, [detailRegistrasi])
 
     const onUpdate = async () => {
@@ -363,38 +393,6 @@ export default function PerencanaanDaftarDetail() {
     const [petaMasalahE, setPetaMasalahE] = useState('')
     const [petaMasalahF, setPetaMasalahF] = useState('')
     const [updatePetamasalah, { isLoading: isLoadingPetamasalah }] = useUpdatePetamasalahMutation();
-    const { data: detailPetamasalah } = useGetDetailPetamasalahQuery(dataID!);
-    useEffect(() => {
-        setBadanUsahaPetaMasalah(detailPetamasalah?.data?.data_id ?? '')
-        setAlamatLokasiKegiatan(detailPetamasalah?.data?.alamat_kegiatan ?? '')
-        setTitikKoordinat(detailPetamasalah?.data?.latitude ?? '')
-        setTitikKoordinat2(detailPetamasalah?.data?.longitude ?? '')
-        setNib(detailPetamasalah?.data?.nib ?? '')
-        setKbu(detailPetamasalah?.data?.kbli ?? '')
-        setJenisKegiatan(detailPetamasalah?.data?.jenis_kegiatan ?? '')
-        setTahunBeroperasi(detailPetamasalah?.data?.tahun_beroprasi ?? '')
-        setStatusPermodalan(detailPetamasalah?.data?.status_permodalan ?? '')
-        setNilaiInvestasi(detailPetamasalah?.data?.nilai_investasi ?? '')
-        setSkalaUsaha(detailPetamasalah?.data?.skala_usaha ?? '')
-        setTotalLuasDiusahakan(detailPetamasalah?.data?.luas_usaha ?? '')
-        setDokumenLingkungan(detailPetamasalah?.data?.dokumen_lingkungan ?? '')
-        setNomorRekomendasi(detailPetamasalah?.data?.nomor_rekomendasi ?? '')
-        setNomorIzinLingkungan(detailPetamasalah?.data?.nomor_izin_lingkungan ?? '')
-        setKapasitasTerpasang(detailPetamasalah?.data?.kapasitas_prod_terpasang ?? '')
-        setKapasitasSenyatanya(detailPetamasalah?.data?.kapasitas_prod_senyatanya ?? '')
-        setBahanBaku(detailPetamasalah?.data?.bahan_baku ?? '')
-        setBahanPenolong(detailPetamasalah?.data?.bahan_penolong ?? '')
-        setPemasaran(detailPetamasalah?.data?.pemasaran ?? '')
-        setKaryawan(detailPetamasalah?.data?.jumlah_karyawan ?? '')
-        setLainnya(detailPetamasalah?.data?.lain_lain ?? '')
-        setSumberData(detailPetamasalah?.data?.sumber_data_id ?? '')
-        setPetaMasalahA(detailPetamasalah?.data?.dokumen_perizinan ?? '')
-        setPetaMasalahB(detailPetamasalah?.data?.pengendalian_pencemaran ?? '')
-        setPetaMasalahC(detailPetamasalah?.data?.pengendalian_pencemaran_udara ?? '')
-        setPetaMasalahD(detailPetamasalah?.data?.pengolahan_limbah_b3 ?? '')
-        setPetaMasalahE(detailPetamasalah?.data?.pengelolaan_sampah ?? '')
-        setPetaMasalahF(detailPetamasalah?.data?.catatan_lainnya ?? '')
-    }, [detailPetamasalah])
     const onUpdatePetamasalah = async () => {
         const formData = new FormData();
         formData.append('data_id', badanUsahaPetaMasalah);
@@ -428,7 +426,7 @@ export default function PerencanaanDaftarDetail() {
         formData.append('catatan_lainnya', petaMasalahF);
         try {
             await updatePetamasalah({
-                id: detailPetamasalah?.data?.id ?? '',
+                id: detailRegistrasi?.data?.peta_masalah?.id ?? '',
                 data: formData
             }).unwrap();
             navigate('/perencanaan/daftar')
@@ -440,7 +438,6 @@ export default function PerencanaanDaftarDetail() {
     const [badanUsahaCatatan, setBadanUsahaCatatan] = useState(dataID ?? '')
     const [judulCatatan, setJudulCatatan] = useState('')
     const [isiCatatan, setIsiCatatan] = useState('')
-    const { data: catatan, isLoading: getting, isFetching } = useGetCatatanQuery(badanUsahaCatatan);
     const [createCatatan, { isLoading: isLoadingCatatan }] = useCreateCatatanMutation();
     const [catatanEdit, setCatatanEdit] = useState(false)
     const [updateCatatan] = useUpdateCatatanMutation();
@@ -465,7 +462,6 @@ export default function PerencanaanDaftarDetail() {
     };
 
 
-    const { data: dokumen, isLoading: gettingDokumen, isFetching: isFetchingDokumen } = useGetDokumenQuery(dataID!);
     const { data: listDokumen } = useGetListDokumenQuery();
     const [dokumenPerencanaanOpen, setDokumenPerencanaanOpen] = useState<boolean>(false)
     const [dokumenPerencanaanEdit, setDokumenPerencanaanEdit] = useState<boolean>(false)
@@ -1697,7 +1693,7 @@ export default function PerencanaanDaftarDetail() {
                                 }}><RiAddLine /> Tambah</Button>
                             </Grid2>
                         </Grid2>
-                        <Table openFilter={openFilterDokumenPerencanaan} setOpenFilter={setOpenFilterDokumenPerencanaan} columns={columnsDokumenPerencanaan} data={dokumen?.data ?? []} state={{ isLoading: gettingDokumen || isFetchingDokumen }} filterExclude={filterExcludeDokumenPerencanaan}></Table>
+                        <Table openFilter={openFilterDokumenPerencanaan} setOpenFilter={setOpenFilterDokumenPerencanaan} columns={columnsDokumenPerencanaan} data={detailRegistrasi?.data?.dokumen_perencanaan ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeDokumenPerencanaan}></Table>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={4}>
                         <Grid2 container>
@@ -1710,7 +1706,7 @@ export default function PerencanaanDaftarDetail() {
                                 }}><RiAddLine /> Tambah</Button>
                             </Grid2>
                         </Grid2>
-                        <Table openFilter={openFilterTahapan} setOpenFilter={setOpenFilterTahapan} columns={columnsCatatan} data={catatan?.data ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeTahapan}></Table>
+                        <Table openFilter={openFilterTahapan} setOpenFilter={setOpenFilterTahapan} columns={columnsCatatan} data={detailRegistrasi?.data?.catatan ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeTahapan}></Table>
                     </CustomTabPanel>
                 </TabPanel>
             </Grid2>
