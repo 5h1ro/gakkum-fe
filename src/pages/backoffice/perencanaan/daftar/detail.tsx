@@ -277,8 +277,8 @@ export default function PerencanaanDaftarDetail() {
                 }).unwrap();
             } else {
                 await createTim(formData).unwrap();
-            }
-            navigate('/perencanaan/daftar')
+            }            
+            window.location.reload()
         } catch (error: any) {
         }
     };
@@ -429,7 +429,7 @@ export default function PerencanaanDaftarDetail() {
                 id: detailRegistrasi?.data?.peta_masalah?.id ?? '',
                 data: formData
             }).unwrap();
-            navigate('/perencanaan/daftar')
+            window.location.reload();
         } catch (error: any) {
         }
     };
@@ -455,8 +455,8 @@ export default function PerencanaanDaftarDetail() {
                 }).unwrap();
             } else {
                 await createCatatan(formData).unwrap();
-            }
-            navigate('/perencanaan/daftar')
+            }            
+            window.location.reload();
         } catch (error: any) {
         }
     };
@@ -505,7 +505,7 @@ export default function PerencanaanDaftarDetail() {
             } else {
                 await createDokumen(formData).unwrap();
             }
-            navigate('/perencanaan/daftar')
+            window.location.reload();
         } catch (error: any) {
         }
     };
