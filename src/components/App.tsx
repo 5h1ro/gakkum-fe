@@ -11,6 +11,7 @@ import PerencanaanDaftar from '../pages/backoffice/perencanaan/daftar';
 import PerencanaanReguler from '../pages/backoffice/perencanaan/reguler';
 import PerencanaanInsidental from '../pages/backoffice/perencanaan/insidental';
 import PerencanaanArsip from '../pages/backoffice/perencanaan/arsip';
+import PerencanaanArsipDetail from '../pages/backoffice/perencanaan/arsip/detail';
 import PengawasanDaftar from '../pages/backoffice/pengawasan/daftar';
 import PengawasanAgenda from '../pages/backoffice/pengawasan/agenda';
 import PerencanaanDaftarDetailA from '../pages/backoffice/perencanaan/daftar/detaila';
@@ -46,6 +47,7 @@ const App = () => {
       <Route path="/perencanaan/reguler" element={<PerencanaanReguler />} />
       <Route path="/perencanaan/insidental" element={<PerencanaanInsidental />} />
       <Route path="/perencanaan/arsip" element={<PerencanaanArsip />} />
+      <Route path="/perencanaan/arsip/detail/:dataID" element={<PerencanaanArsipDetail />} />
 
       <Route path="/pengawasan/daftar" element={<PengawasanDaftar />} />
       <Route path="/pengawasan/daftar/tambah" element={<PengawasanDaftarCreate />} />

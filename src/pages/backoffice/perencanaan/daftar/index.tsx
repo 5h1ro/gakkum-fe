@@ -25,7 +25,7 @@ function PerencanaanDaftar() {
             Cell: ({ row }) => row.index + 1,
         },
         {
-            accessorKey: "created_at",
+            accessorKey: "date_create",
             header: 'Tanggal Registrasi',
             muiTableHeadCellProps: {
                 align: 'left',
@@ -40,40 +40,25 @@ function PerencanaanDaftar() {
             }
         },
         {
+            accessorKey: "company.name",
+            Cell: ({ row }) => row.original.company.name,
+            header: 'Nama Usaha',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
             accessorKey: "jenis_pengawasan",
             header: 'Jenis',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            Cell: ({ row }) => row.original.company.name,
-            header: 'Nama Usaha dan / atau Kegiatan',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            Cell: ({ row }) => row.original.company.address,
-            header: 'Alamat Lengkap',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
                 align: 'left',
@@ -118,6 +103,7 @@ function PerencanaanDaftar() {
             }
         },
         {
+            accessorKey: "employee.name",
             Cell: ({ row }) => row.original.employee.name,
             header: 'PIC',
             muiTableHeadCellProps: {
@@ -127,22 +113,6 @@ function PerencanaanDaftar() {
                 align: "left",
             },
             filterFn: 'equals',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            Cell: ({ row }) => row.original.status_tahapan,
-            header: 'Status',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
@@ -164,6 +134,7 @@ function PerencanaanDaftar() {
                 </IconButton>
             },
             enableColumnFilter: false,
+            enableSorting: false
         },
     ];
 

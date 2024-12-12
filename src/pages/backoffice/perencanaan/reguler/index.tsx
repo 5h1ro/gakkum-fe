@@ -10,33 +10,13 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
 import { snackbarType } from '../../../../interfaces/snackbar.interface';
 import Table from '../../../../components/organism/Table';
+import { useGetPerencanaanRegulerQuery } from '../../../../api/perencanaan.api';
 
 function PerencanaanReguler() {
     const navigate = useNavigate();
     const [openFilter, setOpenFilter] = useState<boolean>(false)
+    const { data: reguler, isLoading: getting, isFetching } = useGetPerencanaanRegulerQuery();
     const filterExclude = ['aksi']
-    const data = [
-        {
-            tanggal: "01 Oktober 2024",
-            jenis: "Insidental",
-            nama: "PT ABC",
-            alamat: "Bekasi",
-            tanggal_surat: "01 Oktober 2024",
-            nomor_sp: "102/GAK/VII/2024",
-            dibuat: "Asti",
-            status: "Draft"
-        },
-        {
-            tanggal: "02 Oktober 2024",
-            jenis: "Reguler",
-            nama: "PT HIJ",
-            alamat: "Kota Bekasi",
-            tanggal_surat: "02 Oktober 2024",
-            nomor_sp: "102/GAK/VII/2024",
-            dibuat: "Meika",
-            status: "Lengkap"
-        }
-    ]
 
     const columns: MRT_ColumnDef<any>[] = [
         {
@@ -45,7 +25,7 @@ function PerencanaanReguler() {
             Cell: ({ row }) => row.index + 1,
         },
         {
-            accessorKey: "tanggal",
+            accessorKey: "date_create",
             header: 'Tanggal Registrasi',
             muiTableHeadCellProps: {
                 align: 'left',
@@ -60,40 +40,25 @@ function PerencanaanReguler() {
             }
         },
         {
-            accessorKey: "jenis",
+            accessorKey: "company.name",
+            Cell: ({ row }) => row.original.company.name,
+            header: 'Nama Usaha',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            accessorKey: "jenis_pengawasan",
             header: 'Jenis',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "nama",
-            header: 'Nama Usaha dan / atau Kegiatan',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "alamat",
-            header: 'Alamat Lengkap',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
                 align: 'left',
@@ -138,7 +103,8 @@ function PerencanaanReguler() {
             }
         },
         {
-            accessorKey: "dibuat",
+            accessorKey: "employee.name",
+            Cell: ({ row }) => row.original.employee.name,
             header: 'PIC',
             muiTableHeadCellProps: {
                 align: 'left',
@@ -147,22 +113,6 @@ function PerencanaanReguler() {
                 align: "left",
             },
             filterFn: 'equals',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "status",
-            header: 'Status',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
@@ -179,11 +129,12 @@ function PerencanaanReguler() {
             },
             size: 50,
             Cell: ({ row }) => {
-                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
+                return <IconButton onClick={() => navigate(`/perencanaan/daftar/detail/${row.original.id}`)} className="border-solid border-2 text-primary-600" aria-label="confirm">
                     <RiEyeLine />
                 </IconButton>
             },
             enableColumnFilter: false,
+            enableSorting: false
         },
     ];
 
@@ -194,9 +145,6 @@ function PerencanaanReguler() {
                     <Typography className="text-3xl font-semibold text-base-dark mt-[-2px] md:mt-0 md:text-4xl">
                         Perencanaan &gt; Reguler
                     </Typography>
-                </Grid2>
-                <Grid2 container gap={2} className='w-full md:w-auto'>
-                    <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => navigate('/register/daftar/tambah')}><RiAddLine /> Tambah</Button>
                 </Grid2>
             </Grid2>
             <Grid2 container className="hidden md:block" marginTop={4}>
@@ -212,7 +160,7 @@ function PerencanaanReguler() {
                     bgcolor: 'white'
                 }}>
                     <Stack sx={{ margin: '24px' }}>
-                        <Table openFilter={openFilter} setOpenFilter={setOpenFilter} columns={columns} data={data ?? []} filterExclude={filterExclude}></Table>
+                        <Table openFilter={openFilter} setOpenFilter={setOpenFilter} columns={columns} data={reguler?.data ?? []} filterExclude={filterExclude}></Table>
                     </Stack>
                 </Box>
             </Grid2>
