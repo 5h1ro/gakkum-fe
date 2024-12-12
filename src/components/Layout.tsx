@@ -27,7 +27,7 @@ import Typography from '@mui/material/Typography';
 //Dependencies
 import { Avatar, Grid, ListSubheader } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { RiBankCardLine, RiFileEditLine, RiFileSearchLine, RiGlobalLine, RiGroupLine, RiHistoryLine, RiHome5Line, RiListCheck2, RiLogoutCircleRLine, RiMenuFoldLine, RiMenuUnfoldLine, RiUserLine, RiUserSettingsLine } from '@remixicon/react';
+import { RiBankCardLine, RiCalendar2Fill, RiCalendarFill, RiEdit2Fill, RiEditFill, RiFile3Fill, RiFileAddFill, RiFileChartFill, RiFileEditFill, RiFileEditLine, RiFileFill, RiFileHistoryFill, RiFileLockFill, RiFileSearchLine, RiFileShield2Fill, RiFileWarningFill, RiFolderAddLine, RiFoldersFill, RiGlobalLine, RiGroupLine, RiHistoryLine, RiHome5Line, RiListCheck2, RiLogoutCircleRLine, RiMenuFoldLine, RiMenuUnfoldLine, RiUserLine, RiUserSettingsLine } from '@remixicon/react';
 import { useDispatch } from 'react-redux';
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from '../hooks/auth.hook';
@@ -101,20 +101,20 @@ const Layout = (props: props) => {
     const drawer = (
         <>
             <Grid className='px-4 pt-2' container justifyContent={'space-between'}>
-                <IconButton hidden={!sidebarCollapse}
+                <img
+                    src={`/images/${!sidebarCollapse ? 'logo' : 'logo'}.png`}
+                    alt="gakkum"
+                    loading="lazy"
+                    className={`${!sidebarCollapse ? 'h-[60px]' : 'h-[40px]'} cursor-pointer`}
+                    onClick={() => navigate('/')}
+                />
+                <IconButton className='text-center w-full' hidden={!sidebarCollapse}
                     onClick={() => {
                         setSidebarCollapse(!sidebarCollapse)
                     }}
                 >
                     <RiMenuUnfoldLine></RiMenuUnfoldLine>
                 </IconButton>
-                <img
-                    src={`/images/${!sidebarCollapse ? 'logo' : 'icon'}.png`}
-                    alt="Psitkotest"
-                    loading="lazy"
-                    className='h-[60px] cursor-pointer'
-                    onClick={() => navigate('/')}
-                />
                 <IconButton hidden={sidebarCollapse}
                     onClick={() => {
                         setSidebarCollapse(!sidebarCollapse)
@@ -165,7 +165,7 @@ const Layout = (props: props) => {
                 <ListItem>
                     <ListItemButton onClick={handleRegisterMenu} selected={currentLocation === 'register'}>
                         <ListItemIcon>
-                            <RiGlobalLine className="ml-[2px]" />
+                            <RiFileAddFill className="ml-[2px]" />
                         </ListItemIcon>
                         <ListItemText primary='Registerasi' hidden={sidebarCollapse} />
                         {openRegisterMenu || `${fullpath[1]}/${fullpath[2]}` === 'register/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'register/reguler' || `${fullpath[1]}/${fullpath[2]}` === 'register/insidental' || `${fullpath[1]}/${fullpath[2]}` === 'register/arsip' ? <ExpandLess /> : <ExpandMore />}
@@ -196,30 +196,42 @@ const Layout = (props: props) => {
                             },
                         }}>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/register/daftar" selected={`${fullpath[1]}/${fullpath[2]}` === 'register/daftar'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiFileAddFill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Daftar' />
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/register/reguler" selected={`${fullpath[1]}/${fullpath[2]}` === 'register/reguler'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiFile3Fill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Reguler' />
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/register/insidental" selected={`${fullpath[1]}/${fullpath[2]}` === 'register/insidental'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiFileLockFill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Insidental' />
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/register/arsip" selected={`${fullpath[1]}/${fullpath[2]}` === 'register/arsip'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiFoldersFill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Arsip' />
                             </ListItemButton>
                         </ListItem>
@@ -228,7 +240,7 @@ const Layout = (props: props) => {
                 <ListItem>
                     <ListItemButton onClick={handlePerencanaanMenu} selected={currentLocation === 'perencanaan'}>
                         <ListItemIcon>
-                            <RiGlobalLine className="ml-[2px]" />
+                            <RiFileEditFill className="ml-[2px]" />
                         </ListItemIcon>
                         <ListItemText primary='Perencanaan' hidden={sidebarCollapse} />
                         {openPerencanaanMenu || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/reguler' || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/insidental' || `${fullpath[1]}/${fullpath[2]}` === 'perencanaan/arsip' ? <ExpandLess /> : <ExpandMore />}
@@ -259,30 +271,42 @@ const Layout = (props: props) => {
                             },
                         }}>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/perencanaan/daftar" selected={`${fullpath[1]}/${fullpath[2]}` === 'perencanaan/daftar'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiFileAddFill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Daftar' />
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/perencanaan/reguler" selected={`${fullpath[1]}/${fullpath[2]}` === 'perencanaan/reguler'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiFile3Fill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Reguler' />
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/perencanaan/insidental" selected={`${fullpath[1]}/${fullpath[2]}` === 'perencanaan/insidental'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiFileLockFill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Insidental' />
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/perencanaan/arsip" selected={`${fullpath[1]}/${fullpath[2]}` === 'perencanaan/arsip'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiFoldersFill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Arsip' />
                             </ListItemButton>
                         </ListItem>
@@ -291,7 +315,7 @@ const Layout = (props: props) => {
                 <ListItem>
                     <ListItemButton onClick={handlePengawasanMenu} selected={currentLocation === 'pengawasan'}>
                         <ListItemIcon>
-                            <RiGlobalLine className="ml-[2px]" />
+                            <RiFileChartFill className="ml-[2px]" />
                         </ListItemIcon>
                         <ListItemText primary='Pengawasan' hidden={sidebarCollapse} />
                         {!sidebarCollapse ? openPengawasanMenu || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/agenda' || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/agenda-tim' || `${fullpath[1]}/${fullpath[2]}` === 'pengawasan/arsip' ? <ExpandLess /> : <ExpandMore /> : ''}
@@ -322,30 +346,42 @@ const Layout = (props: props) => {
                             },
                         }}>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/pengawasan/agenda" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengawasan/agenda'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiCalendarFill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Agenda' />
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-8'
                                 component={NavLink} to="/pengawasan/agenda-tim" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengawasan/agenda-tim'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiCalendar2Fill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Agenda TIM' />
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-8'
                                 component={NavLink} to="/pengawasan/daftar" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengawasan/daftar'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiFileAddFill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Daftar' />
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/pengawasan/arsip" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengawasan/arsip'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiFoldersFill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Arsip' />
                             </ListItemButton>
                         </ListItem>
@@ -354,7 +390,7 @@ const Layout = (props: props) => {
                 <ListItem>
                     <ListItemButton onClick={handlePascaPengawasanMenu} selected={currentLocation === 'pasca-pengawasan'}>
                         <ListItemIcon>
-                            <RiGlobalLine className="ml-[2px]" />
+                            <RiFileHistoryFill className="ml-[2px]" />
                         </ListItemIcon>
                         <ListItemText primary='Pasca Pengawasan' hidden={sidebarCollapse} />
                         {!sidebarCollapse ? openPascaPengawasanMenu || `${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/agenda' || `${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/agenda-tim' || `${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/arsip' ? <ExpandLess /> : <ExpandMore /> : ''}
@@ -385,30 +421,40 @@ const Layout = (props: props) => {
                             },
                         }}>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/pasca-pengawasan/agenda" selected={`${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/agenda'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiCalendarFill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Agenda' />
                             </ListItemButton>
                         </ListItem>
                         {/* <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/pasca-pengawasan/agenda-tim" selected={`${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/agenda-tim'}
                             >
                                 <ListItemText primary='Agenda TIM' />
                             </ListItemButton>
                         </ListItem> */}
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/pasca-pengawasan/daftar" selected={`${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/daftar'}
                             >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiFileAddFill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Daftar' />
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/pasca-pengawasan/arsip" selected={`${fullpath[1]}/${fullpath[2]}` === 'pasca-pengawasan/arsip'}
                             >
+
+                                {sidebarCollapse && <ListItemIcon>
+                                    <RiFileWarningFill className="-ml-16" />
+                                </ListItemIcon>}
                                 <ListItemText primary='Sanksi' />
                             </ListItemButton>
                         </ListItem>
@@ -488,14 +534,14 @@ const Layout = (props: props) => {
                             },
                         }}>
                         <ListItem hidden={auth.user_payload.role === 'participant'}>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/cms/manajemen-web" selected={`${fullpath[1]}/${fullpath[2]}` === 'cms/manajemen-web'}
                             >
                                 <ListItemText primary='Manajemen Web' />
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
-                            <ListItemButton className='ml-16'
+                            <ListItemButton className='ml-16 -mt-4'
                                 component={NavLink} to="/cms/manajemen-artikel" selected={`${fullpath[1]}/${fullpath[2]}` === 'cms/manajemen-artikel'}
                             >
                                 <ListItemText primary='Manajemen Artikel' />
