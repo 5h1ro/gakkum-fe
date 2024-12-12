@@ -156,16 +156,6 @@ const Login = () => {
                                                 onChange={(e) => setPassword(e.target.value)}
                                             />
                                         </Stack>
-                                        <Grid container>
-                                            <Grid>
-                                                <FormControlLabel control={<Checkbox defaultChecked={isChecked} onChange={() => setIsChecked(!isChecked)} />} label="Simpan Password" />
-                                            </Grid>
-                                            <Grid mdOffset="auto" alignSelf={"center"} className='cursor-pointer' onClick={() => navigate('/lupa-password')}>
-                                                <Typography className='text-primary-600' >
-                                                    Lupa Password?
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
                                         {!isLoading && (
                                             <Button type="submit" className='text-lg text-base-white bg-primary-600 hover:bg-primary-700 font-medium rounded-xl p-4' variant="contained">
                                                 Masuk

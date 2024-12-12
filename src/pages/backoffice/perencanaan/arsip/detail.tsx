@@ -13,7 +13,7 @@ import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
 import { useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetDetailPetamasalahQuery, useGetDetailPerencanaanQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
-import { useCreateDokumenMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePerencanaanArsipMutation } from '../../../../api/perencanaan.api';
+import { useCreateDokumenMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePerencanaanArsipMutation, useAktifkanDataPerencanaanMutation } from '../../../../api/perencanaan.api';
 
 export default function PerencanaanDaftarDetail() {
     const { dataID } = useParams();
@@ -72,7 +72,8 @@ export default function PerencanaanDaftarDetail() {
     const [position, setPosition] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
     const [email, setEmail] = useState('')
-    const [problem, setProblem] = useState('')
+    const [problem, setProblem] = useState('') 
+    const [alasan, setAlasan] = useState('')
     const [status, setStatus] = useState('')
     const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
@@ -83,6 +84,7 @@ export default function PerencanaanDaftarDetail() {
         setTypeId(detailRegistrasi?.data?.jenis_pengawasan ?? '')
         setStatusId((detailRegistrasi?.data?.status_data_id ?? 0).toString())
         setProblem(detailRegistrasi?.data?.perkiraan_masalah)
+        setAlasan(detailRegistrasi?.data?.alasan_arsip)
 
         setBadanUsahaPetaMasalah(detailRegistrasi?.data?.peta_masalah?.data_id ?? '')
         setAlamatLokasiKegiatan(detailRegistrasi?.data?.peta_masalah?.alamat_kegiatan ?? '')
@@ -277,8 +279,8 @@ export default function PerencanaanDaftarDetail() {
                 }).unwrap();
             } else {
                 await createTim(formData).unwrap();
-            }            
-            window.location.reload()
+            }
+            navigate('/perencanaan/daftar')
         } catch (error: any) {
         }
     };
@@ -429,7 +431,7 @@ export default function PerencanaanDaftarDetail() {
                 id: detailRegistrasi?.data?.peta_masalah?.id ?? '',
                 data: formData
             }).unwrap();
-            window.location.reload();
+            navigate('/perencanaan/daftar')
         } catch (error: any) {
         }
     };
@@ -455,8 +457,8 @@ export default function PerencanaanDaftarDetail() {
                 }).unwrap();
             } else {
                 await createCatatan(formData).unwrap();
-            }            
-            window.location.reload();
+            }
+            navigate('/perencanaan/daftar')
         } catch (error: any) {
         }
     };
@@ -505,10 +507,21 @@ export default function PerencanaanDaftarDetail() {
             } else {
                 await createDokumen(formData).unwrap();
             }
-            window.location.reload();
+            navigate('/perencanaan/daftar')
         } catch (error: any) {
         }
     };
+
+    const [createAktifkanPerencanaan] = useAktifkanDataPerencanaanMutation();
+    const onCreateAktifkanPerencanaan = async () => {
+        const formData = new FormData();
+        try {
+            await createAktifkanPerencanaan({ data: formData, id: dataID! }).unwrap();
+            navigate('/perencanaan/daftar')
+        } catch (error: any) {
+        }
+    };
+
     const columnsDokumenPerencanaan: MRT_ColumnDef<any>[] = [
         {
             accessorKey: 'id',
@@ -1311,6 +1324,15 @@ export default function PerencanaanDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
+                            <Grid2 container xs={12} mt={'1rem'}>
+                                <Typography className="text-base-dark w-full">Alasan Pengarsipan <span className='text-danger-600'>*</span></Typography>
+                                <TextField value={alasan} multiline rows={3} onChange={(data) => setAlasan(data.target.value)} variant="outlined" className='mt-2 w-full'
+                                    InputProps={{
+                                        style: {
+                                            borderRadius: "10px",
+                                        }
+                                    }} />
+                            </Grid2>
                             {/* <Grid2 container xs={12} mt={'1rem'}>
                                 <Typography className="text-base-dark w-full">Dibuat Oleh <span className='text-danger-600'>*</span></Typography>
                                 <Select
@@ -1425,14 +1447,11 @@ export default function PerencanaanDaftarDetail() {
                                         }
                                     }} />
                             </Grid2> */}
-                            <Button onClick={onUpdate} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
-                                Simpan
-                            </Button>
                             <Button
-                                onClick={() => setArsipOpen(true)}
+                                onClick={onCreateAktifkanPerencanaan}
                                 className="bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4"
                             >
-                                Arsip
+                                Aktifkan
                             </Button>
                         </Grid2>
                     </CustomTabPanel>
@@ -1733,9 +1752,6 @@ export default function PerencanaanDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Button onClick={onUpdatePetamasalah} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
-                                Simpan
-                            </Button>
                         </Grid2>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={2}>

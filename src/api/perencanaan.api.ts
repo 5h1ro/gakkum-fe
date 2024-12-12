@@ -7,6 +7,21 @@ export const api_perencanaan = api.injectEndpoints({
                 url: 'perencanaan',
             }),
         }),
+        getPerencanaanReguler: builder.query<any, void>({
+            query: () => ({
+                url: 'perencanaan/reguler',
+            }),
+        }),
+        getPerencanaanInsidental: builder.query<any, void>({
+            query: () => ({
+                url: 'perencanaan/insidental',
+            }),
+        }),
+        getPerencanaanArsip: builder.query<any, void>({
+            query: () => ({
+                url: 'perencanaan/data-arsip',
+            }),
+        }),
         getActiveEmployee: builder.query<any, void>({
             query: () => ({
                 url: 'employees',
@@ -79,11 +94,34 @@ export const api_perencanaan = api.injectEndpoints({
                 method: "DELETE",
             }),
         }),
+        createPerencanaanArsip: builder.mutation<any, { data: FormData, id: string }>({
+            query: ({ data, id }) => ({
+                url: `perencanaan/arsip/${id}`,
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        aktifkanDataPerencanaan: builder.mutation<any, { data: FormData, id: string }>({
+            query: ({ data, id }) => ({
+                url: `perencanaan/aktif/${id}`,
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
     })
 });
 
 export const {
     useGetPerencanaanQuery,
+    useGetPerencanaanRegulerQuery,
+    useGetPerencanaanInsidentalQuery,
+    useGetPerencanaanArsipQuery,
     useGetActiveEmployeeQuery,
     useCreateTimMutation,
     useGetTimQuery,
@@ -93,5 +131,7 @@ export const {
     useUpdateTimMutation,
     useDeleteTimMutation,
     useUpdateDokumenMutation,
-    useDeleteDokumenMutation
+    useDeleteDokumenMutation,
+    useCreatePerencanaanArsipMutation,
+    useAktifkanDataPerencanaanMutation
 } = api_perencanaan;
