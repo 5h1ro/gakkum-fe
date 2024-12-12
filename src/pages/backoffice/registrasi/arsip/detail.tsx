@@ -71,7 +71,8 @@ export default function RegistrasiArsipDetail() {
     const [position, setPosition] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
     const [email, setEmail] = useState('')
-    const [problem, setProblem] = useState('')
+    const [problem, setProblem] = useState('')    
+    const [alasan, setAlasan] = useState('')
     const [status, setStatus] = useState('')
     const labels = ['Data', 'Peta Masalah', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
@@ -82,6 +83,7 @@ export default function RegistrasiArsipDetail() {
         setTypeId(detailRegistrasi?.data?.jenis_pengawasan ?? '')
         setStatusId((detailRegistrasi?.data?.status_data_id ?? 0).toString())
         setProblem(detailRegistrasi?.data?.perkiraan_masalah)
+        setAlasan(detailRegistrasi?.data?.alasan_arsip)
 
         setBadanUsahaPetaMasalah(detailRegistrasi?.data?.peta_masalah?.data_id ?? '')
         setAlamatLokasiKegiatan(detailRegistrasi?.data?.peta_masalah?.alamat_kegiatan ?? '')
@@ -120,6 +122,7 @@ export default function RegistrasiArsipDetail() {
         formData.append('status_data_id', statusId);
         formData.append('company_id', companyId);
         formData.append('perkiraan_masalah', problem);
+        formData.append('alasan_arsip', alasan);
         try {
             await updateRegistrasi({
                 id: dataID!,
@@ -838,6 +841,15 @@ export default function RegistrasiArsipDetail() {
                             <Grid2 container xs={12} mt={'1rem'}>
                                 <Typography className="text-base-dark w-full">Perkiraan Masalah <span className='text-danger-600'>*</span></Typography>
                                 <TextField value={problem} multiline rows={3} onChange={(data) => setProblem(data.target.value)} variant="outlined" className='mt-2 w-full'
+                                    InputProps={{
+                                        style: {
+                                            borderRadius: "10px",
+                                        }
+                                    }} />
+                            </Grid2>
+                            <Grid2 container xs={12} mt={'1rem'}>
+                                <Typography className="text-base-dark w-full">Alasan Pengarsipan <span className='text-danger-600'>*</span></Typography>
+                                <TextField value={alasan} multiline rows={3} onChange={(data) => setAlasan(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
                                         style: {
                                             borderRadius: "10px",

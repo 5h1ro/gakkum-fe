@@ -20,123 +20,141 @@ function RegistrasiInsidental() {
 
     const columns: MRT_ColumnDef<any>[] = [
         {
-            accessorKey: 'id',
-            header: 'ID',
-            Cell: ({ row }) => row.index + 1,
+          accessorKey: "id",
+          header: "ID",
+          Cell: ({ row }) => row.index + 1,
         },
         {
-            header: 'Tanggal',
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'equals',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            },
-            Cell: ({ row }) => row.original.created_at,
+          header: "Tanggal",
+          muiTableHeadCellProps: {
+            align: "left",
+          },
+          muiTableBodyCellProps: {
+            align: "left",
+          },
+          muiFilterTextFieldProps: {
+            variant: "outlined",
+          },
+          accessorKey: "date_create",
+          Cell: ({ row }) => row.original.date_create,
         },
         {
-            header: 'Jenis',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            },
-            Cell: ({ row }) => row.original.jenis_pengawasan,
+          header: "Nama Usaha",
+          enableClickToCopy: true,
+          muiTableHeadCellProps: {
+            align: "left",
+          },
+          muiTableBodyCellProps: {
+            align: "left",
+          },
+          filterFn: "fuzzy",
+          filterVariant: "select",
+          muiFilterTextFieldProps: {
+            variant: "outlined",
+          },
+          accessorKey: "company.name",
+          Cell: ({ row }) => row.original.company.name,
         },
         {
-            header: 'Nama Usaha dan / atau Kegiatan',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            },
-            Cell: ({ row }) => row.original.company.name,
+          header: "Jenis",
+          enableClickToCopy: true,
+          muiTableHeadCellProps: {
+            align: "left",
+          },
+          muiTableBodyCellProps: {
+            align: "left",
+          },
+          filterFn: "fuzzy",
+          filterVariant: "select",
+          muiFilterTextFieldProps: {
+            variant: "outlined",
+          },      
+          accessorKey: "jenis_pengawasan",
+          Cell: ({ row }) => row.original.jenis_pengawasan,
         },
         {
-            header: 'Alamat Lengkap',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            },
-            Cell: ({ row }) => row.original.company.address,
+          header: "Perkiraan masalah",
+          enableClickToCopy: true,
+          size: 200,
+          muiTableHeadCellProps: {
+            align: "left",
+          },
+          muiTableBodyCellProps: {
+            align: "left",
+            sx: {
+                whiteSpace: "normal",
+                wordBreak: "break-word",
+                borderBottom: "none"
+                }
+          },
+          filterFn: "fuzzy",
+          filterVariant: "select",
+          muiFilterTextFieldProps: {
+            variant: "outlined",
+          },
+          accessorKey: "perkiraan_masalah",
+          Cell: ({ row }) => row.original.perkiraan_masalah,
         },
         {
-            header: 'Uraian Singkat',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            },
-            Cell: ({ row }) => row.original.perkiraan_masalah,
+          header: "Dibuat",
+          enableClickToCopy: true,
+          muiTableHeadCellProps: {
+            align: "left",
+          },
+          muiTableBodyCellProps: {
+            align: "left",
+          },
+          filterFn: "fuzzy",
+          filterVariant: "select",
+          muiFilterTextFieldProps: {
+            variant: "outlined",
+          },      
+          accessorKey: "employee.name",
+          Cell: ({ row }) => row.original.employee.name,
         },
         {
-            header: 'Dibuat',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            },
-            Cell: ({ row }) => row.original.employee.name,
+          header: "Status",
+          accessorKey: "status_tahapan",
+          enableClickToCopy: true,
+          muiTableHeadCellProps: {
+            align: "left",
+          },
+          muiTableBodyCellProps: {
+            align: "left",
+          },
+          filterFn: "fuzzy",
+          filterVariant: "select",
+          muiFilterTextFieldProps: {
+            variant: "outlined",
+          },
         },
         {
-            accessorKey: "status",
-            header: 'Status',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            },
-            Cell: ({ row }) => row.original.status_tahapan,
+          accessorKey: "aksi",
+          header: "Aksi",
+          muiTableHeadCellProps: {
+            align: "left",
+          },
+          muiTableBodyCellProps: {
+            align: "left",
+          },
+          size: 50,
+          Cell: ({ row }) => {
+            return (
+              <IconButton
+                className="border-solid border-2 text-primary-600"
+                aria-label="confirm"
+                onClick={() =>
+                  navigate(`/register/daftar/detail/${row.original.id}`)
+                }
+              >
+                <RiEyeLine />
+              </IconButton>
+            );
+          },
+          enableColumnFilter: false,
+          enableSorting: false
         },
-    ];
+      ];
 
     return (
         <Layout>
