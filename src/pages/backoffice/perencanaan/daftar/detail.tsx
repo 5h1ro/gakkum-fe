@@ -1,6 +1,6 @@
 import { Box, Button, Dialog, DialogContent, DialogContentText, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { RiAddLine, RiArrowLeftLine, RiArrowLeftRightFill, RiContactsBook2Line, RiDeleteBin2Fill, RiEdit2Fill, RiEyeLine, RiHome5Line } from '@remixicon/react';
+import { RiAddLine, RiArrowLeftLine, RiArrowLeftRightFill, RiCloseLine, RiContactsBook2Line, RiDeleteBin2Fill, RiEdit2Fill, RiEyeLine, RiHome5Line } from '@remixicon/react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
@@ -75,14 +75,14 @@ export default function PerencanaanDaftarDetail() {
     const [status, setStatus] = useState('')
 
     const [searchParams] = useSearchParams();
-      const defaultTab = Number(searchParams.get("tab")) || 0;
-      const [value, setValue] = useState(defaultTab);
-    
-      const navigateToTab = (tabIndex: number) => {
+    const defaultTab = Number(searchParams.get("tab")) || 0;
+    const [value, setValue] = useState(defaultTab);
+
+    const navigateToTab = (tabIndex: number) => {
         navigate(`/perencanaan/daftar/detail/${dataID}?tab=${tabIndex}`,);
         setValue(tabIndex);
         window.location.reload();
-      };
+    };
 
     const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
@@ -287,7 +287,7 @@ export default function PerencanaanDaftarDetail() {
                 }).unwrap();
             } else {
                 await createTim(formData).unwrap();
-            }            
+            }
             navigateToTab(2)
         } catch (error: any) {
         }
@@ -465,7 +465,7 @@ export default function PerencanaanDaftarDetail() {
                 }).unwrap();
             } else {
                 await createCatatan(formData).unwrap();
-            }            
+            }
             navigateToTab(4)
         } catch (error: any) {
         }
@@ -478,9 +478,9 @@ export default function PerencanaanDaftarDetail() {
         const formData = new FormData();
         formData.append("alasan_arsip", alasanArsip);
         try {
-        await createArsip({ data: formData, id: dataID! }).unwrap();
-        navigate("/perencanaan/daftar");
-        } catch (error: any) {}
+            await createArsip({ data: formData, id: dataID! }).unwrap();
+            navigate("/perencanaan/daftar");
+        } catch (error: any) { }
     };
 
 
@@ -640,59 +640,71 @@ export default function PerencanaanDaftarDetail() {
     ];
     return (
         <Layout>
-                <Dialog
-            open={arsipOpen}
-            onClose={() => setArsipOpen(false)}
-            maxWidth={"lg"}
-            sx={{
-            ".MuiPaper-root": {
-                borderRadius: "16px",
-                "@media(minWidth: 960px)": {
-                paddingX: "64px",
-                },
-            },
-            }}
-        >
-            <DialogContent>
-            <DialogContentText
-                id="alert-dialog-description"
-                className="justify-center align-center text-center md:pt-16 w-full md:w-[622px]"
-            >
-                <Typography className="text-[24px] md:text-[32px] font-semibold text-base-dark">
-                Arsip
-                </Typography>
-            </DialogContentText>
-            <Grid2 container>
-                <Typography className="text-base-dark w-full mt-6">
-                Alasan <span className="text-danger-600">*</span>
-                </Typography>
-                <TextField
-                multiline
-                minRows={3}
-                value={alasanArsip}
-                onChange={(data) => setAlasanArsip(data.target.value)}
-                variant="outlined"
-                className="mt-2 w-full"
-                InputProps={{
-                    style: {
-                    borderRadius: "10px",
+            <Dialog
+                open={arsipOpen}
+                onClose={() => setArsipOpen(false)}
+                maxWidth={"lg"}
+                sx={{
+                    ".MuiPaper-root": {
+                        borderRadius: "16px",
+                        "@media(minWidth: 960px)": {
+                            paddingX: "64px",
+                        },
                     },
                 }}
-                />
-            </Grid2>
-            <Grid2
-                container
-                className="flex gap-2 mt-6 justify-center pb-8 md:pb-16"
             >
-                <Button
-                onClick={onCreateArsip}
-                className="bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white py-4 px-6 rounded-xl gap-3"
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setArsipOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
                 >
-                Simpan
-                </Button>
-            </Grid2>
-            </DialogContent>
-        </Dialog>
+                    <RiCloseLine />
+                </IconButton>
+                <DialogContent>
+                    <DialogContentText
+                        id="alert-dialog-description"
+                        className="justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8"
+                    >
+                        <Typography className="text-[24px] md:text-[32px] font-semibold text-base-dark">
+                            Arsip
+                        </Typography>
+                    </DialogContentText>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">
+                            Alasan <span className="text-danger-600">*</span>
+                        </Typography>
+                        <TextField
+                            multiline
+                            minRows={3}
+                            value={alasanArsip}
+                            onChange={(data) => setAlasanArsip(data.target.value)}
+                            variant="outlined"
+                            className="mt-2 w-full"
+                            InputProps={{
+                                style: {
+                                    borderRadius: "10px",
+                                },
+                            }}
+                        />
+                    </Grid2>
+                    <Grid2
+                        container
+                        className="flex gap-2 mt-6 justify-center pb-8 md:pb-16"
+                    >
+                        <Button
+                            onClick={onCreateArsip}
+                            className="bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white py-4 px-6 rounded-xl gap-3"
+                        >
+                            Simpan
+                        </Button>
+                    </Grid2>
+                </DialogContent>
+            </Dialog>
             <Dialog
                 open={dokumenRegistrasiOpen}
                 onClose={() => setDokumenRegistrasiOpen(false)}
@@ -706,8 +718,20 @@ export default function PerencanaanDaftarDetail() {
                     }
                 }}
             >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setDokumenRegistrasiOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
                             Tambah Dokumen
                         </Typography>
@@ -783,8 +807,20 @@ export default function PerencanaanDaftarDetail() {
                     }
                 }}
             >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setDokumenPerusahaanOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
                             Tambah Dokumen
                         </Typography>
@@ -860,8 +896,20 @@ export default function PerencanaanDaftarDetail() {
                     }
                 }}
             >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setDokumenPengawasanOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
                             Tambah Dokumen
                         </Typography>
@@ -937,8 +985,20 @@ export default function PerencanaanDaftarDetail() {
                     }
                 }}
             >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setDokumenPascaPengawasanOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
                             Tambah Dokumen
                         </Typography>
@@ -1014,8 +1074,20 @@ export default function PerencanaanDaftarDetail() {
                     }
                 }}
             >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setCatatanOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
                             Tambah Catatan
                         </Typography>
@@ -1078,8 +1150,20 @@ export default function PerencanaanDaftarDetail() {
                     }
                 }}
             >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setTimOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
                             Tambah Data TIM
                         </Typography>
@@ -1153,8 +1237,20 @@ export default function PerencanaanDaftarDetail() {
                     }
                 }}
             >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setDokumenPerencanaanOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
                             Tambah Dokumen
                         </Typography>

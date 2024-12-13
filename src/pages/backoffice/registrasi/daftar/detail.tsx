@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogContentText,
+  DialogTitle,
   IconButton,
   MenuItem,
   Select,
@@ -16,6 +17,7 @@ import {
   RiAddLine,
   RiArrowLeftLine,
   RiArrowLeftRightFill,
+  RiCloseLine,
   RiContactsBook2Line,
   RiDeleteBin2Fill,
   RiEdit2Fill,
@@ -232,7 +234,7 @@ export default function RegistrasiDaftarDetail() {
         data: formData,
       }).unwrap();
       navigate("/register/daftar");
-    } catch (error: any) {}
+    } catch (error: any) { }
   };
 
   const [openFilterTahapan, setOpenFilterTahapan] = useState<boolean>(false);
@@ -393,7 +395,7 @@ export default function RegistrasiDaftarDetail() {
       }).unwrap();
       navigateToTab(1);
       alert("Peta Masalah Berhasil Diperbarui!")
-    } catch (error: any) {}
+    } catch (error: any) { }
   };
 
   const [catatanOpen, setCatatanOpen] = useState(false);
@@ -421,7 +423,7 @@ export default function RegistrasiDaftarDetail() {
         await createCatatan(formData).unwrap();
       }
       navigateToTab(2);
-    } catch (error: any) {}
+    } catch (error: any) { }
   };
 
   const [arsipOpen, setArsipOpen] = useState(false);
@@ -433,7 +435,7 @@ export default function RegistrasiDaftarDetail() {
     try {
       await createArsip({ data: formData, id: dataID! }).unwrap();
       navigate("/register/daftar");
-    } catch (error: any) {}
+    } catch (error: any) { }
   };
   const [eskalasiOpen, setEskalasiOpen] = useState(false);
   const [nomorSPEskalasi, setNomorSPEskalasi] = useState("");
@@ -448,7 +450,7 @@ export default function RegistrasiDaftarDetail() {
     try {
       await createEskalasi({ data: formData, id: dataID! }).unwrap();
       navigate("/register/daftar");
-    } catch (error: any) {}
+    } catch (error: any) { }
   };
 
   return (
@@ -466,10 +468,22 @@ export default function RegistrasiDaftarDetail() {
           },
         }}
       >
+        <IconButton
+          aria-label="close"
+          onClick={() => setDokumenRegistrasiOpen(false)}
+          sx={(theme) => ({
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: theme.palette.grey[500],
+          })}
+        >
+          <RiCloseLine />
+        </IconButton>
         <DialogContent>
           <DialogContentText
             id="alert-dialog-description"
-            className="justify-center align-center text-center md:pt-16 w-full md:w-[622px]"
+            className="justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8"
           >
             <Typography className="text-[24px] md:text-[32px] font-semibold text-base-dark">
               Tambah Dokumen
@@ -565,10 +579,22 @@ export default function RegistrasiDaftarDetail() {
           },
         }}
       >
+        <IconButton
+          aria-label="close"
+          onClick={() => setDokumenPerusahaanOpen(false)}
+          sx={(theme) => ({
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: theme.palette.grey[500],
+          })}
+        >
+          <RiCloseLine />
+        </IconButton>
         <DialogContent>
           <DialogContentText
             id="alert-dialog-description"
-            className="justify-center align-center text-center md:pt-16 w-full md:w-[622px]"
+            className="justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8"
           >
             <Typography className="text-[24px] md:text-[32px] font-semibold text-base-dark">
               Tambah Dokumen
@@ -664,10 +690,22 @@ export default function RegistrasiDaftarDetail() {
           },
         }}
       >
+        <IconButton
+          aria-label="close"
+          onClick={() => setDokumenPengawasanOpen(false)}
+          sx={(theme) => ({
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: theme.palette.grey[500],
+          })}
+        >
+          <RiCloseLine />
+        </IconButton>
         <DialogContent>
           <DialogContentText
             id="alert-dialog-description"
-            className="justify-center align-center text-center md:pt-16 w-full md:w-[622px]"
+            className="justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8"
           >
             <Typography className="text-[24px] md:text-[32px] font-semibold text-base-dark">
               Tambah Dokumen
@@ -764,6 +802,18 @@ export default function RegistrasiDaftarDetail() {
         }}
       >
         <DialogContent>
+          <IconButton
+            aria-label="close"
+            onClick={() => setDokumenPascaPengawasanOpen(false)}
+            sx={(theme) => ({
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: theme.palette.grey[500],
+            })}
+          >
+            <RiCloseLine />
+          </IconButton>
           <DialogContentText
             id="alert-dialog-description"
             className="justify-center align-center text-center md:pt-16 w-full md:w-[622px]"
@@ -862,10 +912,22 @@ export default function RegistrasiDaftarDetail() {
           },
         }}
       >
+        <IconButton
+          aria-label="close"
+          onClick={() => setCatatanOpen(false)}
+          sx={(theme) => ({
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: theme.palette.grey[500],
+          })}
+        >
+          <RiCloseLine />
+        </IconButton>
         <DialogContent>
           <DialogContentText
             id="alert-dialog-description"
-            className="justify-center align-center text-center md:pt-16 w-full md:w-[622px]"
+            className="justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8"
           >
             <Typography className="text-[24px] md:text-[32px] font-semibold text-base-dark">
               Catatan
@@ -951,10 +1013,22 @@ export default function RegistrasiDaftarDetail() {
           },
         }}
       >
+        <IconButton
+          aria-label="close"
+          onClick={() => setArsipOpen(false)}
+          sx={(theme) => ({
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: theme.palette.grey[500],
+          })}
+        >
+          <RiCloseLine />
+        </IconButton>
         <DialogContent>
           <DialogContentText
             id="alert-dialog-description"
-            className="justify-center align-center text-center md:pt-16 w-full md:w-[622px]"
+            className="justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8"
           >
             <Typography className="text-[24px] md:text-[32px] font-semibold text-base-dark">
               Arsip
@@ -1004,10 +1078,22 @@ export default function RegistrasiDaftarDetail() {
           },
         }}
       >
+        <IconButton
+          aria-label="close"
+          onClick={() => setEskalasiOpen(false)}
+          sx={(theme) => ({
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: theme.palette.grey[500],
+          })}
+        >
+          <RiCloseLine />
+        </IconButton>
         <DialogContent>
           <DialogContentText
             id="alert-dialog-description"
-            className="justify-center align-center text-center md:pt-16 w-full md:w-[622px]"
+            className="justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8"
           >
             <Typography className="text-[24px] md:text-[32px] font-semibold text-base-dark">
               Eskalasi

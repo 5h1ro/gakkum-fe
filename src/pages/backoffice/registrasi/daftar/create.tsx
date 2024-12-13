@@ -1,6 +1,6 @@
 import { Box, Button, Dialog, DialogContent, DialogContentText, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { RiAddLine, RiArrowLeftLine, RiArrowLeftRightFill, RiContactsBook2Line, RiEyeLine, RiHome5Line } from '@remixicon/react';
+import { RiAddLine, RiArrowLeftLine, RiArrowLeftRightFill, RiCloseLine, RiContactsBook2Line, RiEyeLine, RiHome5Line } from '@remixicon/react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
@@ -237,8 +237,20 @@ export default function RegistrasiDaftarCreate() {
                     }
                 }}
             >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setDokumenRegistrasiOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
                             Tambah Dokumen
                         </Typography>
@@ -314,8 +326,20 @@ export default function RegistrasiDaftarCreate() {
                     }
                 }}
             >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setDokumenPerusahaanOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
                             Tambah Dokumen
                         </Typography>
@@ -391,8 +415,20 @@ export default function RegistrasiDaftarCreate() {
                     }
                 }}
             >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setDokumenPengawasanOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
                             Tambah Dokumen
                         </Typography>
@@ -468,8 +504,20 @@ export default function RegistrasiDaftarCreate() {
                     }
                 }}
             >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setDokumenPascaPengawasanOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
                             Tambah Dokumen
                         </Typography>
@@ -545,8 +593,20 @@ export default function RegistrasiDaftarCreate() {
                     }
                 }}
             >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setCatatanOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px]'>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
                         <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
                             Tambah Catatan
                         </Typography>
