@@ -8,6 +8,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { useAuth } from "../../../hooks/auth.hook";
 import Layout from "../../../components/Layout";
 import Card1 from "../../../components/molecules/Card1";
+import { RiFileAddFill, RiFileEditFill, RiFileChartFill, RiFileHistoryFill }  from '@remixicon/react';
 import { useGetDashboardQuery } from '../../../api/dashboard.api';
 
 function Dashboard() {
@@ -21,25 +22,25 @@ function Dashboard() {
         {
             name: 'Registrasi',
             total: 0,
-            image: '/icons/paper.svg',
+            image: '/icons/RiFileAddFill.svg',
             hidden: false
         },
         {
             name: 'Perencanaan',
             total: 0,
-            image: '/icons/paper.svg',
+            image: '/icons/RiFileEditFill.svg',
             hidden: false
         },
         {
             name: 'Pengawasan',
             total: 0,
-            image: '/icons/paper.svg',
+            image: '/icons/RiFileChartFill.svg',
             hidden: false
         },
         {
             name: 'Pasca Pengawasan',
             total: 0,
-            image: '/icons/paper.svg',
+            image: '/icons/RiFileHistoryFill.svg',
             hidden: false
         },
     ];

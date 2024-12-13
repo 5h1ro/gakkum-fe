@@ -23,8 +23,8 @@ import {
   RiEyeLine,
   RiHome5Line,
 } from "@remixicon/react";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState, SyntheticEvent } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Layout from "../../../../components/Layout";
 import {
   LocalizationProvider,
@@ -104,7 +104,6 @@ export default function RegistrasiDaftarDetail() {
   const [berlakuDPP, setBerlakuDPP] = useState<Moment | null>(null);
 
   const [documentValue, setDocumentValue] = useState(0);
-  const [value, setValue] = useState(0);
   const [nomor, setNomor] = useState("");
   const [date, setDate] = useState<Moment | null>(null);
   const [typeId, setTypeId] = useState("");
@@ -121,6 +120,17 @@ export default function RegistrasiDaftarDetail() {
   const [email, setEmail] = useState("");
   const [problem, setProblem] = useState("");
   const [status, setStatus] = useState("");
+
+  const [searchParams] = useSearchParams();
+  const defaultTab = Number(searchParams.get("tab")) || 0;
+  const [value, setValue] = useState(defaultTab);
+
+  const navigateToTab = (tabIndex: number) => {
+    navigate(`/register/daftar/detail/${dataID}?tab=${tabIndex}`,);
+    setValue(tabIndex);
+    window.location.reload();
+  };
+
   const labels = ["Data", "Peta Masalah", "Catatan"];
   const documentLabels = [
     "Registrasi",
@@ -295,7 +305,7 @@ export default function RegistrasiDaftarDetail() {
               aria-label="delete"
               onClick={async () => {
                 await deleteCatatan(row.original.id).unwrap();
-                window.location.reload();
+                navigateToTab(2);
               }}
             >
               <RiDeleteBin2Fill />
@@ -381,7 +391,8 @@ export default function RegistrasiDaftarDetail() {
         id: detailRegistrasi?.data?.peta_masalah?.id ?? "",
         data: formData,
       }).unwrap();
-      window.location.reload();
+      navigateToTab(1);
+      alert("Peta Masalah Berhasil Diperbarui!")
     } catch (error: any) {}
   };
 
@@ -409,7 +420,7 @@ export default function RegistrasiDaftarDetail() {
       } else {
         await createCatatan(formData).unwrap();
       }
-      window.location.reload();
+      navigateToTab(2);
     } catch (error: any) {}
   };
 

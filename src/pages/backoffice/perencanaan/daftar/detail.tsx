@@ -2,7 +2,7 @@ import { Box, Button, Dialog, DialogContent, DialogContentText, IconButton, Menu
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { RiAddLine, RiArrowLeftLine, RiArrowLeftRightFill, RiContactsBook2Line, RiDeleteBin2Fill, RiEdit2Fill, RiEyeLine, RiHome5Line } from '@remixicon/react';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
 import { LocalizationProvider, MobileDateTimePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -57,7 +57,6 @@ export default function PerencanaanDaftarDetail() {
     const [berlakuDPP, setBerlakuDPP] = useState<Moment | null>(null)
 
     const [documentValue, setDocumentValue] = useState(0)
-    const [value, setValue] = useState(0)
     const [nomor, setNomor] = useState('')
     const [date, setDate] = useState<Moment | null>(null)
     const [typeId, setTypeId] = useState('')
@@ -74,6 +73,17 @@ export default function PerencanaanDaftarDetail() {
     const [email, setEmail] = useState('')
     const [problem, setProblem] = useState('')
     const [status, setStatus] = useState('')
+
+    const [searchParams] = useSearchParams();
+      const defaultTab = Number(searchParams.get("tab")) || 0;
+      const [value, setValue] = useState(defaultTab);
+    
+      const navigateToTab = (tabIndex: number) => {
+        navigate(`/perencanaan/daftar/detail/${dataID}?tab=${tabIndex}`,);
+        setValue(tabIndex);
+        window.location.reload();
+      };
+
     const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
     const [updateRegistrasi] = useUpdateRegistrasiMutation();
@@ -248,7 +258,7 @@ export default function PerencanaanDaftarDetail() {
                     </IconButton>
                     <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
                         await deleteTim(row.original.id).unwrap();
-                        window.location.reload();
+                        navigateToTab(2)
                     }}>
                         <RiDeleteBin2Fill />
                     </IconButton>
@@ -278,7 +288,7 @@ export default function PerencanaanDaftarDetail() {
             } else {
                 await createTim(formData).unwrap();
             }            
-            window.location.reload()
+            navigateToTab(2)
         } catch (error: any) {
         }
     };
@@ -346,7 +356,7 @@ export default function PerencanaanDaftarDetail() {
                     </IconButton>
                     <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
                         await deleteCatatan(row.original.id).unwrap();
-                        window.location.reload();
+                        navigateToTab(4)
                     }}>
                         <RiDeleteBin2Fill />
                     </IconButton>
@@ -429,7 +439,7 @@ export default function PerencanaanDaftarDetail() {
                 id: detailRegistrasi?.data?.peta_masalah?.id ?? '',
                 data: formData
             }).unwrap();
-            window.location.reload();
+            navigateToTab(1)
         } catch (error: any) {
         }
     };
@@ -456,7 +466,7 @@ export default function PerencanaanDaftarDetail() {
             } else {
                 await createCatatan(formData).unwrap();
             }            
-            window.location.reload();
+            navigateToTab(4)
         } catch (error: any) {
         }
     };
@@ -505,7 +515,7 @@ export default function PerencanaanDaftarDetail() {
             } else {
                 await createDokumen(formData).unwrap();
             }
-            window.location.reload();
+            navigateToTab(3)
         } catch (error: any) {
         }
     };
@@ -619,7 +629,7 @@ export default function PerencanaanDaftarDetail() {
                     </IconButton>
                     <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
                         await deleteDokumen(row.original.id).unwrap();
-                        window.location.reload();
+                        navigateToTab(3)
                     }}>
                         <RiDeleteBin2Fill />
                     </IconButton>
