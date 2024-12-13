@@ -167,7 +167,7 @@ const Layout = (props: props) => {
                         <ListItemIcon>
                             <RiFileAddFill className="ml-[2px]" />
                         </ListItemIcon>
-                        <ListItemText primary='Registerasi' hidden={sidebarCollapse} />
+                        <ListItemText primary='Registrasi' hidden={sidebarCollapse} />
                         {openRegisterMenu || `${fullpath[1]}/${fullpath[2]}` === 'register/daftar' || `${fullpath[1]}/${fullpath[2]}` === 'register/reguler' || `${fullpath[1]}/${fullpath[2]}` === 'register/insidental' || `${fullpath[1]}/${fullpath[2]}` === 'register/arsip' ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
                 </ListItem>

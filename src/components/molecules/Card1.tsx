@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Paper, Typography } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { useAuth } from "../../hooks/auth.hook";
-import { RemixiconComponentType, RiBankCardLine, RiCoinLine, RiEdit2Line, RiEditBoxLine, RiEditLine, RiErrorWarningLine, RiFilePaperFill, RiGlobalLine } from "@remixicon/react";
+import { RemixiconComponentType, RiBankCardLine, RiCoinLine, RiEdit2Line, RiEditBoxLine, RiEditLine, RiErrorWarningLine, RiFilePaperFill, RiFileAddFill, RiFileEditFill, RiFileChartFill, RiFileHistoryFill, RiGlobalLine } from "@remixicon/react";
 
 interface Card1Props {
     name: string;
@@ -25,7 +25,7 @@ function Card1(props: Card1Props) {
             <Item>
                 <Grid2 className="h-[60px] w-[60px] bg-[#EBFFFD] rounded-full flex">
                     {
-                        image === '/icons/paper.svg' ? <RiFilePaperFill className={className} /> : image === '/icons/wallet.svg' ? <RiCoinLine className={className} /> : image === '/icons/warning.svg' ? <RiErrorWarningLine className={className} /> : image === '/icons/bank-card.svg' ? <RiBankCardLine className={className} /> : <RiGlobalLine className={className} />
+                        image === '/icons/paper.svg' ? <RiFilePaperFill className={className} /> : image === '/icons/wallet.svg' ? <RiCoinLine className={className} /> : image === '/icons/warning.svg' ? <RiErrorWarningLine className={className} /> : image === '/icons/bank-card.svg' ? <RiBankCardLine className={className} /> : image === '/icons/RiFileAddFill.svg' ? <RiFileAddFill className={className} /> : image === '/icons/RiFileEditFill.svg' ? <RiFileEditFill className={className} /> : image === '/icons/RiFileChartFill.svg' ? <RiFileChartFill className={className} /> : image === '/icons/RiFileHistoryFill.svg' ? <RiFileHistoryFill className={className} /> : <RiGlobalLine className={className} />
                     }
                 </Grid2>
                 <Typography fontSize={16} fontWeight={400} className="text-general-500" marginTop={'0.5rem'}>
