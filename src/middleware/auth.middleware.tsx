@@ -6,7 +6,7 @@ export const AuthMiddleware = () => {
     return (auth.accessToken) ? (
         <Outlet />
     ) : (
-        <Navigate to="/login" replace={true} />
+        <Navigate to="/" replace={true} />
     )
 }
 export const LoginMiddleware = () => {
