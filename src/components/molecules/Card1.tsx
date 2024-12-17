@@ -19,11 +19,11 @@ function Card1(props: Card1Props) {
         height: '179px',
         padding: '1.5rem',
     }));
-    const className = 'text-[#01B3C1] mx-auto my-auto w-full h-full'
+    const className = 'text-primary-500 mx-auto my-auto w-full h-full'
     return (
         <Grid2 xs={12} md={auth.user_payload.role === 'participant' ? 6 : 3} hidden={hidden}>
             <Item>
-                <Grid2 className="h-[60px] w-[60px] bg-[#EBFFFD] rounded-full flex">
+                <Grid2 className="h-[60px] w-[60px] bg-[#ebffec] rounded-full flex">
                     {
                         image === '/icons/paper.svg' ? <RiFilePaperFill className={className} /> : image === '/icons/wallet.svg' ? <RiCoinLine className={className} /> : image === '/icons/warning.svg' ? <RiErrorWarningLine className={className} /> : image === '/icons/bank-card.svg' ? <RiBankCardLine className={className} /> : image === '/icons/RiFileAddFill.svg' ? <RiFileAddFill className={className} /> : image === '/icons/RiFileEditFill.svg' ? <RiFileEditFill className={className} /> : image === '/icons/RiFileChartFill.svg' ? <RiFileChartFill className={className} /> : image === '/icons/RiFileHistoryFill.svg' ? <RiFileHistoryFill className={className} /> : <RiGlobalLine className={className} />
                     }

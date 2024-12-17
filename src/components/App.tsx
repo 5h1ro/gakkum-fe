@@ -28,6 +28,7 @@ import PascaPengawasanAgendaTim from '../pages/backoffice/pasca_pengawasan/agend
 import PascaPengawasanArsip from '../pages/backoffice/pasca_pengawasan/sanksi';
 import Setting from '../pages/backoffice/setting';
 import { AuthMiddleware, GuestMiddleware, LoginMiddleware } from '../middleware/auth.middleware';
+import Profil from '../pages/backoffice/profil';
 
 const App = () => {
   return (
@@ -67,7 +68,7 @@ const App = () => {
         <Route path="/pasca-pengawasan/agenda-tim" element={<PascaPengawasanAgendaTim />} />
         <Route path="/pasca-pengawasan/arsip" element={<PascaPengawasanArsip />} />
 
-        <Route path="/pengaturan" element={<Setting />} />
+        <Route path="/pengaturan" element={<Profil />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

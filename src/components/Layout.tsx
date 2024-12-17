@@ -356,7 +356,7 @@ const Layout = (props: props) => {
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
-                            <ListItemButton className='ml-16 -mt-8'
+                            <ListItemButton className={`ml-16 ${sidebarCollapse ? '-mt-8' : '-mt-4'}`}
                                 component={NavLink} to="/pengawasan/agenda-tim" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengawasan/agenda-tim'}
                             >
                                 {sidebarCollapse && <ListItemIcon>
@@ -366,7 +366,7 @@ const Layout = (props: props) => {
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
-                            <ListItemButton className='ml-16 -mt-8'
+                            <ListItemButton className={`ml-16 ${sidebarCollapse ? '-mt-8' : '-mt-4'}`}
                                 component={NavLink} to="/pengawasan/daftar" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengawasan/daftar'}
                             >
                                 {sidebarCollapse && <ListItemIcon>
