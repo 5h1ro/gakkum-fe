@@ -1,25 +1,25 @@
 import { api } from "./base.api";
 
-export const api_perencanaan = api.injectEndpoints({
+export const api_pasca_pengawasan = api.injectEndpoints({
     endpoints: (builder) => ({
-        getPerencanaan: builder.query<any, void>({
+        getPascaPengawasan: builder.query<any, void>({
             query: () => ({
-                url: 'perencanaan',
+                url: 'pasca-pengawasan',
             }),
         }),
-        getPerencanaanReguler: builder.query<any, void>({
+        getPascaPengawasanReguler: builder.query<any, void>({
             query: () => ({
-                url: 'perencanaan/reguler',
+                url: 'pasca-pengawasan/reguler',
             }),
         }),
-        getPerencanaanInsidental: builder.query<any, void>({
+        getPascaPengawasanInsidental: builder.query<any, void>({
             query: () => ({
-                url: 'perencanaan/insidental',
+                url: 'pasca-pengawasan/insidental',
             }),
         }),
-        getPerencanaanArsip: builder.query<any, void>({
+        getPascaPengawasanArsip: builder.query<any, void>({
             query: () => ({
-                url: 'perencanaan/data-arsip',
+                url: 'pasca-pengawasan/data-arsip',
             }),
         }),
         getActiveEmployee: builder.query<any, void>({
@@ -60,17 +60,17 @@ export const api_perencanaan = api.injectEndpoints({
         }),
         getDokumen: builder.query<any, string>({
             query: (dataID: string) => ({
-                url: `perencanaan/dokumen/data/${dataID}`,
+                url: `pasca-pengawasan/dokumen/data/${dataID}`,
             }),
         }),
         getListDokumen: builder.query<any, void>({
             query: () => ({
-                url: `dokumen-perencanaan`,
+                url: `dokumen-pasca-pengawasan`,
             }),
         }),
-        createDokumen: builder.mutation<any, any>({
+        createDokumenPascaPengawasan: builder.mutation<any, any>({
             query: (credentials: FormData) => ({
-                url: `perencanaan/dokumen/create`,
+                url: `pasca-pengawasan/dokumen/create`,
                 method: "POST",
                 body: credentials,
             }),
@@ -80,7 +80,7 @@ export const api_perencanaan = api.injectEndpoints({
         }),
         updateDokumen: builder.mutation<any, any>({
             query: ({ data, id }) => ({
-                url: `perencanaan/dokumen/update/${id}`,
+                url: `pasca-pengawasan/dokumen/update/${id}`,
                 method: "POST",
                 body: data,
             }),
@@ -90,13 +90,13 @@ export const api_perencanaan = api.injectEndpoints({
         }),
         deleteDokumen: builder.mutation<any, string>({
             query: (id: string) => ({
-                url: `perencanaan/dokumen/delete/${id}`,
+                url: `pasca-pengawasan/dokumen/delete/${id}`,
                 method: "DELETE",
             }),
         }),
-        createPerencanaanArsip: builder.mutation<any, { data: FormData, id: string }>({
+        createPascaPengawasanArsip: builder.mutation<any, { data: FormData, id: string }>({
             query: ({ data, id }) => ({
-                url: `perencanaan/arsip/${id}`,
+                url: `pasca-pengawasan/arsip/${id}`,
                 method: "POST",
                 body: data,
             }),
@@ -104,9 +104,9 @@ export const api_perencanaan = api.injectEndpoints({
                 return response;
             },
         }),
-        aktifkanDataPerencanaan: builder.mutation<any, { data: FormData, id: string }>({
+        aktifkanDataPascaPengawasan: builder.mutation<any, { data: FormData, id: string }>({
             query: ({ data, id }) => ({
-                url: `perencanaan/aktif/${id}`,
+                url: `pasca-pengawasan/aktif/${id}`,
                 method: "POST",
                 body: data,
             }),
@@ -114,9 +114,9 @@ export const api_perencanaan = api.injectEndpoints({
                 return response;
             },
         }),
-        eskalasiPerencanaan: builder.mutation<any, { data: FormData, id: string }>({
+        eskalasiPascaPengawasan: builder.mutation<any, { data: FormData, id: string }>({
             query: ({ data, id }) => ({
-                url: `perencanaan/eskalasi/${id}`,
+                url: `pasca-pengawasan/eskalasi/${id}`,
                 method: "POST",
                 body: data,
             }),
@@ -128,21 +128,21 @@ export const api_perencanaan = api.injectEndpoints({
 });
 
 export const {
-    useGetPerencanaanQuery,
-    useGetPerencanaanRegulerQuery,
-    useGetPerencanaanInsidentalQuery,
-    useGetPerencanaanArsipQuery,
+    useGetPascaPengawasanQuery,
+    useGetPascaPengawasanRegulerQuery,
+    useGetPascaPengawasanInsidentalQuery,
+    useGetPascaPengawasanArsipQuery,
     useGetActiveEmployeeQuery,
     useCreateTimMutation,
     useGetTimQuery,
     useGetDokumenQuery,
     useGetListDokumenQuery,
-    useCreateDokumenMutation,
+    useCreateDokumenPascaPengawasanMutation,
     useUpdateTimMutation,
     useDeleteTimMutation,
     useUpdateDokumenMutation,
     useDeleteDokumenMutation,
-    useCreatePerencanaanArsipMutation,
-    useAktifkanDataPerencanaanMutation,
-    useEskalasiPerencanaanMutation
-} = api_perencanaan;
+    useCreatePascaPengawasanArsipMutation,
+    useAktifkanDataPascaPengawasanMutation,
+    useEskalasiPascaPengawasanMutation
+} = api_pasca_pengawasan;

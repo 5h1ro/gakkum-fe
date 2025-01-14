@@ -10,33 +10,13 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
 import { snackbarType } from '../../../../interfaces/snackbar.interface';
 import Table from '../../../../components/organism/Table';
+import { useGetPengawasanQuery } from '../../../../api/pengawasan.api';
 
 function PengawasanDaftar() {
     const navigate = useNavigate();
     const [openFilter, setOpenFilter] = useState<boolean>(false)
+    const { data: pengawasan, isLoading: getting, isFetching } = useGetPengawasanQuery();
     const filterExclude = ['aksi']
-    const data = [
-        {
-            tanggal: "01 Oktober 2024",
-            jenis: "Insidental",
-            nama: "PT ABC",
-            tahapan: "Pengawasan",
-            alamat: "Bekasi",
-            aktifitas_terakhir: '1 Oktober 2024',
-            dibuat: "Asti",
-            tim: "Anggota Tim, Anggota Tim, Anggota Tim, Anggota Tim"
-        },
-        {
-            tanggal: "02 Oktober 2024",
-            jenis: "Reguler",
-            nama: "PT HIJ",
-            tahapan: "Pembahasan",
-            alamat: "Kota Bekasi",
-            aktifitas_terakhir: '1 Oktober 2024',
-            dibuat: "Meika",
-            tim: "Anggota Tim, Anggota Tim, Anggota Tim, Anggota Tim"
-        }
-    ]
 
     const columns: MRT_ColumnDef<any>[] = [
         {
@@ -45,8 +25,8 @@ function PengawasanDaftar() {
             Cell: ({ row }) => row.index + 1,
         },
         {
-            accessorKey: "tanggal",
-            header: 'Tanggal Mulai',
+            accessorKey: "date_create",
+            header: 'Tanggal Registrasi',
             muiTableHeadCellProps: {
                 align: 'left',
             },
@@ -60,7 +40,24 @@ function PengawasanDaftar() {
             }
         },
         {
-            accessorKey: "jenis",
+            accessorKey: "company.name",
+            Cell: ({ row }) => row.original.company.name,
+            header: 'Nama Usaha',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            accessorKey: "jenis_pengawasan",
             header: 'Jenis',
             enableClickToCopy: true,
             muiTableHeadCellProps: {
@@ -76,96 +73,46 @@ function PengawasanDaftar() {
             }
         },
         {
-            accessorKey: "nama",
-            header: 'Nama Usaha dan / atau Kegiatan',
-            enableClickToCopy: true,
+            accessorKey: "tanggal_surat",
+            header: 'Tanggal Surat',
             muiTableHeadCellProps: {
                 align: 'left',
             },
             muiTableBodyCellProps: {
                 align: "left",
             },
-            filterFn: 'fuzzy',
+            filterFn: 'equals',
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
             }
         },
         {
-            accessorKey: "alamat",
-            header: 'Alamat Lengkap',
-            enableClickToCopy: true,
+            accessorKey: "nomor_sp",
+            header: 'No. SP',
             muiTableHeadCellProps: {
                 align: 'left',
             },
             muiTableBodyCellProps: {
                 align: "left",
             },
-            filterFn: 'fuzzy',
+            filterFn: 'equals',
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
             }
         },
         {
-            accessorKey: "tahapan",
-            header: 'Taha[an',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "aktifitas_terakhir",
-            header: 'Aktifitas Terakhir',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "dibuat",
+            accessorKey: "employee.name",
+            Cell: ({ row }) => row.original.employee.name,
             header: 'PIC',
-            enableClickToCopy: true,
             muiTableHeadCellProps: {
                 align: 'left',
             },
             muiTableBodyCellProps: {
                 align: "left",
             },
-            filterFn: 'fuzzy',
-            filterVariant: 'select',
-            muiFilterTextFieldProps: {
-                variant: 'outlined',
-            }
-        },
-        {
-            accessorKey: "tim",
-            header: 'Tim Pengawas',
-            enableClickToCopy: true,
-            muiTableHeadCellProps: {
-                align: 'left',
-            },
-            muiTableBodyCellProps: {
-                align: "left",
-            },
-            filterFn: 'fuzzy',
+            filterFn: 'equals',
             filterVariant: 'select',
             muiFilterTextFieldProps: {
                 variant: 'outlined',
@@ -182,11 +129,12 @@ function PengawasanDaftar() {
             },
             size: 50,
             Cell: ({ row }) => {
-                return <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm">
+                return <IconButton onClick={() => navigate(`/pengawasan/daftar/detail/${row.original.id}`)} className="border-solid border-2 text-primary-600" aria-label="confirm">
                     <RiEyeLine />
                 </IconButton>
             },
             enableColumnFilter: false,
+            enableSorting: false
         },
     ];
 
@@ -199,7 +147,7 @@ function PengawasanDaftar() {
                     </Typography>
                 </Grid2>
                 <Grid2 container gap={2} className='w-full md:w-auto'>
-                    <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => navigate('/pengawasan/daftar/tambah')}><RiAddLine /> Tambah</Button>
+                    {/* <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => navigate('/pengawasan/daftar/tambah')}><RiAddLine /> Tambah</Button> */}
                 </Grid2>
             </Grid2>
             <Grid2 container className="hidden md:block" marginTop={4}>
@@ -215,7 +163,7 @@ function PengawasanDaftar() {
                     bgcolor: 'white'
                 }}>
                     <Stack sx={{ margin: '24px' }}>
-                        <Table openFilter={openFilter} setOpenFilter={setOpenFilter} columns={columns} data={data ?? []} filterExclude={filterExclude}></Table>
+                        <Table openFilter={openFilter} setOpenFilter={setOpenFilter} columns={columns} data={pengawasan?.data ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExclude}></Table>
                     </Stack>
                 </Box>
             </Grid2>

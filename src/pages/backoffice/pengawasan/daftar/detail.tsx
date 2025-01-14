@@ -13,9 +13,9 @@ import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
 import { useCreateCatatanMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetDetailPerencanaanQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
-import { useCreateDokumenMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePerencanaanArsipMutation, useEskalasiPerencanaanMutation } from '../../../../api/perencanaan.api';
+import { useCreateDokumenPengawasanMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePengawasanArsipMutation, useEskalasiPengawasanMutation } from '../../../../api/pengawasan.api';
 
-export default function PerencanaanDaftarDetail() {
+export default function PengawasanDaftarDetail() {
     const { dataID } = useParams();
     const navigate = useNavigate()
     const { data: statusData } = useGetStatusDataQuery();
@@ -44,7 +44,6 @@ export default function PerencanaanDaftarDetail() {
     const [tanggalTerbitDPU, setTanggalTerbitDPU] = useState<Moment | null>(null)
     const [berlakuDPU, setBerlakuDPU] = useState<Moment | null>(null)
 
-    const [dokumenPengawasanOpen, setDokumenPengawasanOpen] = useState<boolean>(false)
     const [jenisDPA, setJenisDPA] = useState<string>('')
     const [nomorDPA, setNomorDPA] = useState<string>('')
     const [tanggalTerbitDPA, setTanggalTerbitDPA] = useState<Moment | null>(null)
@@ -79,7 +78,7 @@ export default function PerencanaanDaftarDetail() {
     const [value, setValue] = useState(defaultTab);
 
     const navigateToTab = (tabIndex: number) => {
-        navigate(`/perencanaan/daftar/detail/${dataID}?tab=${tabIndex}`,);
+        navigate(`/pengawasan/daftar/detail/${dataID}?tab=${tabIndex}`,);
         setValue(tabIndex);
         window.location.reload();
     };
@@ -136,7 +135,7 @@ export default function PerencanaanDaftarDetail() {
                 id: dataID!,
                 data: formData
             }).unwrap();
-            navigate('/perencanaan/daftar')
+            navigate('/pengawasan/daftar')
         } catch (error: any) {
         }
     };
@@ -473,37 +472,37 @@ export default function PerencanaanDaftarDetail() {
 
     const [arsipOpen, setArsipOpen] = useState(false);
     const [alasanArsip, setAlasanArsip] = useState("");
-    const [createArsip] = useCreatePerencanaanArsipMutation();
+    const [createArsip] = useCreatePengawasanArsipMutation();
     const onCreateArsip = async () => {
         const formData = new FormData();
         formData.append("alasan_arsip", alasanArsip);
         try {
             await createArsip({ data: formData, id: dataID! }).unwrap();
-            navigate("/perencanaan/daftar");
+            navigate("/pengawasan/daftar");
         } catch (error: any) { }
     };
-    const [createEskalasi] = useEskalasiPerencanaanMutation();
+    const [createEskalasi] = useEskalasiPengawasanMutation();
     const onCreateEskalasi = async () => {
         const formData = new FormData();
         try {
             await createEskalasi({ data: formData, id: dataID! }).unwrap();
-            navigate("/perencanaan/daftar");
+            navigate("/pengawasan/daftar");
         } catch (error: any) { }
     };
 
 
 
     const { data: listDokumen } = useGetListDokumenQuery();
-    const [dokumenPerencanaanOpen, setDokumenPerencanaanOpen] = useState<boolean>(false)
-    const [dokumenPerencanaanEdit, setDokumenPerencanaanEdit] = useState<boolean>(false)
-    const [openFilterDokumenPerencanaan, setOpenFilterDokumenPerencanaan] = useState<boolean>(false)
-    const filterExcludeDokumenPerencanaan = ['aksi']
+    const [dokumenPengawasanOpen, setDokumenPengawasanOpen] = useState<boolean>(false)
+    const [dokumenPengawasanEdit, setDokumenPengawasanEdit] = useState<boolean>(false)
+    const [openFilterDokumenPengawasan, setOpenFilterDokumenPengawasan] = useState<boolean>(false)
+    const filterExcludeDokumenPengawasan = ['aksi']
     const [jenisDokumen, setJenisDokumen] = useState<string>('')
     const [idDokumen, setIdDokumen] = useState<string>('')
     const [nomorDokumen, setNomorDokumen] = useState<string>('')
     const [tanggalTerbitDokumen, setTanggalTerbitDokumen] = useState<Moment | null>(null)
     const [berlakuDokumen, setBerlakuDokumen] = useState<Moment | null>(null)
-    const [createDokumen, { isLoading: isLoadingDokumen }] = useCreateDokumenMutation();
+    const [createDokumen, { isLoading: isLoadingDokumen }] = useCreateDokumenPengawasanMutation();
     const [updateDokumen] = useUpdateDokumenMutation();
     const [deleteDokumen] = useDeleteDokumenMutation();
     const onCreateDokumen = async () => {
@@ -515,7 +514,7 @@ export default function PerencanaanDaftarDetail() {
         formData.append('berlaku', berlakuDokumen?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
         formData.append('lampiran_file', 'ada');
         try {
-            if (dokumenPerencanaanEdit) {
+            if (dokumenPengawasanEdit) {
                 await updateDokumen({
                     data: formData,
                     id: idDokumen
@@ -527,14 +526,14 @@ export default function PerencanaanDaftarDetail() {
         } catch (error: any) {
         }
     };
-    const columnsDokumenPerencanaan: MRT_ColumnDef<any>[] = [
+    const columnsDokumenPengawasan: MRT_ColumnDef<any>[] = [
         {
             accessorKey: 'id',
             header: 'ID',
             Cell: ({ row }) => row.index + 1,
         },
         {
-            Cell: ({ row }) => row.original.dokumen_perencanaan.name,
+            Cell: ({ row }) => row?.original?.dokumen_pengawasan?.name ?? '',
             header: 'Jenis',
             muiTableHeadCellProps: {
                 align: 'left',
@@ -625,13 +624,13 @@ export default function PerencanaanDaftarDetail() {
             Cell: ({ row }) => {
                 return <Grid2 container gap={1}>
                     <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm" onClick={() => {
-                        setJenisDokumen(row.original.dokumen_perencanaan.id)
+                        setJenisDokumen(row.original.dokumen_pengawasan_id)
                         setNomorDokumen(row.original.nomor_file)
                         setTanggalTerbitDokumen(moment(row.original.tanggal_terbit))
                         setBerlakuDokumen(moment(row.original.berlaku))
                         setIdDokumen(row.original.id)
-                        setDokumenPerencanaanOpen(true)
-                        setDokumenPerencanaanEdit(true)
+                        setDokumenPengawasanOpen(true)
+                        setDokumenPengawasanEdit(true)
                     }}>
                         <RiEdit2Fill />
                     </IconButton>
@@ -1233,8 +1232,8 @@ export default function PerencanaanDaftarDetail() {
                 </DialogContent>
             </Dialog>
             <Dialog
-                open={dokumenPerencanaanOpen}
-                onClose={() => setDokumenPerencanaanOpen(false)}
+                open={dokumenPengawasanOpen}
+                onClose={() => setDokumenPengawasanOpen(false)}
                 maxWidth={'lg'}
                 sx={{
                     '.MuiPaper-root': {
@@ -1247,7 +1246,7 @@ export default function PerencanaanDaftarDetail() {
             >
                 <IconButton
                     aria-label="close"
-                    onClick={() => setDokumenPerencanaanOpen(false)}
+                    onClick={() => setDokumenPengawasanOpen(false)}
                     sx={(theme) => ({
                         position: 'absolute',
                         right: 8,
@@ -1322,7 +1321,7 @@ export default function PerencanaanDaftarDetail() {
                 </DialogContent>
             </Dialog>
             <Grid2 container alignContent={'center'}>
-                <IconButton onClick={() => navigate('/perencanaan/daftar')}>
+                <IconButton onClick={() => navigate('/pengawasan/daftar')}>
                     <RiArrowLeftLine className="w-8 h-8" color="#000000" />
                 </IconButton>
                 <Typography className="w-10/12 text-4xl font-semibold text-base-dark pt-1">
@@ -1880,12 +1879,12 @@ export default function PerencanaanDaftarDetail() {
                                     setTanggalTerbitDokumen(moment(''))
                                     setBerlakuDokumen(moment(''))
                                     setIdDokumen('')
-                                    setDokumenPerencanaanOpen(true)
-                                    setDokumenPerencanaanEdit(false)
+                                    setDokumenPengawasanOpen(true)
+                                    setDokumenPengawasanEdit(false)
                                 }}><RiAddLine /> Tambah</Button>
                             </Grid2>
                         </Grid2>
-                        <Table openFilter={openFilterDokumenPerencanaan} setOpenFilter={setOpenFilterDokumenPerencanaan} columns={columnsDokumenPerencanaan} data={detailRegistrasi?.data?.dokumen ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeDokumenPerencanaan}></Table>
+                        <Table openFilter={openFilterDokumenPengawasan} setOpenFilter={setOpenFilterDokumenPengawasan} columns={columnsDokumenPengawasan} data={detailRegistrasi?.data?.dokumen ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeDokumenPengawasan}></Table>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={4}>
                         <Grid2 container>

@@ -2,7 +2,7 @@ import { Box, Button, Dialog, DialogContent, DialogContentText, IconButton, Menu
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { RiAddLine, RiArrowLeftLine, RiArrowLeftRightFill, RiCloseLine, RiContactsBook2Line, RiDeleteBin2Fill, RiEdit2Fill, RiEyeLine, RiHome5Line } from '@remixicon/react';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
 import { LocalizationProvider, MobileDateTimePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -12,10 +12,10 @@ import CustomTabPanel from '../../../../components/molecules/CustomTabPanel';
 import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
-import { useCreateCatatanMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetDetailPerencanaanQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
-import { useCreateDokumenMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePerencanaanArsipMutation, useEskalasiPerencanaanMutation } from '../../../../api/perencanaan.api';
+import { useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetDetailPerencanaanQuery, useGetDetailPetamasalahQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
+import { useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePengawasanArsipMutation, useAktifkanDataPengawasanMutation, useCreateDokumenPengawasanMutation } from '../../../../api/pengawasan.api';
 
-export default function PerencanaanDaftarDetail() {
+export default function PengawasanArsipDetail() {
     const { dataID } = useParams();
     const navigate = useNavigate()
     const { data: statusData } = useGetStatusDataQuery();
@@ -44,7 +44,6 @@ export default function PerencanaanDaftarDetail() {
     const [tanggalTerbitDPU, setTanggalTerbitDPU] = useState<Moment | null>(null)
     const [berlakuDPU, setBerlakuDPU] = useState<Moment | null>(null)
 
-    const [dokumenPengawasanOpen, setDokumenPengawasanOpen] = useState<boolean>(false)
     const [jenisDPA, setJenisDPA] = useState<string>('')
     const [nomorDPA, setNomorDPA] = useState<string>('')
     const [tanggalTerbitDPA, setTanggalTerbitDPA] = useState<Moment | null>(null)
@@ -57,6 +56,7 @@ export default function PerencanaanDaftarDetail() {
     const [berlakuDPP, setBerlakuDPP] = useState<Moment | null>(null)
 
     const [documentValue, setDocumentValue] = useState(0)
+    const [value, setValue] = useState(0)
     const [nomor, setNomor] = useState('')
     const [date, setDate] = useState<Moment | null>(null)
     const [typeId, setTypeId] = useState('')
@@ -72,18 +72,8 @@ export default function PerencanaanDaftarDetail() {
     const [phoneNumber, setPhoneNumber] = useState('')
     const [email, setEmail] = useState('')
     const [problem, setProblem] = useState('')
+    const [alasan, setAlasan] = useState('')
     const [status, setStatus] = useState('')
-
-    const [searchParams] = useSearchParams();
-    const defaultTab = Number(searchParams.get("tab")) || 0;
-    const [value, setValue] = useState(defaultTab);
-
-    const navigateToTab = (tabIndex: number) => {
-        navigate(`/perencanaan/daftar/detail/${dataID}?tab=${tabIndex}`,);
-        setValue(tabIndex);
-        window.location.reload();
-    };
-
     const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
     const [updateRegistrasi] = useUpdateRegistrasiMutation();
@@ -93,6 +83,7 @@ export default function PerencanaanDaftarDetail() {
         setTypeId(detailRegistrasi?.data?.jenis_pengawasan ?? '')
         setStatusId((detailRegistrasi?.data?.status_data_id ?? 0).toString())
         setProblem(detailRegistrasi?.data?.perkiraan_masalah)
+        setAlasan(detailRegistrasi?.data?.alasan_arsip)
 
         setBadanUsahaPetaMasalah(detailRegistrasi?.data?.peta_masalah?.data_id ?? '')
         setAlamatLokasiKegiatan(detailRegistrasi?.data?.peta_masalah?.alamat_kegiatan ?? '')
@@ -136,7 +127,7 @@ export default function PerencanaanDaftarDetail() {
                 id: dataID!,
                 data: formData
             }).unwrap();
-            navigate('/perencanaan/daftar')
+            navigate('/pengawasan/daftar')
         } catch (error: any) {
         }
     };
@@ -258,7 +249,7 @@ export default function PerencanaanDaftarDetail() {
                     </IconButton>
                     <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
                         await deleteTim(row.original.id).unwrap();
-                        navigateToTab(2)
+                        window.location.reload();
                     }}>
                         <RiDeleteBin2Fill />
                     </IconButton>
@@ -288,7 +279,7 @@ export default function PerencanaanDaftarDetail() {
             } else {
                 await createTim(formData).unwrap();
             }
-            navigateToTab(2)
+            navigate('/pengawasan/daftar')
         } catch (error: any) {
         }
     };
@@ -356,7 +347,7 @@ export default function PerencanaanDaftarDetail() {
                     </IconButton>
                     <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
                         await deleteCatatan(row.original.id).unwrap();
-                        navigateToTab(4)
+                        window.location.reload();
                     }}>
                         <RiDeleteBin2Fill />
                     </IconButton>
@@ -439,7 +430,7 @@ export default function PerencanaanDaftarDetail() {
                 id: detailRegistrasi?.data?.peta_masalah?.id ?? '',
                 data: formData
             }).unwrap();
-            navigateToTab(1)
+            navigate('/pengawasan/daftar')
         } catch (error: any) {
         }
     };
@@ -466,56 +457,48 @@ export default function PerencanaanDaftarDetail() {
             } else {
                 await createCatatan(formData).unwrap();
             }
-            navigateToTab(4)
+            navigate('/pengawasan/daftar')
         } catch (error: any) {
         }
     };
 
     const [arsipOpen, setArsipOpen] = useState(false);
     const [alasanArsip, setAlasanArsip] = useState("");
-    const [createArsip] = useCreatePerencanaanArsipMutation();
+    const [createArsip] = useCreatePengawasanArsipMutation();
     const onCreateArsip = async () => {
         const formData = new FormData();
         formData.append("alasan_arsip", alasanArsip);
         try {
             await createArsip({ data: formData, id: dataID! }).unwrap();
-            navigate("/perencanaan/daftar");
-        } catch (error: any) { }
-    };
-    const [createEskalasi] = useEskalasiPerencanaanMutation();
-    const onCreateEskalasi = async () => {
-        const formData = new FormData();
-        try {
-            await createEskalasi({ data: formData, id: dataID! }).unwrap();
-            navigate("/perencanaan/daftar");
+            navigate("/pengawasan/daftar");
         } catch (error: any) { }
     };
 
 
 
     const { data: listDokumen } = useGetListDokumenQuery();
-    const [dokumenPerencanaanOpen, setDokumenPerencanaanOpen] = useState<boolean>(false)
-    const [dokumenPerencanaanEdit, setDokumenPerencanaanEdit] = useState<boolean>(false)
-    const [openFilterDokumenPerencanaan, setOpenFilterDokumenPerencanaan] = useState<boolean>(false)
-    const filterExcludeDokumenPerencanaan = ['aksi']
+    const [dokumenPengawasanOpen, setDokumenPengawasanOpen] = useState<boolean>(false)
+    const [dokumenPengawasanEdit, setDokumenPengawasanEdit] = useState<boolean>(false)
+    const [openFilterDokumenPengawasan, setOpenFilterDokumenPengawasan] = useState<boolean>(false)
+    const filterExcludeDokumenPengawasan = ['aksi']
     const [jenisDokumen, setJenisDokumen] = useState<string>('')
     const [idDokumen, setIdDokumen] = useState<string>('')
     const [nomorDokumen, setNomorDokumen] = useState<string>('')
     const [tanggalTerbitDokumen, setTanggalTerbitDokumen] = useState<Moment | null>(null)
     const [berlakuDokumen, setBerlakuDokumen] = useState<Moment | null>(null)
-    const [createDokumen, { isLoading: isLoadingDokumen }] = useCreateDokumenMutation();
+    const [createDokumen, { isLoading: isLoadingDokumen }] = useCreateDokumenPengawasanMutation();
     const [updateDokumen] = useUpdateDokumenMutation();
     const [deleteDokumen] = useDeleteDokumenMutation();
     const onCreateDokumen = async () => {
         const formData = new FormData();
         formData.append('data_id', dataID!);
-        formData.append('dokumen_perencanaan_id', jenisDokumen);
+        formData.append('dokumen_pengawasan_id', jenisDokumen);
         formData.append('nomor_file', nomorDokumen);
         formData.append('tanggal_terbit', tanggalTerbitDokumen?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
         formData.append('berlaku', berlakuDokumen?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
         formData.append('lampiran_file', 'ada');
         try {
-            if (dokumenPerencanaanEdit) {
+            if (dokumenPengawasanEdit) {
                 await updateDokumen({
                     data: formData,
                     id: idDokumen
@@ -523,18 +506,29 @@ export default function PerencanaanDaftarDetail() {
             } else {
                 await createDokumen(formData).unwrap();
             }
-            navigateToTab(3)
+            navigate('/pengawasan/daftar')
         } catch (error: any) {
         }
     };
-    const columnsDokumenPerencanaan: MRT_ColumnDef<any>[] = [
+
+    const [createAktifkanPengawasan] = useAktifkanDataPengawasanMutation();
+    const onCreateAktifkanPengawasan = async () => {
+        const formData = new FormData();
+        try {
+            await createAktifkanPengawasan({ data: formData, id: dataID! }).unwrap();
+            navigate('/pengawasan/daftar')
+        } catch (error: any) {
+        }
+    };
+
+    const columnsDokumenPengawasan: MRT_ColumnDef<any>[] = [
         {
             accessorKey: 'id',
             header: 'ID',
             Cell: ({ row }) => row.index + 1,
         },
         {
-            Cell: ({ row }) => row.original.dokumen_perencanaan.name,
+            Cell: ({ row }) => row?.original?.dokumen_pengawasan?.name ?? '',
             header: 'Jenis',
             muiTableHeadCellProps: {
                 align: 'left',
@@ -625,19 +619,19 @@ export default function PerencanaanDaftarDetail() {
             Cell: ({ row }) => {
                 return <Grid2 container gap={1}>
                     <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm" onClick={() => {
-                        setJenisDokumen(row.original.dokumen_perencanaan.id)
+                        setJenisDokumen(row.original.dokumen_pengawasan_id)
                         setNomorDokumen(row.original.nomor_file)
                         setTanggalTerbitDokumen(moment(row.original.tanggal_terbit))
                         setBerlakuDokumen(moment(row.original.berlaku))
                         setIdDokumen(row.original.id)
-                        setDokumenPerencanaanOpen(true)
-                        setDokumenPerencanaanEdit(true)
+                        setDokumenPengawasanOpen(true)
+                        setDokumenPengawasanEdit(true)
                     }}>
                         <RiEdit2Fill />
                     </IconButton>
                     <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
                         await deleteDokumen(row.original.id).unwrap();
-                        navigateToTab(3)
+                        window.location.reload();
                     }}>
                         <RiDeleteBin2Fill />
                     </IconButton>
@@ -1233,8 +1227,8 @@ export default function PerencanaanDaftarDetail() {
                 </DialogContent>
             </Dialog>
             <Dialog
-                open={dokumenPerencanaanOpen}
-                onClose={() => setDokumenPerencanaanOpen(false)}
+                open={dokumenPengawasanOpen}
+                onClose={() => setDokumenPengawasanOpen(false)}
                 maxWidth={'lg'}
                 sx={{
                     '.MuiPaper-root': {
@@ -1247,7 +1241,7 @@ export default function PerencanaanDaftarDetail() {
             >
                 <IconButton
                     aria-label="close"
-                    onClick={() => setDokumenPerencanaanOpen(false)}
+                    onClick={() => setDokumenPengawasanOpen(false)}
                     sx={(theme) => ({
                         position: 'absolute',
                         right: 8,
@@ -1322,7 +1316,7 @@ export default function PerencanaanDaftarDetail() {
                 </DialogContent>
             </Dialog>
             <Grid2 container alignContent={'center'}>
-                <IconButton onClick={() => navigate('/perencanaan/daftar')}>
+                <IconButton onClick={() => navigate('/pengawasan/daftar')}>
                     <RiArrowLeftLine className="w-8 h-8" color="#000000" />
                 </IconButton>
                 <Typography className="w-10/12 text-4xl font-semibold text-base-dark pt-1">
@@ -1419,6 +1413,15 @@ export default function PerencanaanDaftarDetail() {
                             <Grid2 container xs={12} mt={'1rem'}>
                                 <Typography className="text-base-dark w-full">Perkiraan Masalah <span className='text-danger-600'>*</span></Typography>
                                 <TextField value={problem} multiline rows={3} onChange={(data) => setProblem(data.target.value)} variant="outlined" className='mt-2 w-full'
+                                    InputProps={{
+                                        style: {
+                                            borderRadius: "10px",
+                                        }
+                                    }} />
+                            </Grid2>
+                            <Grid2 container xs={12} mt={'1rem'}>
+                                <Typography className="text-base-dark w-full">Alasan Pengarsipan <span className='text-danger-600'>*</span></Typography>
+                                <TextField value={alasan} multiline rows={3} onChange={(data) => setAlasan(data.target.value)} variant="outlined" className='mt-2 w-full'
                                     InputProps={{
                                         style: {
                                             borderRadius: "10px",
@@ -1539,20 +1542,11 @@ export default function PerencanaanDaftarDetail() {
                                         }
                                     }} />
                             </Grid2> */}
-                            <Button onClick={onUpdate} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
-                                Simpan
-                            </Button>
                             <Button
-                                onClick={() => setArsipOpen(true)}
+                                onClick={onCreateAktifkanPengawasan}
                                 className="bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4"
                             >
-                                Arsip
-                            </Button>
-                            <Button
-                                onClick={() => onCreateEskalasi()}
-                                className="bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4"
-                            >
-                                Eskalasi
+                                Aktifkan
                             </Button>
                         </Grid2>
                     </CustomTabPanel>
@@ -1853,9 +1847,6 @@ export default function PerencanaanDaftarDetail() {
                                         }
                                     }} />
                             </Grid2>
-                            <Button onClick={onUpdatePetamasalah} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white w-full mt-4' >
-                                Simpan
-                            </Button>
                         </Grid2>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={2}>
@@ -1880,12 +1871,12 @@ export default function PerencanaanDaftarDetail() {
                                     setTanggalTerbitDokumen(moment(''))
                                     setBerlakuDokumen(moment(''))
                                     setIdDokumen('')
-                                    setDokumenPerencanaanOpen(true)
-                                    setDokumenPerencanaanEdit(false)
+                                    setDokumenPengawasanOpen(true)
+                                    setDokumenPengawasanEdit(false)
                                 }}><RiAddLine /> Tambah</Button>
                             </Grid2>
                         </Grid2>
-                        <Table openFilter={openFilterDokumenPerencanaan} setOpenFilter={setOpenFilterDokumenPerencanaan} columns={columnsDokumenPerencanaan} data={detailRegistrasi?.data?.dokumen ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeDokumenPerencanaan}></Table>
+                        <Table openFilter={openFilterDokumenPengawasan} setOpenFilter={setOpenFilterDokumenPengawasan} columns={columnsDokumenPengawasan} data={detailRegistrasi?.data?.dokumen ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeDokumenPengawasan}></Table>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={4}>
                         <Grid2 container>

@@ -455,7 +455,7 @@ const Layout = (props: props) => {
                                 {sidebarCollapse && <ListItemIcon>
                                     <RiFileWarningFill className="-ml-16" />
                                 </ListItemIcon>}
-                                <ListItemText primary='Sanksi' />
+                                <ListItemText primary='Arsip' />
                             </ListItemButton>
                         </ListItem>
                     </List>

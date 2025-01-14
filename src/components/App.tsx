@@ -16,19 +16,19 @@ import PengawasanDaftar from '../pages/backoffice/pengawasan/daftar';
 import PengawasanAgenda from '../pages/backoffice/pengawasan/agenda';
 import PerencanaanDaftarDetailA from '../pages/backoffice/perencanaan/daftar/detaila';
 import PerencanaanDaftarDetail from '../pages/backoffice/perencanaan/daftar/detail';
-import PengawasanDaftarCreate from '../pages/backoffice/pengawasan/daftar/create';
 import RegistrasiDaftarDetail from '../pages/backoffice/registrasi/daftar/detail';
 import RegistrasiArsipDetail from '../pages/backoffice/registrasi/arsip/detail';
 import PengawasanAgendaTim from '../pages/backoffice/pengawasan/agenda_tim';
 import PengawasanArsip from '../pages/backoffice/pengawasan/arsip';
 import PascaPengawasanDaftar from '../pages/backoffice/pasca_pengawasan/daftar';
-import PascaPengawasanDaftarCreate from '../pages/backoffice/pasca_pengawasan/daftar/create';
 import PascaPengawasanAgenda from '../pages/backoffice/pasca_pengawasan/agenda';
 import PascaPengawasanAgendaTim from '../pages/backoffice/pasca_pengawasan/agenda_tim';
-import PascaPengawasanArsip from '../pages/backoffice/pasca_pengawasan/sanksi';
 import Setting from '../pages/backoffice/setting';
 import { AuthMiddleware, GuestMiddleware, LoginMiddleware } from '../middleware/auth.middleware';
 import Profil from '../pages/backoffice/profil';
+import PengawasanDaftarDetail from '../pages/backoffice/pengawasan/daftar/detail';
+import PengawasanArsipDetail from '../pages/backoffice/pengawasan/arsip/detail';
+import PascaPengawasanDaftarDetail from '../pages/backoffice/pasca_pengawasan/daftar/detail';
 
 const App = () => {
   return (
@@ -49,7 +49,6 @@ const App = () => {
         <Route path="/register/arsip/detail/:dataID" element={<RegistrasiArsipDetail />} />
 
         <Route path="/perencanaan/daftar" element={<PerencanaanDaftar />} />
-        <Route path="/perencanaan/daftar/detaila" element={<PerencanaanDaftarDetailA />} />
         <Route path="/perencanaan/daftar/detail/:dataID" element={<PerencanaanDaftarDetail />} />
         <Route path="/perencanaan/reguler" element={<PerencanaanReguler />} />
         <Route path="/perencanaan/insidental" element={<PerencanaanInsidental />} />
@@ -57,16 +56,18 @@ const App = () => {
         <Route path="/perencanaan/arsip/detail/:dataID" element={<PerencanaanArsipDetail />} />
 
         <Route path="/pengawasan/daftar" element={<PengawasanDaftar />} />
-        <Route path="/pengawasan/daftar/tambah" element={<PengawasanDaftarCreate />} />
+        <Route path="/pengawasan/daftar/detail/:dataID" element={<PengawasanDaftarDetail />} />
         <Route path="/pengawasan/agenda" element={<PengawasanAgenda />} />
         <Route path="/pengawasan/agenda-tim" element={<PengawasanAgendaTim />} />
         <Route path="/pengawasan/arsip" element={<PengawasanArsip />} />
+        <Route path="/pengawasan/arsip/detail/:dataID" element={<PengawasanArsipDetail />} />
 
         <Route path="/pasca-pengawasan/daftar" element={<PascaPengawasanDaftar />} />
-        <Route path="/pasca-pengawasan/daftar/tambah" element={<PascaPengawasanDaftarCreate />} />
+        <Route path="/pasca-pengawasan/daftar/detail/:dataID" element={<PascaPengawasanDaftarDetail />} />
         <Route path="/pasca-pengawasan/agenda" element={<PascaPengawasanAgenda />} />
         <Route path="/pasca-pengawasan/agenda-tim" element={<PascaPengawasanAgendaTim />} />
-        <Route path="/pasca-pengawasan/arsip" element={<PascaPengawasanArsip />} />
+        <Route path="/pasca-pengawasan/arsip" element={<PengawasanArsip />} />
+        <Route path="/pasca-pengawasan/arsip/detail/:dataID" element={<PengawasanArsipDetail />} />
 
         <Route path="/pengaturan" element={<Profil />} />
         <Route path="*" element={<NotFoundPage />} />

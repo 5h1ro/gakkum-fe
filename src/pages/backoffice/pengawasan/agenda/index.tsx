@@ -8,7 +8,28 @@ import { useEffect, useState } from 'react';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 function PengawasanAgenda() {
-    const [events, setEvents] = useState([]);
+    const [events, setEvents] = useState([
+        {
+            title: 'Pengawasan YKK',
+            start: moment('2025-01-14 07:00:00').toDate(),
+            end: moment('2025-01-14 10:00:00').toDate(),
+        },
+        {
+            title: 'Pengawasan Indofood',
+            start: moment('2025-01-14 13:00:00').toDate(),
+            end: moment('2025-01-14 15:00:00').toDate(),
+        },
+        {
+            title: 'Pengawasan Indofood',
+            start: moment('2025-01-14 16:00:00').toDate(),
+            end: moment('2025-01-14 18:00:00').toDate(),
+        },
+        {
+            title: 'Pengawasan Adaro',
+            start: moment('2025-01-15 09:00:00').toDate(),
+            end: moment('2025-01-15 11:00:00').toDate(),
+        },
+    ]);
     const localizer = momentLocalizer(moment);
     const CLIENT_ID = "49338518240-h05l0si2q6kh1n6bbn2vrrai5mprrev0.apps.googleusercontent.com";
     const API_KEY = "AIzaSyCMvcvDtlzBemr4alP3m6vDbqtoKJ31DTc";
@@ -46,6 +67,11 @@ function PengawasanAgenda() {
 
     //     setEvents(fetchedEvents);
     // };
+
+    const handleEventClick = () => {
+        console.log('a');
+
+    };
     return (
         <Layout>
             <Grid2 container justifyContent={'space-between'}>
@@ -61,10 +87,10 @@ function PengawasanAgenda() {
             <Calendar
                 localizer={localizer}
                 events={events}
-                startAccessor="start"
-                endAccessor="end"
+                showMultiDayTimes
                 style={{ height: 500 }}
                 className='mt-16'
+                onSelectEvent={handleEventClick}
             />
         </Layout>
     );
