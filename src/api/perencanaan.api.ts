@@ -124,6 +124,47 @@ export const api_perencanaan = api.injectEndpoints({
                 return response;
             },
         }),
+        getListTahapanPerencanaan: builder.query<any, void>({
+            query: () => ({
+                url: `tahapan-perencanaan`,
+            }),
+        }),
+        getTahapanPerencanaan: builder.query<any, void>({
+            query: () => ({
+                url: `tahapan-perencanaan/all`,
+            }),
+        }),
+        getStatusTahapanPerencanaan: builder.query<any, void>({
+            query: () => ({
+                url: `status-data`,
+            }),
+        }),
+        createTahapanPerencanaan: builder.mutation<any, any>({
+            query: (credentials: FormData) => ({
+                url: `perencanaan/tahapan/create`,
+                method: "POST",
+                body: credentials,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        updateTahapanPerencanaan: builder.mutation<any, any>({
+            query: ({ data, id }) => ({
+                url: `perencanaan/tahapan/update/${id}`,
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        deleteTahapanPerencanaan: builder.mutation<any, string>({
+            query: (id: string) => ({
+                url: `perencanaan/tahapan/delete/${id}`,
+                method: "DELETE",
+            }),
+        }),
     })
 });
 
@@ -144,5 +185,11 @@ export const {
     useDeleteDokumenMutation,
     useCreatePerencanaanArsipMutation,
     useAktifkanDataPerencanaanMutation,
-    useEskalasiPerencanaanMutation
+    useEskalasiPerencanaanMutation,
+    useCreateTahapanPerencanaanMutation,
+    useDeleteTahapanPerencanaanMutation,
+    useUpdateTahapanPerencanaanMutation,
+    useGetListTahapanPerencanaanQuery,
+    useGetTahapanPerencanaanQuery,
+    useGetStatusTahapanPerencanaanQuery
 } = api_perencanaan;

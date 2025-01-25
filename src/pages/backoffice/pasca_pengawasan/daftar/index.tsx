@@ -143,7 +143,7 @@ function PascaPengawasanDaftar() {
             <Grid2 container justifyContent={'space-between'}>
                 <Grid2 container alignContent={'center'}>
                     <Typography className="text-3xl font-semibold text-base-dark mt-[-2px] md:mt-0 md:text-4xl">
-                        PascaPengawasan &gt; Daftar
+                        Pasca Pengawasan &gt; Daftar
                     </Typography>
                 </Grid2>
                 <Grid2 container gap={2} className='w-full md:w-auto'>

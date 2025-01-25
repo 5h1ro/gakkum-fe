@@ -82,7 +82,7 @@ const Login = () => {
                 </Alert>
             </Snackbar>
             <Box>
-                <GoogleOAuthProvider clientId="49338518240-bg53iqdgerbbi0cdvhfrj16lbcbbut6a.apps.googleusercontent.com">
+                <GoogleOAuthProvider clientId="456674038239-cb9rmnbm4hu5ej5sqphgedeqfb32o3co.apps.googleusercontent.com">
                     <Grid container minHeight={'92vh'}>
                         <Grid container marginX={'auto'} marginY={'auto'}>
                             <Card sx={{ width: '750px', boxShadow: 'none' }} className='flex items-center justify-center md:h-[80.665vh]'>

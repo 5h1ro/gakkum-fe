@@ -124,6 +124,47 @@ export const api_pengawasan = api.injectEndpoints({
                 return response;
             },
         }),
+        getListTahapanPengawasan: builder.query<any, void>({
+            query: () => ({
+                url: `tahapan-pengawasan`,
+            }),
+        }),
+        getTahapanPengawasan: builder.query<any, void>({
+            query: () => ({
+                url: `tahapan-pengawasan/all`,
+            }),
+        }),
+        getStatusTahapanPengawasan: builder.query<any, void>({
+            query: () => ({
+                url: `status-data`,
+            }),
+        }),
+        createTahapanPengawasan: builder.mutation<any, any>({
+            query: (credentials: FormData) => ({
+                url: `pengawasan/tahapan/create`,
+                method: "POST",
+                body: credentials,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        updateTahapanPengawasan: builder.mutation<any, any>({
+            query: ({ data, id }) => ({
+                url: `pengawasan/tahapan/update/${id}`,
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        deleteTahapanPengawasan: builder.mutation<any, string>({
+            query: (id: string) => ({
+                url: `pengawasan/tahapan/delete/${id}`,
+                method: "DELETE",
+            }),
+        }),
     })
 });
 
@@ -144,5 +185,11 @@ export const {
     useDeleteDokumenMutation,
     useCreatePengawasanArsipMutation,
     useAktifkanDataPengawasanMutation,
-    useEskalasiPengawasanMutation
+    useEskalasiPengawasanMutation,
+    useCreateTahapanPengawasanMutation,
+    useDeleteTahapanPengawasanMutation,
+    useUpdateTahapanPengawasanMutation,
+    useGetListTahapanPengawasanQuery,
+    useGetTahapanPengawasanQuery,
+    useGetStatusTahapanPengawasanQuery
 } = api_pengawasan;

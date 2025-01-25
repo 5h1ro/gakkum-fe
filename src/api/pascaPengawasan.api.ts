@@ -124,6 +124,47 @@ export const api_pasca_pengawasan = api.injectEndpoints({
                 return response;
             },
         }),
+        getListTahapanPascaPengawasan: builder.query<any, void>({
+            query: () => ({
+                url: `tahapan-pasca-pengawasan`,
+            }),
+        }),
+        getTahapanPascaPengawasan: builder.query<any, void>({
+            query: () => ({
+                url: `tahapan-pasca-pengawasan/all`,
+            }),
+        }),
+        getStatusTahapanPascaPengawasan: builder.query<any, void>({
+            query: () => ({
+                url: `status-data`,
+            }),
+        }),
+        createTahapanPascaPengawasan: builder.mutation<any, any>({
+            query: (credentials: FormData) => ({
+                url: `pasca-pengawasan/tahapan/create`,
+                method: "POST",
+                body: credentials,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        updateTahapanPascaPengawasan: builder.mutation<any, any>({
+            query: ({ data, id }) => ({
+                url: `pasca-pengawasan/tahapan/update/${id}`,
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        deleteTahapanPascaPengawasan: builder.mutation<any, string>({
+            query: (id: string) => ({
+                url: `pasca-pengawasan/tahapan/delete/${id}`,
+                method: "DELETE",
+            }),
+        }),
     })
 });
 
@@ -144,5 +185,11 @@ export const {
     useDeleteDokumenMutation,
     useCreatePascaPengawasanArsipMutation,
     useAktifkanDataPascaPengawasanMutation,
-    useEskalasiPascaPengawasanMutation
+    useEskalasiPascaPengawasanMutation,
+    useCreateTahapanPascaPengawasanMutation,
+    useDeleteTahapanPascaPengawasanMutation,
+    useUpdateTahapanPascaPengawasanMutation,
+    useGetListTahapanPascaPengawasanQuery,
+    useGetTahapanPascaPengawasanQuery,
+    useGetStatusTahapanPascaPengawasanQuery
 } = api_pasca_pengawasan;

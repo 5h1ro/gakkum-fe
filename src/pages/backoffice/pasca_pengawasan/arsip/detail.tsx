@@ -13,7 +13,7 @@ import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
 import { useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetDetailPerencanaanQuery, useGetDetailPetamasalahQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
-import { useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePascaPengawasanArsipMutation, useAktifkanDataPascaPengawasanMutation, useCreateDokumenPascaPengawasanMutation } from '../../../../api/pascaPengawasan.api';
+import { useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePascaPengawasanArsipMutation, useAktifkanDataPascaPengawasanMutation, useCreateDokumenPascaPengawasanMutation, useGetTahapanPascaPengawasanQuery, useGetStatusTahapanPascaPengawasanQuery, useCreateTahapanPascaPengawasanMutation, useUpdateTahapanPascaPengawasanMutation, useDeleteTahapanPascaPengawasanMutation } from '../../../../api/pascaPengawasan.api';
 
 export default function PascaPengawasanArsipDetail() {
     const { dataID } = useParams();
@@ -73,7 +73,7 @@ export default function PascaPengawasanArsipDetail() {
     const [problem, setProblem] = useState('')
     const [alasan, setAlasan] = useState('')
     const [status, setStatus] = useState('')
-    const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Catatan']
+    const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Catatan', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
     const [updateRegistrasi] = useUpdateRegistrasiMutation();
     const { data: detailRegistrasi, isLoading: getting, isFetching } = useGetDetailPerencanaanQuery(dataID!);
@@ -283,9 +283,9 @@ export default function PascaPengawasanArsipDetail() {
         }
     };
 
-    const [openFilterTahapan, setOpenFilterTahapan] = useState<boolean>(false)
+    const [openFilterCatatan, setOpenFilterCatatan] = useState<boolean>(false)
     const [deleteCatatan] = useDeleteCatatanMutation();
-    const filterExcludeTahapan = ['aksi']
+    const filterExcludeCatatan = ['aksi']
     const columnsCatatan: MRT_ColumnDef<any>[] = [
         {
             accessorKey: 'id',
@@ -631,6 +631,122 @@ export default function PascaPengawasanArsipDetail() {
                     <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
                         await deleteDokumen(row.original.id).unwrap();
                         window.location.reload();
+                    }}>
+                        <RiDeleteBin2Fill />
+                    </IconButton>
+                </Grid2>
+            },
+            enableColumnFilter: false,
+        },
+    ];
+
+    const navigateToTab = (tabIndex: number) => {
+        navigate(`/perencanaan/arsip/detail/${dataID}?tab=${tabIndex}`,);
+        setValue(tabIndex);
+        window.location.reload();
+    };
+
+    const { data: tahapan } = useGetTahapanPascaPengawasanQuery();
+    const { data: listStatusTahapan } = useGetStatusTahapanPascaPengawasanQuery();
+    const [tahapanOpen, setTahapanOpen] = useState<boolean>(false)
+    const [tahapanEdit, setTahapanEdit] = useState<boolean>(false)
+    const [openFilterTahapan, setOpenFilterTahapan] = useState<boolean>(false)
+    const filterExcludeTahapan = ['aksi']
+    const [jenisTahapan, setJenisTahapan] = useState<string>('')
+    const [statusTahapan, setStatusTahapan] = useState<string>('')
+    const [employeeTahapan, setEmployeeTahapan] = useState<string>('')
+    const [idTahapan, setIdTahapan] = useState<string>('')
+    const [tanggalTerbitTahapan, setTanggalTerbitTahapan] = useState<Moment | null>(null)
+    const [berlakuTahapan, setBerlakuTahapan] = useState<Moment | null>(null)
+    const [createTahapan, { isLoading: isLoadingTahapan }] = useCreateTahapanPascaPengawasanMutation();
+    const [updateTahapan] = useUpdateTahapanPascaPengawasanMutation();
+    const [deleteTahapan] = useDeleteTahapanPascaPengawasanMutation();
+    const onCreateTahapan = async () => {
+        const formData = new FormData();
+        formData.append('data_id', dataID!);
+        formData.append('tahapan_perencanaan_id', jenisTahapan);
+        formData.append('employee_id', employeeTahapan);
+        formData.append('status_data_id', statusTahapan);
+        formData.append('mulai', tanggalTerbitTahapan?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
+        formData.append('selesai', berlakuTahapan?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
+        try {
+            if (tahapanEdit) {
+                await updateTahapan({
+                    data: formData,
+                    id: idTahapan
+                }).unwrap();
+            } else {
+                await createTahapan(formData).unwrap();
+            }
+            navigateToTab(3)
+        } catch (error: any) {
+        }
+    };
+    const columnsTahapan: MRT_ColumnDef<any>[] = [
+        {
+            accessorKey: 'id',
+            header: 'ID',
+            Cell: ({ row }) => row.index + 1,
+        },
+        {
+            Cell: ({ row }) => row.original.mulai,
+            header: 'Mulai',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            accessorKey: "selesai",
+            header: 'Selesai',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            accessorKey: "aksi",
+            header: 'Aksi',
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            size: 50,
+            Cell: ({ row }) => {
+                return <Grid2 container gap={1}>
+                    <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm" onClick={() => {
+                        setJenisTahapan(row.original.tahapan_perencanaan_id)
+                        setTanggalTerbitTahapan(moment(row.original.mulai))
+                        setBerlakuTahapan(moment(row.original.selesai))
+                        setIdTahapan(row.original.id)
+                        setStatusTahapan(row.original.status_data_id)
+                        setEmployeeTahapan(row.original.employee_id)
+                        setTahapanOpen(true)
+                        setTahapanEdit(true)
+                    }}>
+                        <RiEdit2Fill />
+                    </IconButton>
+                    <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
+                        await deleteTahapan(row.original.id).unwrap();
+                        navigateToTab(3)
                     }}>
                         <RiDeleteBin2Fill />
                     </IconButton>
@@ -1314,6 +1430,130 @@ export default function PascaPengawasanArsipDetail() {
                     </Grid2>
                 </DialogContent>
             </Dialog>
+            <Dialog
+                open={tahapanOpen}
+                onClose={() => setTahapanOpen(false)}
+                maxWidth={'lg'}
+                sx={{
+                    '.MuiPaper-root': {
+                        borderRadius: '16px',
+                        '@media(minWidth: 960px)': {
+                            paddingX: '64px'
+                        },
+                    }
+                }}
+            >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setTahapanOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
+                        <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
+                            Tambah Tahapan
+                        </Typography>
+                    </DialogContentText>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">Tahapan <span className='text-danger-600'>*</span></Typography>
+                        <Select
+                            value={jenisTahapan}
+                            className='rounded-lg mt-2'
+                            fullWidth
+                            onChange={(event) => {
+                                setJenisTahapan(event.target.value)
+                            }}
+                        >
+                            {
+                                tahapan?.data?.map((value: any, index: any) => {
+                                    return <MenuItem
+                                        key={`tahapan_${index}`}
+                                        value={value.id}
+                                    >
+                                        {value.name}
+                                    </MenuItem>
+                                })
+                            }
+                        </Select>
+                    </Grid2>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">Status <span className='text-danger-600'>*</span></Typography>
+                        <Select
+                            value={statusTahapan}
+                            className='rounded-lg mt-2'
+                            fullWidth
+                            onChange={(event) => {
+                                setStatusTahapan(event.target.value)
+                            }}
+                        >
+                            {
+                                listStatusTahapan?.data?.map((value: any, index: any) => {
+                                    return <MenuItem
+                                        key={`status_${index}`}
+                                        value={value.id}
+                                    >
+                                        {value.name}
+                                    </MenuItem>
+                                })
+                            }
+                        </Select>
+                    </Grid2>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">Karyawan <span className='text-danger-600'>*</span></Typography>
+                        <Select
+                            value={employeeTahapan}
+                            className='rounded-lg mt-2'
+                            fullWidth
+                            onChange={(event) => {
+                                setEmployeeTahapan(event.target.value)
+                            }}
+                        >
+                            {
+                                employees?.data?.map((value: any, index: any) => {
+                                    return <MenuItem
+                                        key={`employee_${index}`}
+                                        value={value.id}
+                                    >
+                                        {value.name}
+                                    </MenuItem>
+                                })
+                            }
+                        </Select>
+                    </Grid2>
+                    <Grid2 container xs={12} mt={'1rem'}>
+                        <Typography className="text-base-dark w-full">Tanggal Mulai<span className='text-danger-600'>*</span></Typography>
+                        <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <MobileDateTimePicker
+                                ampm={false}
+                                value={tanggalTerbitTahapan}
+                                onChange={(data) => setTanggalTerbitTahapan(data)}
+                                className='mt-2 w-full' />
+                        </LocalizationProvider>
+                    </Grid2>
+                    <Grid2 container xs={12} mt={'1rem'}>
+                        <Typography className="text-base-dark w-full">Tanggal Selesai<span className='text-danger-600'>*</span></Typography>
+                        <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <MobileDateTimePicker
+                                ampm={false}
+                                value={berlakuTahapan}
+                                onChange={(data) => setBerlakuTahapan(data)}
+                                className='mt-2 w-full' />
+                        </LocalizationProvider>
+                    </Grid2>
+                    <Grid2 container className='flex gap-2 mt-6 justify-center pb-8 md:pb-16'>
+                        <Button onClick={onCreateTahapan} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white py-4 px-6 rounded-xl gap-3'>
+                            Simpan
+                        </Button>
+                    </Grid2>
+                </DialogContent>
+            </Dialog>
             <Grid2 container alignContent={'center'}>
                 <IconButton onClick={() => navigate('/pengawasan/daftar')}>
                     <RiArrowLeftLine className="w-8 h-8" color="#000000" />
@@ -1881,6 +2121,21 @@ export default function PascaPengawasanArsipDetail() {
                         <Grid2 container>
                             <Grid2 xs={12} container className='w-full justify-end'>
                                 <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => {
+                                    setJenisTahapan('')
+                                    setTanggalTerbitTahapan(moment(''))
+                                    setBerlakuTahapan(moment(''))
+                                    setIdTahapan('')
+                                    setTahapanOpen(true)
+                                    setTahapanEdit(false)
+                                }}><RiAddLine /> Tambah</Button>
+                            </Grid2>
+                        </Grid2>
+                        <Table openFilter={openFilterTahapan} setOpenFilter={setOpenFilterTahapan} columns={columnsTahapan} data={detailRegistrasi?.data?.tahapan ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeTahapan}></Table>
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={5}>
+                        <Grid2 container>
+                            <Grid2 xs={12} container className='w-full justify-end'>
+                                <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => {
                                     setJudulCatatan('')
                                     setIsiCatatan('')
                                     setCatatanEdit(false)
@@ -1888,7 +2143,7 @@ export default function PascaPengawasanArsipDetail() {
                                 }}><RiAddLine /> Tambah</Button>
                             </Grid2>
                         </Grid2>
-                        <Table openFilter={openFilterTahapan} setOpenFilter={setOpenFilterTahapan} columns={columnsCatatan} data={detailRegistrasi?.data?.catatan ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeTahapan}></Table>
+                        <Table openFilter={openFilterCatatan} setOpenFilter={setOpenFilterCatatan} columns={columnsCatatan} data={detailRegistrasi?.data?.catatan ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeCatatan}></Table>
                     </CustomTabPanel>
                 </TabPanel>
             </Grid2>
