@@ -7,13 +7,11 @@ import { gapi } from "gapi-script";
 import { useEffect, useState } from 'react';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useGetAgendaPengawasanQuery } from '../../../../api/pengawasan.api';
+import { useNavigate } from 'react-router-dom';
 
 function PengawasanAgenda() {
     const [events, setEvents] = useState<any[]>([]);
     const localizer = momentLocalizer(moment);
-    const CLIENT_ID = "49338518240-h05l0si2q6kh1n6bbn2vrrai5mprrev0.apps.googleusercontent.com";
-    const API_KEY = "AIzaSyCMvcvDtlzBemr4alP3m6vDbqtoKJ31DTc";
-    const SCOPES = "https://www.googleapis.com/auth/calendar.events";
 
     // useEffect(() => {
     //     const initClient = () => {
@@ -48,9 +46,9 @@ function PengawasanAgenda() {
     //     setEvents(fetchedEvents);
     // };
 
-    const handleEventClick = () => {
-        console.log('a');
-
+    const navigate = useNavigate();
+    const handleEventClick = (data: any) => {
+        navigate(`/pengawasan/daftar/detail/${data.id}`);
     };
     const { data: dataAgenda, isLoading: getting, isFetching } = useGetAgendaPengawasanQuery();
     useEffect(() => {

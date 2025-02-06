@@ -7,6 +7,7 @@ import { gapi } from "gapi-script";
 import { useEffect, useState } from 'react';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useGetAgendaPascaPengawasanQuery } from '../../../../api/pascaPengawasan.api';
+import { useNavigate } from 'react-router-dom';
 
 function PascaPengawasanAgenda() {
     const [events, setEvents] = useState<any[]>([]);
@@ -47,6 +48,11 @@ function PascaPengawasanAgenda() {
 
     //     setEvents(fetchedEvents);
     // };
+
+    const navigate = useNavigate();
+    const handleEventClick = (data: any) => {
+        navigate(`/pasca-pengawasan/daftar/detail/${data.id}`);
+    };
     const { data: dataAgenda, isLoading: getting, isFetching } = useGetAgendaPascaPengawasanQuery();
     useEffect(() => {
         setEvents(dataAgenda?.data ?? [])
@@ -68,6 +74,7 @@ function PascaPengawasanAgenda() {
                 events={events}
                 startAccessor="start"
                 endAccessor="end"
+                onSelectEvent={handleEventClick}
                 style={{ height: 500 }}
                 className='mt-16'
                 eventPropGetter={(event) => {

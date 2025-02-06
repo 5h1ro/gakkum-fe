@@ -7,6 +7,7 @@ import { gapi } from "gapi-script";
 import { useEffect, useState } from 'react';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useGetAgendaTimPengawasanQuery } from '../../../../api/pengawasan.api';
+import { useNavigate } from 'react-router-dom';
 
 function PengawasanAgendaTim() {
     const [events, setEvents] = useState<any[]>([]);
@@ -47,6 +48,11 @@ function PengawasanAgendaTim() {
 
     //     setEvents(fetchedEvents);
     // };
+
+    const navigate = useNavigate();
+    const handleEventClick = (data: any) => {
+        navigate(`/pengawasan/daftar/detail/${data.id}`);
+    };
     const { data: dataAgenda, isLoading: getting, isFetching } = useGetAgendaTimPengawasanQuery();
     useEffect(() => {
         setEvents(dataAgenda?.data ?? [])
@@ -68,6 +74,7 @@ function PengawasanAgendaTim() {
                 events={events}
                 startAccessor="start"
                 endAccessor="end"
+                onSelectEvent={handleEventClick}
                 style={{ height: 500 }}
                 className='mt-16'
                 eventPropGetter={(event) => {
