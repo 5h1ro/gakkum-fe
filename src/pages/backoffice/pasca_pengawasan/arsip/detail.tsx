@@ -12,7 +12,7 @@ import CustomTabPanel from '../../../../components/molecules/CustomTabPanel';
 import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
-import { useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetDetailPerencanaanQuery, useGetDetailPetamasalahQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
+import { useCreateCatatanMutation, useCreatePetaMasalahMutation, useCreateRegistrasiMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetCatatanQuery, useGetDetailPascaPengawasanQuery, useGetDetailPetamasalahQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
 import { useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePascaPengawasanArsipMutation, useAktifkanDataPascaPengawasanMutation, useCreateDokumenPascaPengawasanMutation, useGetTahapanPascaPengawasanQuery, useGetStatusTahapanPascaPengawasanQuery, useCreateTahapanPascaPengawasanMutation, useUpdateTahapanPascaPengawasanMutation, useDeleteTahapanPascaPengawasanMutation } from '../../../../api/pascaPengawasan.api';
 
 export default function PascaPengawasanArsipDetail() {
@@ -73,10 +73,10 @@ export default function PascaPengawasanArsipDetail() {
     const [problem, setProblem] = useState('')
     const [alasan, setAlasan] = useState('')
     const [status, setStatus] = useState('')
-    const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Catatan', 'Catatan']
+    const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Tahapan', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
     const [updateRegistrasi] = useUpdateRegistrasiMutation();
-    const { data: detailRegistrasi, isLoading: getting, isFetching } = useGetDetailPerencanaanQuery(dataID!);
+    const { data: detailRegistrasi, isLoading: getting, isFetching } = useGetDetailPascaPengawasanQuery(dataID!);
     useEffect(() => {
         setCompanyId(detailRegistrasi?.data?.company_id ?? '')
         setTypeId(detailRegistrasi?.data?.jenis_pengawasan ?? '')
@@ -126,7 +126,7 @@ export default function PascaPengawasanArsipDetail() {
                 id: dataID!,
                 data: formData
             }).unwrap();
-            navigate('/pengawasan/daftar')
+            navigate('/pasca-pengawasan/daftar')
         } catch (error: any) {
         }
     };
@@ -278,7 +278,7 @@ export default function PascaPengawasanArsipDetail() {
             } else {
                 await createTim(formData).unwrap();
             }
-            navigate('/pengawasan/daftar')
+            navigate('/pasca-pengawasan/daftar')
         } catch (error: any) {
         }
     };
@@ -429,7 +429,7 @@ export default function PascaPengawasanArsipDetail() {
                 id: detailRegistrasi?.data?.peta_masalah?.id ?? '',
                 data: formData
             }).unwrap();
-            navigate('/pengawasan/daftar')
+            navigate('/pasca-pengawasan/daftar')
         } catch (error: any) {
         }
     };
@@ -456,7 +456,7 @@ export default function PascaPengawasanArsipDetail() {
             } else {
                 await createCatatan(formData).unwrap();
             }
-            navigate('/pengawasan/daftar')
+            navigate('/pasca-pengawasan/daftar')
         } catch (error: any) {
         }
     };
@@ -469,7 +469,7 @@ export default function PascaPengawasanArsipDetail() {
         formData.append("alasan_arsip", alasanArsip);
         try {
             await createArsip({ data: formData, id: dataID! }).unwrap();
-            navigate("/pengawasan/daftar");
+            navigate("/pasca-pengawasan/daftar");
         } catch (error: any) { }
     };
 
@@ -491,7 +491,7 @@ export default function PascaPengawasanArsipDetail() {
     const onCreateDokumen = async () => {
         const formData = new FormData();
         formData.append('data_id', dataID!);
-        formData.append('dokumen_pengawasan_id', jenisDokumen);
+        formData.append('dokumen_pasca_pengawasan_id', jenisDokumen);
         formData.append('nomor_file', nomorDokumen);
         formData.append('tanggal_terbit', tanggalTerbitDokumen?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
         formData.append('berlaku', berlakuDokumen?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
@@ -505,7 +505,7 @@ export default function PascaPengawasanArsipDetail() {
             } else {
                 await createDokumen(formData).unwrap();
             }
-            navigate('/pengawasan/daftar')
+            navigate('/pasca-pengawasan/daftar')
         } catch (error: any) {
         }
     };
@@ -515,7 +515,7 @@ export default function PascaPengawasanArsipDetail() {
         const formData = new FormData();
         try {
             await createAktifkanPascaPengawasan({ data: formData, id: dataID! }).unwrap();
-            navigate('/pengawasan/daftar')
+            navigate('/pasca-pengawasan/daftar')
         } catch (error: any) {
         }
     };
@@ -618,7 +618,7 @@ export default function PascaPengawasanArsipDetail() {
             Cell: ({ row }) => {
                 return <Grid2 container gap={1}>
                     <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm" onClick={() => {
-                        setJenisDokumen(row.original.dokumen_pengawasan_id)
+                        setJenisDokumen(row.original.dokumen_pasca_pengawasan_id)
                         setNomorDokumen(row.original.nomor_file)
                         setTanggalTerbitDokumen(moment(row.original.tanggal_terbit))
                         setBerlakuDokumen(moment(row.original.berlaku))
@@ -641,7 +641,7 @@ export default function PascaPengawasanArsipDetail() {
     ];
 
     const navigateToTab = (tabIndex: number) => {
-        navigate(`/perencanaan/arsip/detail/${dataID}?tab=${tabIndex}`,);
+        navigate(`/pasca-pengawasan/arsip/detail/${dataID}?tab=${tabIndex}`,);
         setValue(tabIndex);
         window.location.reload();
     };
@@ -664,7 +664,7 @@ export default function PascaPengawasanArsipDetail() {
     const onCreateTahapan = async () => {
         const formData = new FormData();
         formData.append('data_id', dataID!);
-        formData.append('tahapan_perencanaan_id', jenisTahapan);
+        formData.append('tahapan_pasca_pengawasan_id', jenisTahapan);
         formData.append('employee_id', employeeTahapan);
         formData.append('status_data_id', statusTahapan);
         formData.append('mulai', tanggalTerbitTahapan?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
@@ -678,7 +678,7 @@ export default function PascaPengawasanArsipDetail() {
             } else {
                 await createTahapan(formData).unwrap();
             }
-            navigateToTab(3)
+            navigateToTab(4)
         } catch (error: any) {
         }
     };
@@ -733,7 +733,7 @@ export default function PascaPengawasanArsipDetail() {
             Cell: ({ row }) => {
                 return <Grid2 container gap={1}>
                     <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm" onClick={() => {
-                        setJenisTahapan(row.original.tahapan_perencanaan_id)
+                        setJenisTahapan(row.original.tahapan_pasca_pengawasan_id)
                         setTanggalTerbitTahapan(moment(row.original.mulai))
                         setBerlakuTahapan(moment(row.original.selesai))
                         setIdTahapan(row.original.id)
@@ -746,7 +746,7 @@ export default function PascaPengawasanArsipDetail() {
                     </IconButton>
                     <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
                         await deleteTahapan(row.original.id).unwrap();
-                        navigateToTab(3)
+                        navigateToTab(4)
                     }}>
                         <RiDeleteBin2Fill />
                     </IconButton>
@@ -1555,7 +1555,7 @@ export default function PascaPengawasanArsipDetail() {
                 </DialogContent>
             </Dialog>
             <Grid2 container alignContent={'center'}>
-                <IconButton onClick={() => navigate('/pengawasan/daftar')}>
+                <IconButton onClick={() => navigate('/pasca-pengawasan/daftar')}>
                     <RiArrowLeftLine className="w-8 h-8" color="#000000" />
                 </IconButton>
                 <Typography className="w-10/12 text-4xl font-semibold text-base-dark pt-1">

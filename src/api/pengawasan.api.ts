@@ -165,6 +165,16 @@ export const api_pengawasan = api.injectEndpoints({
                 method: "DELETE",
             }),
         }),
+        getAgendaPengawasan: builder.query<any, void>({
+            query: () => ({
+                url: `pengawasan/agenda`,
+            }),
+        }),
+        getAgendaTimPengawasan: builder.query<any, void>({
+            query: () => ({
+                url: `pengawasan/agenda-tim`,
+            }),
+        }),
     })
 });
 
@@ -191,5 +201,7 @@ export const {
     useUpdateTahapanPengawasanMutation,
     useGetListTahapanPengawasanQuery,
     useGetTahapanPengawasanQuery,
-    useGetStatusTahapanPengawasanQuery
+    useGetStatusTahapanPengawasanQuery,
+    useGetAgendaPengawasanQuery,
+    useGetAgendaTimPengawasanQuery,
 } = api_pengawasan;

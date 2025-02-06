@@ -8,6 +8,7 @@ export interface auth_response {
     id: string;
     name: string;
     email: string;
+    role: string;
 };
 
 export interface register_request {

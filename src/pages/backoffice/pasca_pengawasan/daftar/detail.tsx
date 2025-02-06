@@ -12,7 +12,7 @@ import CustomTabPanel from '../../../../components/molecules/CustomTabPanel';
 import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
-import { useCreateCatatanMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetDetailPerencanaanQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
+import { useCreateCatatanMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetDetailPascaPengawasanQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
 import { useCreateDokumenPascaPengawasanMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePascaPengawasanArsipMutation, useEskalasiPascaPengawasanMutation, useGetTahapanPascaPengawasanQuery, useGetStatusTahapanPascaPengawasanQuery, useCreateTahapanPascaPengawasanMutation, useUpdateTahapanPascaPengawasanMutation, useDeleteTahapanPascaPengawasanMutation } from '../../../../api/pascaPengawasan.api';
 
 export default function PascaPengawasanDaftarDetail() {
@@ -86,7 +86,7 @@ export default function PascaPengawasanDaftarDetail() {
     const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Tahapan', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
     const [updateRegistrasi] = useUpdateRegistrasiMutation();
-    const { data: detailRegistrasi, isLoading: getting, isFetching } = useGetDetailPerencanaanQuery(dataID!);
+    const { data: detailRegistrasi, isLoading: getting, isFetching } = useGetDetailPascaPengawasanQuery(dataID!);
     useEffect(() => {
         setCompanyId(detailRegistrasi?.data?.company_id ?? '')
         setTypeId(detailRegistrasi?.data?.jenis_pengawasan ?? '')
@@ -508,7 +508,7 @@ export default function PascaPengawasanDaftarDetail() {
     const onCreateDokumen = async () => {
         const formData = new FormData();
         formData.append('data_id', dataID!);
-        formData.append('dokumen_perencanaan_id', jenisDokumen);
+        formData.append('dokumen_pasca_pengawasan_id', jenisDokumen);
         formData.append('nomor_file', nomorDokumen);
         formData.append('tanggal_terbit', tanggalTerbitDokumen?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
         formData.append('berlaku', berlakuDokumen?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
@@ -664,7 +664,7 @@ export default function PascaPengawasanDaftarDetail() {
     const onCreateTahapan = async () => {
         const formData = new FormData();
         formData.append('data_id', dataID!);
-        formData.append('tahapan_perencanaan_id', jenisTahapan);
+        formData.append('tahapan_pasca_pengawasan_id', jenisTahapan);
         formData.append('employee_id', employeeTahapan);
         formData.append('status_data_id', statusTahapan);
         formData.append('mulai', tanggalTerbitTahapan?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
@@ -678,7 +678,7 @@ export default function PascaPengawasanDaftarDetail() {
             } else {
                 await createTahapan(formData).unwrap();
             }
-            navigateToTab(3)
+            navigateToTab(4)
         } catch (error: any) {
         }
     };
@@ -733,7 +733,7 @@ export default function PascaPengawasanDaftarDetail() {
             Cell: ({ row }) => {
                 return <Grid2 container gap={1}>
                     <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm" onClick={() => {
-                        setJenisTahapan(row.original.tahapan_perencanaan_id)
+                        setJenisTahapan(row.original.tahapan_pasca_pengawasan_id)
                         setTanggalTerbitTahapan(moment(row.original.mulai))
                         setBerlakuTahapan(moment(row.original.selesai))
                         setIdTahapan(row.original.id)
@@ -746,7 +746,7 @@ export default function PascaPengawasanDaftarDetail() {
                     </IconButton>
                     <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
                         await deleteTahapan(row.original.id).unwrap();
-                        navigateToTab(3)
+                        navigateToTab(4)
                     }}>
                         <RiDeleteBin2Fill />
                     </IconButton>

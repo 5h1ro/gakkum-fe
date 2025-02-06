@@ -680,7 +680,7 @@ export default function PerencanaanDaftarDetail() {
             } else {
                 await createTahapan(formData).unwrap();
             }
-            navigateToTab(3)
+            navigateToTab(4)
         } catch (error: any) {
         }
     };
@@ -748,7 +748,7 @@ export default function PerencanaanDaftarDetail() {
                     </IconButton>
                     <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
                         await deleteTahapan(row.original.id).unwrap();
-                        navigateToTab(3)
+                        navigateToTab(4)
                     }}>
                         <RiDeleteBin2Fill />
                     </IconButton>

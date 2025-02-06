@@ -7,9 +7,21 @@ export const api_dashboard = api.injectEndpoints({
                 url: 'dashboard',
             }),
         }),
+        getNotification: builder.query<any, void>({
+            query: () => ({
+                url: 'notifikasi',
+            }),
+        }),
+        getNotificationAll: builder.query<any, void>({
+            query: () => ({
+                url: 'notifikasi/all',
+            }),
+        }),
     })
 });
 
 export const {
-    useGetDashboardQuery
+    useGetDashboardQuery,
+    useGetNotificationQuery,
+    useGetNotificationAllQuery
 } = api_dashboard;

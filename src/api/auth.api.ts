@@ -26,7 +26,7 @@ export const api_auth = api.injectEndpoints({
                     setCookie('access_token', response.access_token ?? '', 30);
                     setCookie('email', response.email ?? '', 30);
                     setCookie('name', response.name ?? '', 30);
-                    // setCookie('role', response.role ?? '', 30);
+                    setCookie('role', response.role ?? '', 30);
                     // setCookie('avatar', response.image_path ?? '', 30);
                 }
                 return response;

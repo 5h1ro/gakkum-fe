@@ -6,9 +6,10 @@ import moment from "moment";
 import { gapi } from "gapi-script";
 import { useEffect, useState } from 'react';
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { useGetAgendaPascaPengawasanQuery } from '../../../../api/pascaPengawasan.api';
 
 function PascaPengawasanAgenda() {
-    const [events, setEvents] = useState([]);
+    const [events, setEvents] = useState<any[]>([]);
     const localizer = momentLocalizer(moment);
     const CLIENT_ID = "49338518240-h05l0si2q6kh1n6bbn2vrrai5mprrev0.apps.googleusercontent.com";
     const API_KEY = "AIzaSyCMvcvDtlzBemr4alP3m6vDbqtoKJ31DTc";
@@ -46,6 +47,10 @@ function PascaPengawasanAgenda() {
 
     //     setEvents(fetchedEvents);
     // };
+    const { data: dataAgenda, isLoading: getting, isFetching } = useGetAgendaPascaPengawasanQuery();
+    useEffect(() => {
+        setEvents(dataAgenda?.data ?? [])
+    }, [dataAgenda])
     return (
         <Layout>
             <Grid2 container justifyContent={'space-between'}>
@@ -65,6 +70,21 @@ function PascaPengawasanAgenda() {
                 endAccessor="end"
                 style={{ height: 500 }}
                 className='mt-16'
+                eventPropGetter={(event) => {
+                    let backgroundColor = "#003285"; // Default untuk "Penghentian Pelanggaran Tertentu"
+                    if (event.tahapan === "Pengawasan Pelaksanaan SA") {
+                        backgroundColor = "#C40C0C";
+                    }
+
+                    return {
+                        style: {
+                            backgroundColor,
+                            color: "#fff",
+                            borderRadius: "5px",
+                            border: "none",
+                        },
+                    };
+                }}
             />
         </Layout>
     );

@@ -12,9 +12,8 @@ import CustomTabPanel from '../../../../components/molecules/CustomTabPanel';
 import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
-import { useCreateCatatanMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetDetailPerencanaanQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
-import { useCreateDokumenPengawasanMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePengawasanArsipMutation, useEskalasiPengawasanMutation, useGetTahapanPengawasanQuery, useGetStatusTahapanPengawasanQuery } from '../../../../api/pengawasan.api';
-import { useCreateTahapanPerencanaanMutation, useDeleteTahapanPerencanaanMutation, useGetStatusTahapanPerencanaanQuery, useGetTahapanPerencanaanQuery, useUpdateTahapanPerencanaanMutation } from '../../../../api/perencanaan.api';
+import { useCreateCatatanMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetDetailPengawasanQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
+import { useCreateDokumenPengawasanMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePengawasanArsipMutation, useEskalasiPengawasanMutation, useGetTahapanPengawasanQuery, useGetStatusTahapanPengawasanQuery, useCreateTahapanPengawasanMutation, useUpdateTahapanPengawasanMutation, useDeleteTahapanPengawasanMutation } from '../../../../api/pengawasan.api';
 
 export default function PengawasanDaftarDetail() {
     const { dataID } = useParams();
@@ -87,7 +86,7 @@ export default function PengawasanDaftarDetail() {
     const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Tahapan', 'Catatan']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
     const [updateRegistrasi] = useUpdateRegistrasiMutation();
-    const { data: detailRegistrasi, isLoading: getting, isFetching } = useGetDetailPerencanaanQuery(dataID!);
+    const { data: detailRegistrasi, isLoading: getting, isFetching } = useGetDetailPengawasanQuery(dataID!);
     useEffect(() => {
         setCompanyId(detailRegistrasi?.data?.company_id ?? '')
         setTypeId(detailRegistrasi?.data?.jenis_pengawasan ?? '')
@@ -509,7 +508,7 @@ export default function PengawasanDaftarDetail() {
     const onCreateDokumen = async () => {
         const formData = new FormData();
         formData.append('data_id', dataID!);
-        formData.append('dokumen_perencanaan_id', jenisDokumen);
+        formData.append('dokumen_pengawasan_id', jenisDokumen);
         formData.append('nomor_file', nomorDokumen);
         formData.append('tanggal_terbit', tanggalTerbitDokumen?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
         formData.append('berlaku', berlakuDokumen?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
@@ -659,13 +658,13 @@ export default function PengawasanDaftarDetail() {
     const [idTahapan, setIdTahapan] = useState<string>('')
     const [tanggalTerbitTahapan, setTanggalTerbitTahapan] = useState<Moment | null>(null)
     const [berlakuTahapan, setBerlakuTahapan] = useState<Moment | null>(null)
-    const [createTahapan, { isLoading: isLoadingTahapan }] = useCreateTahapanPerencanaanMutation();
-    const [updateTahapan] = useUpdateTahapanPerencanaanMutation();
-    const [deleteTahapan] = useDeleteTahapanPerencanaanMutation();
+    const [createTahapan, { isLoading: isLoadingTahapan }] = useCreateTahapanPengawasanMutation();
+    const [updateTahapan] = useUpdateTahapanPengawasanMutation();
+    const [deleteTahapan] = useDeleteTahapanPengawasanMutation();
     const onCreateTahapan = async () => {
         const formData = new FormData();
         formData.append('data_id', dataID!);
-        formData.append('tahapan_perencanaan_id', jenisTahapan);
+        formData.append('tahapan_pengawasan_id', jenisTahapan);
         formData.append('employee_id', employeeTahapan);
         formData.append('status_data_id', statusTahapan);
         formData.append('mulai', tanggalTerbitTahapan?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
@@ -679,7 +678,7 @@ export default function PengawasanDaftarDetail() {
             } else {
                 await createTahapan(formData).unwrap();
             }
-            navigateToTab(3)
+            navigateToTab(4)
         } catch (error: any) {
         }
     };
@@ -688,6 +687,38 @@ export default function PengawasanDaftarDetail() {
             accessorKey: 'id',
             header: 'ID',
             Cell: ({ row }) => row.index + 1,
+        },
+        {
+            Cell: ({ row }) => row.original.tahapan_pengawasan?.name ?? '-',
+            header: 'Tahapan',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            Cell: ({ row }) => row.original.employee?.name ?? '',
+            header: 'Nama',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
         },
         {
             Cell: ({ row }) => row.original.mulai,
@@ -734,7 +765,7 @@ export default function PengawasanDaftarDetail() {
             Cell: ({ row }) => {
                 return <Grid2 container gap={1}>
                     <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm" onClick={() => {
-                        setJenisTahapan(row.original.tahapan_perencanaan_id)
+                        setJenisTahapan(row.original.tahapan_pengawasan_id)
                         setTanggalTerbitTahapan(moment(row.original.mulai))
                         setBerlakuTahapan(moment(row.original.selesai))
                         setIdTahapan(row.original.id)
@@ -747,7 +778,7 @@ export default function PengawasanDaftarDetail() {
                     </IconButton>
                     <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
                         await deleteTahapan(row.original.id).unwrap();
-                        navigateToTab(3)
+                        navigateToTab(4)
                     }}>
                         <RiDeleteBin2Fill />
                     </IconButton>

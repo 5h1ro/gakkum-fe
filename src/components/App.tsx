@@ -71,6 +71,9 @@ import CreateCompany from '../pages/backoffice/setting/company/create';
 import Company from '../pages/backoffice/setting/company';
 import DetailCompany from '../pages/backoffice/setting/company/detail';
 import UpdateCompany from '../pages/backoffice/setting/company/update';
+import PascaPengawasanArsip from '../pages/backoffice/pasca_pengawasan/arsip';
+import PascaPengawasanArsipDetail from '../pages/backoffice/pasca_pengawasan/arsip/detail';
+import Notifikasi from '../pages/backoffice/notifikasi';
 
 const App = () => {
   const [showSnackbar, setShowSnackbar] = useState<snackbarType>({
@@ -87,6 +90,7 @@ const App = () => {
       </Route>
       <Route element={<AuthMiddleware />}>
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/notifikasi" element={<Notifikasi />} />
         <Route path="/register/daftar" element={<RegistrasiDaftar />} />
         <Route path="/register/daftar/tambah" element={<RegistrasiDaftarCreate />} />
         <Route path="/register/daftar/detail/:dataID" element={<RegistrasiDaftarDetail />} />
@@ -113,8 +117,8 @@ const App = () => {
         <Route path="/pasca-pengawasan/daftar/detail/:dataID" element={<PascaPengawasanDaftarDetail />} />
         <Route path="/pasca-pengawasan/agenda" element={<PascaPengawasanAgenda />} />
         <Route path="/pasca-pengawasan/agenda-tim" element={<PascaPengawasanAgendaTim />} />
-        <Route path="/pasca-pengawasan/arsip" element={<PengawasanArsip />} />
-        <Route path="/pasca-pengawasan/arsip/detail/:dataID" element={<PengawasanArsipDetail />} />
+        <Route path="/pasca-pengawasan/arsip" element={<PascaPengawasanArsip />} />
+        <Route path="/pasca-pengawasan/arsip/detail/:dataID" element={<PascaPengawasanArsipDetail />} />
 
         <Route path="/profil" element={<Profil />} />
 

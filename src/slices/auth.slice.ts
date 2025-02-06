@@ -37,6 +37,7 @@ const authSlice = createSlice({
             (state, { payload }) => {
                 state.name = payload?.name ?? '';
                 state.email = payload?.email ?? '';
+                state.role = payload?.role ?? '';
             }
         );
     },

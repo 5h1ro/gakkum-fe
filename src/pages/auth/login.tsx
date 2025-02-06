@@ -163,12 +163,12 @@ const Login = () => {
                                                 </Button>
                                             )}
 
-                                            <GoogleLogin
+                                            {/* <GoogleLogin
                                                 onSuccess={handleGoogleLoginSuccess}
                                                 onError={() => {
                                                     console.log("Login Failed");
                                                 }}
-                                            />
+                                            /> */}
                                         </Stack>
                                     </form>
                                 </CardContent>

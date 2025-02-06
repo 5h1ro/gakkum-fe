@@ -6,30 +6,10 @@ import moment from "moment";
 import { gapi } from "gapi-script";
 import { useEffect, useState } from 'react';
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { useGetAgendaPengawasanQuery } from '../../../../api/pengawasan.api';
 
 function PengawasanAgenda() {
-    const [events, setEvents] = useState([
-        {
-            title: 'Pengawasan YKK',
-            start: moment('2025-01-14 07:00:00').toDate(),
-            end: moment('2025-01-14 10:00:00').toDate(),
-        },
-        {
-            title: 'Pengawasan Indofood',
-            start: moment('2025-01-14 13:00:00').toDate(),
-            end: moment('2025-01-14 15:00:00').toDate(),
-        },
-        {
-            title: 'Pengawasan Indofood',
-            start: moment('2025-01-14 16:00:00').toDate(),
-            end: moment('2025-01-14 18:00:00').toDate(),
-        },
-        {
-            title: 'Pengawasan Adaro',
-            start: moment('2025-01-15 09:00:00').toDate(),
-            end: moment('2025-01-15 11:00:00').toDate(),
-        },
-    ]);
+    const [events, setEvents] = useState<any[]>([]);
     const localizer = momentLocalizer(moment);
     const CLIENT_ID = "49338518240-h05l0si2q6kh1n6bbn2vrrai5mprrev0.apps.googleusercontent.com";
     const API_KEY = "AIzaSyCMvcvDtlzBemr4alP3m6vDbqtoKJ31DTc";
@@ -72,6 +52,10 @@ function PengawasanAgenda() {
         console.log('a');
 
     };
+    const { data: dataAgenda, isLoading: getting, isFetching } = useGetAgendaPengawasanQuery();
+    useEffect(() => {
+        setEvents(dataAgenda?.data ?? [])
+    }, [dataAgenda])
     return (
         <Layout>
             <Grid2 container justifyContent={'space-between'}>
@@ -91,6 +75,27 @@ function PengawasanAgenda() {
                 style={{ height: 500 }}
                 className='mt-16'
                 onSelectEvent={handleEventClick}
+                eventPropGetter={(event) => {
+                    let backgroundColor = "#EFB036"; // Default untuk "Pembahasan"
+                    if (event.tahapan === "Pengambilan Sampel") {
+                        backgroundColor = "#3B6790";
+                    }
+                    if (event.tahapan === "Pembahasan") {
+                        backgroundColor = "#EB5A3C";
+                    }
+                    if (event.tahapan === "Permintaan Keterangan") {
+                        backgroundColor = "#A02334";
+                    }
+
+                    return {
+                        style: {
+                            backgroundColor,
+                            color: "#fff",
+                            borderRadius: "5px",
+                            border: "none",
+                        },
+                    };
+                }}
             />
         </Layout>
     );

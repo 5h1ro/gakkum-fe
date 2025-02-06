@@ -165,6 +165,11 @@ export const api_pasca_pengawasan = api.injectEndpoints({
                 method: "DELETE",
             }),
         }),
+        getAgendaPascaPengawasan: builder.query<any, void>({
+            query: () => ({
+                url: `pasca-pengawasan/agenda`,
+            }),
+        }),
     })
 });
 
@@ -191,5 +196,6 @@ export const {
     useUpdateTahapanPascaPengawasanMutation,
     useGetListTahapanPascaPengawasanQuery,
     useGetTahapanPascaPengawasanQuery,
-    useGetStatusTahapanPascaPengawasanQuery
+    useGetStatusTahapanPascaPengawasanQuery,
+    useGetAgendaPascaPengawasanQuery
 } = api_pasca_pengawasan;

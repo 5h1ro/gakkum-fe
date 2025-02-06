@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 //Components
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -25,9 +25,9 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
 //Dependencies
-import { Avatar, Grid, ListSubheader } from '@mui/material';
+import { Avatar, Divider, Grid, ListSubheader } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { RiBankCardLine, RiCalendar2Fill, RiCalendarFill, RiEdit2Fill, RiEditFill, RiFile3Fill, RiFileAddFill, RiFileChartFill, RiFileEditFill, RiFileEditLine, RiFileFill, RiFileHistoryFill, RiFileLockFill, RiFileSearchLine, RiFileShield2Fill, RiFileWarningFill, RiFolderAddLine, RiFoldersFill, RiGlobalLine, RiGroupLine, RiHistoryLine, RiHome5Line, RiListCheck2, RiLogoutCircleRLine, RiMenuFoldLine, RiMenuUnfoldLine, RiUserLine, RiUserSettingsLine } from '@remixicon/react';
+import { RiBankCardLine, RiCalendar2Fill, RiCalendarFill, RiEdit2Fill, RiEditFill, RiFile3Fill, RiFileAddFill, RiFileChartFill, RiFileEditFill, RiFileEditLine, RiFileFill, RiFileHistoryFill, RiFileLockFill, RiFileSearchLine, RiFileShield2Fill, RiFileWarningFill, RiFolderAddLine, RiFoldersFill, RiGlobalLine, RiGroupLine, RiHistoryLine, RiHome5Line, RiListCheck2, RiLogoutCircleRLine, RiMenuFoldLine, RiMenuUnfoldLine, RiNotification4Line, RiNotificationLine, RiUserLine, RiUserSettingsLine } from '@remixicon/react';
 import { useDispatch } from 'react-redux';
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from '../hooks/auth.hook';
@@ -35,16 +35,42 @@ import { props } from '../interfaces/props.interface';
 import { logOut } from '../slices/auth.slice';
 import { getCookie } from '../utils/cookies';
 import { CheckCircle, Settings } from '@mui/icons-material';
+import { useGetNotificationAllQuery, useGetNotificationQuery } from '../api/dashboard.api';
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-    props,
-    ref,
-) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
 
 
 const Layout = (props: props) => {
+    const [notif, setNotif] = useState<any[]>([])
+    const [isNotif, setIsNotif] = useState<boolean>(true)
+    const { data: dataNotif } = useGetNotificationQuery();
+
+    useEffect(() => {
+        setNotif(dataNotif?.data ?? [])
+    }, [dataNotif])
+
+    const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+        props,
+        ref,
+    ) {
+        return <>
+            <Grid2 className={`bg-base-white w-96 min-h-28 absolute right-[19rem] top-2 rounded-lg border-2 border-primary-600 border-solid transition-opacity ease-in-out delay-1000 duration-1000 ${isNotif ? 'invisible' : 'visible'}`}>
+                {notif.map((data, index) => {
+                    return <>
+                        <Divider />
+                        <Typography className={`text-base-dark px-4 py-4`}>{data.message}</Typography>
+                    </>
+                })}
+                <Divider />
+                <Typography className={`text-base-white bg-primary-50 text-center px-4 py-4 cursor-pointer`} onClick={() => navigate('/notifikasi')}>Lihat Semua Notifikasi</Typography>
+            </Grid2 >
+        </>;
+    });
+    const [notifAll, setNotifAll] = useState<any[]>([])
+    const { data: dataNotifAll } = useGetNotificationAllQuery();
+
+    useEffect(() => {
+        setNotifAll(dataNotifAll?.data ?? [])
+    }, [dataNotifAll])
     const navigate = useNavigate();
     const [sidebarCollapse, setSidebarCollapse] = useState(false);
     const drawerWidth = sidebarCollapse ? 85 : 320;
@@ -465,7 +491,7 @@ const Layout = (props: props) => {
                         </ListItem>
                     </List>
                 </Collapse><ListItem>
-                    <ListItemButton onClick={handlePengaturanMenu} selected={currentLocation === 'pengaturan'}>
+                    <ListItemButton onClick={handlePengaturanMenu} selected={currentLocation === 'pengaturan'} hidden={auth?.user_payload?.role != 'superadmin'}>
                         <ListItemIcon>
                             <Settings className="ml-[2px]" />
                         </ListItemIcon>
@@ -626,6 +652,10 @@ const Layout = (props: props) => {
                         </IconButton>
                         <Box sx={{ ml: 'auto' }}>
                             <Grid2 container gap={2}>
+                                <Button onClick={() => setIsNotif(!isNotif)}>
+                                    <div className='text-[8px] fixed -mt-3 -ml-3 bg-danger-500 px-[5px] rounded-full text-base-white' hidden={notifAll.length == 0}>{notifAll.length}</div>
+                                    <RiNotification4Line />
+                                </Button>
                                 {avatar
                                     ? <img src={avatar} className='font-semibold w-[48px] h-[48px] text-xl rounded-full' />
                                     : <Avatar sx={{ bgcolor: '#EBFFFD', color: '#3c7d21' }} className='font-semibold w-[48px] h-[48px] text-xl'>{name!.split(' ').map((val: any, index: any) => { if (index < 2) return val.charAt(0).toUpperCase() })}</Avatar>
@@ -697,6 +727,7 @@ const Layout = (props: props) => {
                             </MenuItem>
                         </Menu>
                     </Toolbar>
+                    <Alert />
                 </AppBar>
                 <Box
                     component="nav"

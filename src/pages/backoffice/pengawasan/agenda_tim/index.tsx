@@ -6,9 +6,10 @@ import moment from "moment";
 import { gapi } from "gapi-script";
 import { useEffect, useState } from 'react';
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { useGetAgendaTimPengawasanQuery } from '../../../../api/pengawasan.api';
 
 function PengawasanAgendaTim() {
-    const [events, setEvents] = useState([]);
+    const [events, setEvents] = useState<any[]>([]);
     const localizer = momentLocalizer(moment);
     const CLIENT_ID = "49338518240-h05l0si2q6kh1n6bbn2vrrai5mprrev0.apps.googleusercontent.com";
     const API_KEY = "AIzaSyCMvcvDtlzBemr4alP3m6vDbqtoKJ31DTc";
@@ -46,6 +47,10 @@ function PengawasanAgendaTim() {
 
     //     setEvents(fetchedEvents);
     // };
+    const { data: dataAgenda, isLoading: getting, isFetching } = useGetAgendaTimPengawasanQuery();
+    useEffect(() => {
+        setEvents(dataAgenda?.data ?? [])
+    }, [dataAgenda])
     return (
         <Layout>
             <Grid2 container justifyContent={'space-between'}>
@@ -65,6 +70,27 @@ function PengawasanAgendaTim() {
                 endAccessor="end"
                 style={{ height: 500 }}
                 className='mt-16'
+                eventPropGetter={(event) => {
+                    let backgroundColor = "#EFB036"; // Default untuk "Pembahasan"
+                    if (event.tahapan === "Pengambilan Sampel") {
+                        backgroundColor = "#3B6790";
+                    }
+                    if (event.tahapan === "Pembahasan") {
+                        backgroundColor = "#EB5A3C";
+                    }
+                    if (event.tahapan === "Permintaan Keterangan") {
+                        backgroundColor = "#A02334";
+                    }
+
+                    return {
+                        style: {
+                            backgroundColor,
+                            color: "#fff",
+                            borderRadius: "5px",
+                            border: "none",
+                        },
+                    };
+                }}
             />
         </Layout>
     );

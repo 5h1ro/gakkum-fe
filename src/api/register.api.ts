@@ -52,6 +52,16 @@ export const api_register = api.injectEndpoints({
                 url: `perencanaan/${id ?? '9d8ac6d0-297b-499f-bf0f-e0344fae59e6'}`,
             }),
         }),
+        getDetailPengawasan: builder.query<any, string>({
+            query: (id: string) => ({
+                url: `pengawasan/${id ?? '9d8ac6d0-297b-499f-bf0f-e0344fae59e6'}`,
+            }),
+        }),
+        getDetailPascaPengawasan: builder.query<any, string>({
+            query: (id: string) => ({
+                url: `pasca-pengawasan/${id ?? '9d8ac6d0-297b-499f-bf0f-e0344fae59e6'}`,
+            }),
+        }),
         getDetailPetamasalah: builder.query<any, string>({
             query: (id: string) => ({
                 url: `peta-masalah/${id ?? '9d8ac6d0-297b-499f-bf0f-e0344fae59e6'}`,
@@ -177,5 +187,7 @@ export const {
     useCreateCatatanMutation,
     useCreateArsipMutation,
     useAktifkanDataMutation,
-    useEskalasiMutation
+    useEskalasiMutation,
+    useGetDetailPengawasanQuery,
+    useGetDetailPascaPengawasanQuery
 } = api_register;
