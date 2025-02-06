@@ -21,11 +21,11 @@ const Profil = () => {
     const [email, setEmail] = useState('')
     const [oldPassword, setOldPassword] = useState('')
     const [newPassword, setNewPassword] = useState('')
+    const [passwordConfirmation, setPasswordConfirmation] = useState('')
     const [selectedFile, setSelectedFile] = useState()
     const [avatar, setAvatar] = useState('')
     const imageRef = useRef<HTMLInputElement>(null);
     const [preview, setPreview] = useState<any>()
-    const [passwordConfirmation, setPasswordConfirmation] = useState('')
     const [showSnackbar, setShowSnackbar] = useState<snackbarType>({
         isOpen: false,
         message: '',

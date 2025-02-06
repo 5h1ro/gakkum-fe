@@ -13,7 +13,7 @@ import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
 import { useCreateCatatanMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetDetailPerencanaanQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
-import { useCreateDokumenPengawasanMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePengawasanArsipMutation, useEskalasiPengawasanMutation } from '../../../../api/pengawasan.api';
+import { useCreateDokumenPengawasanMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePengawasanArsipMutation, useEskalasiPengawasanMutation, useGetTahapanPengawasanQuery, useGetStatusTahapanPengawasanQuery } from '../../../../api/pengawasan.api';
 import { useCreateTahapanPerencanaanMutation, useDeleteTahapanPerencanaanMutation, useGetStatusTahapanPerencanaanQuery, useGetTahapanPerencanaanQuery, useUpdateTahapanPerencanaanMutation } from '../../../../api/perencanaan.api';
 
 export default function PengawasanDaftarDetail() {
@@ -647,8 +647,8 @@ export default function PengawasanDaftarDetail() {
         },
     ];
 
-    const { data: tahapan } = useGetTahapanPerencanaanQuery();
-    const { data: listStatusTahapan } = useGetStatusTahapanPerencanaanQuery();
+    const { data: tahapan } = useGetTahapanPengawasanQuery();
+    const { data: listStatusTahapan } = useGetStatusTahapanPengawasanQuery();
     const [tahapanOpen, setTahapanOpen] = useState<boolean>(false)
     const [tahapanEdit, setTahapanEdit] = useState<boolean>(false)
     const [openFilterTahapan, setOpenFilterTahapan] = useState<boolean>(false)

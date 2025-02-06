@@ -29,8 +29,55 @@ import Profil from '../pages/backoffice/profil';
 import PengawasanDaftarDetail from '../pages/backoffice/pengawasan/daftar/detail';
 import PengawasanArsipDetail from '../pages/backoffice/pengawasan/arsip/detail';
 import PascaPengawasanDaftarDetail from '../pages/backoffice/pasca_pengawasan/daftar/detail';
+import SumberData from '../pages/backoffice/setting/sumber_data';
+import UpdateSumberData from '../pages/backoffice/setting/sumber_data/update';
+import { useState } from 'react';
+import { snackbarType } from '../interfaces/snackbar.interface';
+import DetailSumberData from '../pages/backoffice/setting/sumber_data/detail';
+import CreateSumberData from '../pages/backoffice/setting/sumber_data/create';
+import StatusData from '../pages/backoffice/setting/status_data';
+import CreateStatusData from '../pages/backoffice/setting/status_data/create';
+import UpdateStatusData from '../pages/backoffice/setting/status_data/update';
+import DetailStatusData from '../pages/backoffice/setting/status_data/detail';
+import TahapanPerencanaan from '../pages/backoffice/setting/tahapan_perencanaan';
+import CreateTahapanPerencanaan from '../pages/backoffice/setting/tahapan_perencanaan/create';
+import UpdateTahapanPerencanaan from '../pages/backoffice/setting/tahapan_perencanaan/update';
+import DetailTahapanPerencanaan from '../pages/backoffice/setting/tahapan_perencanaan/detail';
+import TahapanPengawasan from '../pages/backoffice/setting/tahapan_pengawasan';
+import CreateTahapanPengawasan from '../pages/backoffice/setting/tahapan_pengawasan/create';
+import UpdateTahapanPengawasan from '../pages/backoffice/setting/tahapan_pengawasan/update';
+import DetailTahapanPengawasan from '../pages/backoffice/setting/tahapan_pengawasan/detail';
+import TahapanPascaPengawasan from '../pages/backoffice/setting/tahapan_pasca_pengawasan';
+import CreateTahapanPascaPengawasan from '../pages/backoffice/setting/tahapan_pasca_pengawasan/create';
+import UpdateTahapanPascaPengawasan from '../pages/backoffice/setting/tahapan_pasca_pengawasan/update';
+import DetailTahapanPascaPengawasan from '../pages/backoffice/setting/tahapan_pasca_pengawasan/detail';
+import DokumenPerencanaan from '../pages/backoffice/setting/dokumen_perencanaan';
+import CreateDokumenPerencanaan from '../pages/backoffice/setting/dokumen_perencanaan/create';
+import UpdateDokumenPerencanaan from '../pages/backoffice/setting/dokumen_perencanaan/update';
+import DetailDokumenPerencanaan from '../pages/backoffice/setting/dokumen_perencanaan/detail';
+import DokumenPengawasan from '../pages/backoffice/setting/dokumen_pengawasan';
+import CreateDokumenPengawasan from '../pages/backoffice/setting/dokumen_pengawasan/create';
+import DetailDokumenPengawasan from '../pages/backoffice/setting/dokumen_pengawasan/detail';
+import UpdateDokumenPengawasan from '../pages/backoffice/setting/dokumen_pengawasan/update';
+import DokumenPascaPengawasan from '../pages/backoffice/setting/dokumen_pasca_pengawasan';
+import CreateDokumenPascaPengawasan from '../pages/backoffice/setting/dokumen_pasca_pengawasan/create';
+import UpdateDokumenPascaPengawasan from '../pages/backoffice/setting/dokumen_pasca_pengawasan/update';
+import DetailDokumenPascaPengawasan from '../pages/backoffice/setting/dokumen_pasca_pengawasan/detail';
+import Employee from '../pages/backoffice/setting/user';
+import CreateEmployee from '../pages/backoffice/setting/user/create';
+import UpdateEmployee from '../pages/backoffice/setting/user/update';
+import DetailEmployee from '../pages/backoffice/setting/user/detail';
+import CreateCompany from '../pages/backoffice/setting/company/create';
+import Company from '../pages/backoffice/setting/company';
+import DetailCompany from '../pages/backoffice/setting/company/detail';
+import UpdateCompany from '../pages/backoffice/setting/company/update';
 
 const App = () => {
+  const [showSnackbar, setShowSnackbar] = useState<snackbarType>({
+    isOpen: false,
+    message: '',
+    status: 'success'
+  });
   return (
     <Routes>
       <Route element={<GuestMiddleware />}>
@@ -69,7 +116,57 @@ const App = () => {
         <Route path="/pasca-pengawasan/arsip" element={<PengawasanArsip />} />
         <Route path="/pasca-pengawasan/arsip/detail/:dataID" element={<PengawasanArsipDetail />} />
 
-        <Route path="/pengaturan" element={<Profil />} />
+        <Route path="/profil" element={<Profil />} />
+
+        <Route path="/pengaturan/sumber-data" element={<SumberData setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/sumber-data/create" element={<CreateSumberData setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/sumber-data/update/:sumberDataID" element={<UpdateSumberData setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/sumber-data/detail/:sumberDataID" element={<DetailSumberData />} />
+
+        <Route path="/pengaturan/status-data" element={<StatusData setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/status-data/create" element={<CreateStatusData setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/status-data/update/:statusDataID" element={<UpdateStatusData setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/status-data/detail/:statusDataID" element={<DetailStatusData />} />
+
+        <Route path="/pengaturan/tahapan-perencanaan" element={<TahapanPerencanaan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/tahapan-perencanaan/create" element={<CreateTahapanPerencanaan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/tahapan-perencanaan/update/:tahapanPerencanaanID" element={<UpdateTahapanPerencanaan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/tahapan-perencanaan/detail/:tahapanPerencanaanID" element={<DetailTahapanPerencanaan />} />
+
+        <Route path="/pengaturan/tahapan-pengawasan" element={<TahapanPengawasan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/tahapan-pengawasan/create" element={<CreateTahapanPengawasan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/tahapan-pengawasan/update/:tahapanPengawasanID" element={<UpdateTahapanPengawasan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/tahapan-pengawasan/detail/:tahapanPengawasanID" element={<DetailTahapanPengawasan />} />
+
+        <Route path="/pengaturan/tahapan-pasca-pengawasan" element={<TahapanPascaPengawasan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/tahapan-pasca-pengawasan/create" element={<CreateTahapanPascaPengawasan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/tahapan-pasca-pengawasan/update/:tahapanPascaPengawasanID" element={<UpdateTahapanPascaPengawasan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/tahapan-pasca-pengawasan/detail/:tahapanPascaPengawasanID" element={<DetailTahapanPascaPengawasan />} />
+
+        <Route path="/pengaturan/dokumen-perencanaan" element={<DokumenPerencanaan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/dokumen-perencanaan/create" element={<CreateDokumenPerencanaan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/dokumen-perencanaan/update/:dokumenPerencanaanID" element={<UpdateDokumenPerencanaan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/dokumen-perencanaan/detail/:dokumenPerencanaanID" element={<DetailDokumenPerencanaan />} />
+
+        <Route path="/pengaturan/dokumen-pengawasan" element={<DokumenPengawasan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/dokumen-pengawasan/create" element={<CreateDokumenPengawasan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/dokumen-pengawasan/update/:dokumenPengawasanID" element={<UpdateDokumenPengawasan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/dokumen-pengawasan/detail/:dokumenPengawasanID" element={<DetailDokumenPengawasan />} />
+
+        <Route path="/pengaturan/dokumen-pasca-pengawasan" element={<DokumenPascaPengawasan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/dokumen-pasca-pengawasan/create" element={<CreateDokumenPascaPengawasan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/dokumen-pasca-pengawasan/update/:dokumenPascaPengawasanID" element={<UpdateDokumenPascaPengawasan setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/dokumen-pasca-pengawasan/detail/:dokumenPascaPengawasanID" element={<DetailDokumenPascaPengawasan />} />
+
+        <Route path="/pengaturan/user" element={<Employee setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/user/create" element={<CreateEmployee setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/user/update/:employeeID" element={<UpdateEmployee setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/user/detail/:employeeID" element={<DetailEmployee />} />
+
+        <Route path="/pengaturan/perusahaan" element={<Company setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/perusahaan/create" element={<CreateCompany setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/perusahaan/update/:employeeID" element={<UpdateCompany setShowSnackbar={setShowSnackbar} showSnackBar={showSnackbar} />} />
+        <Route path="/pengaturan/perusahaan/detail/:employeeID" element={<DetailCompany />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

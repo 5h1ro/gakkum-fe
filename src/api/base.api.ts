@@ -69,6 +69,6 @@ export const baseQueryWithReauth: BaseQueryFn<
 export const api = createApi({
     baseQuery: baseQueryWithReauth,
     refetchOnMountOrArgChange: 1,
-    tagTypes: [],
+    tagTypes: ['Sumber Data', 'Status Data', 'Tahapan Perencanaan', 'Tahapan Pengawasan', 'Tahapan Pasca Pengawasan', 'Dokumen Perencanaan', 'Dokumen Pengawasan', 'Dokumen Pasca Pengawasan', 'Employee', 'Company'],
     endpoints: (builder) => ({}),
 });

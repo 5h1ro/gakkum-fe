@@ -34,7 +34,7 @@ import { useAuth } from '../hooks/auth.hook';
 import { props } from '../interfaces/props.interface';
 import { logOut } from '../slices/auth.slice';
 import { getCookie } from '../utils/cookies';
-import { Settings } from '@mui/icons-material';
+import { CheckCircle, Settings } from '@mui/icons-material';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -62,6 +62,7 @@ const Layout = (props: props) => {
     const [openPerencanaanMenu, setOpenPerencanaanMenu] = React.useState(false);
     const [openPengawasanMenu, setOpenPengawasanMenu] = React.useState(false);
     const [openPascaPengawasanMenu, setOpenPascaPengawasanMenu] = React.useState(false);
+    const [openPengaturanMenu, setOpenPengaturanMenu] = React.useState(false);
 
     const openProfile = Boolean(anchorEl);
 
@@ -95,6 +96,10 @@ const Layout = (props: props) => {
     const handlePascaPengawasanMenu = () => {
         setSidebarCollapse(false)
         setOpenPascaPengawasanMenu(!openPascaPengawasanMenu);
+    };
+    const handlePengaturanMenu = () => {
+        setSidebarCollapse(false)
+        setOpenPengaturanMenu(!openPengaturanMenu);
     };
     const name = getCookie('name');
     const avatar = getCookie('avatar');
@@ -459,57 +464,16 @@ const Layout = (props: props) => {
                             </ListItemButton>
                         </ListItem>
                     </List>
-                </Collapse>
-                <ListItem>
-                    <ListItemButton
-                        component={NavLink} to="/pengaturan"
-                        selected={currentLocation === 'pengaturan'}
-                    >
+                </Collapse><ListItem>
+                    <ListItemButton onClick={handlePengaturanMenu} selected={currentLocation === 'pengaturan'}>
                         <ListItemIcon>
                             <Settings className="ml-[2px]" />
                         </ListItemIcon>
                         <ListItemText primary='Pengaturan' hidden={sidebarCollapse} />
+                        {!sidebarCollapse ? openPengaturanMenu || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/user' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/sumber-data' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/status-data' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/tahapan-perencanaan' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/tahapan-pengawasan' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/tahapan-pasca-pengawasan' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/dokumen-perencanaan' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/dokumen-pengawasan' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/dokumen-pasca-pengawasan' ? <ExpandLess /> : <ExpandMore /> : ''}
                     </ListItemButton>
                 </ListItem>
-            </List>
-            {/* <List
-                sx={{
-                    '&& .Mui-selected, & .MuiListItemButton-root:hover': {
-                        bgcolor: '#3c7d21',
-                        borderRadius: '0.375rem',
-                        paddingLeft: '12px',
-                        paddingRight: '12px',
-                        '&, & .MuiListItemIcon-root': {
-                            color: 'white',
-                        },
-                    },
-                    '.MuiListItemButton-root': {
-                        paddingLeft: '12px',
-                        paddingRight: '12px',
-                    },
-                    '& .Mui-selected:hover': {
-                        bgcolor: 'white',
-                        borderRadius: '0.375rem',
-                        '&, & .MuiListItemIcon-root': {
-                            color: '#3c7d21',
-                        },
-                    },
-                }}
-                subheader={
-                    <ListSubheader className='text-ellipsis overflow-hidden' component="div" id="nested-list-subheader">
-                        Pengaturan
-                    </ListSubheader>
-                }>
-                <ListItem hidden={auth.user_payload.role === 'participant'}>
-                    <ListItemButton onClick={handleContactMenu} selected={currentLocation === 'cms'}>
-                        <ListItemIcon>
-                            <RiGlobalLine className="ml-[2px]" />
-                        </ListItemIcon>
-                        <ListItemText primary='CMS' hidden={sidebarCollapse} />
-                        {!sidebarCollapse ? openContactMenu || `${fullpath[1]}/${fullpath[2]}` === 'cms/manajemen-web' || `${fullpath[1]}/${fullpath[2]}` === 'cms/manajemen-artikel' ? <ExpandLess /> : <ExpandMore /> : ''}
-                    </ListItemButton>
-                </ListItem>
-                <Collapse in={openContactMenu || `${fullpath[1]}/${fullpath[2]}` === 'cms/manajemen-web' || `${fullpath[1]}/${fullpath[2]}` === 'cms/manajemen-artikel'} timeout="auto" unmountOnExit>
+                <Collapse in={openPengaturanMenu || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/user' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/sumber-data' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/status-data' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/tahapan-perencanaan' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/tahapan-pengawasan' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/tahapan-pasca-pengawasan' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/dokumen-perencanaan' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/dokumen-pengawasan' || `${fullpath[1]}/${fullpath[2]}` === 'pengaturan/dokumen-pasca-pengawasan'} timeout="auto" unmountOnExit>
                     <List component="div"
                         sx={{
                             '&& .Mui-selected, & .MuiListItemButton-root:hover': {
@@ -533,23 +497,109 @@ const Layout = (props: props) => {
                                 },
                             },
                         }}>
-                        <ListItem hidden={auth.user_payload.role === 'participant'}>
+                        <ListItem>
                             <ListItemButton className='ml-16 -mt-4'
-                                component={NavLink} to="/cms/manajemen-web" selected={`${fullpath[1]}/${fullpath[2]}` === 'cms/manajemen-web'}
+                                component={NavLink} to="/pengaturan/user" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengaturan/user'}
                             >
-                                <ListItemText primary='Manajemen Web' />
+                                {sidebarCollapse && <ListItemIcon>
+                                    <CheckCircle className="-ml-16" />
+                                </ListItemIcon>}
+                                <ListItemText primary='User' />
                             </ListItemButton>
                         </ListItem>
                         <ListItem>
                             <ListItemButton className='ml-16 -mt-4'
-                                component={NavLink} to="/cms/manajemen-artikel" selected={`${fullpath[1]}/${fullpath[2]}` === 'cms/manajemen-artikel'}
+                                component={NavLink} to="/pengaturan/perusahaan" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengaturan/perusahaan'}
                             >
-                                <ListItemText primary='Manajemen Artikel' />
+                                {sidebarCollapse && <ListItemIcon>
+                                    <CheckCircle className="-ml-16" />
+                                </ListItemIcon>}
+                                <ListItemText primary='Perusahaan' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemButton className='ml-16 -mt-4'
+                                component={NavLink} to="/pengaturan/sumber-data" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengaturan/sumber-data'}
+                            >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <CheckCircle className="-ml-16" />
+                                </ListItemIcon>}
+                                <ListItemText primary='Sumber Data' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemButton className='ml-16 -mt-4'
+                                component={NavLink} to="/pengaturan/status-data" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengaturan/status-data'}
+                            >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <CheckCircle className="-ml-16" />
+                                </ListItemIcon>}
+                                <ListItemText primary='Status Data' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemButton className='ml-16 -mt-4'
+                                component={NavLink} to="/pengaturan/tahapan-perencanaan" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengaturan/tahapan-perencanaan'}
+                            >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <CheckCircle className="-ml-16" />
+                                </ListItemIcon>}
+                                <ListItemText primary='Tahapan Perencanaan' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemButton className='ml-16 -mt-4'
+                                component={NavLink} to="/pengaturan/tahapan-pengawasan" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengaturan/tahapan-pengawasan'}
+                            >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <CheckCircle className="-ml-16" />
+                                </ListItemIcon>}
+                                <ListItemText primary='Tahapan Pengawasan' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemButton className='ml-16 -mt-4'
+                                component={NavLink} to="/pengaturan/tahapan-pasca-pengawasan" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengaturan/tahapan-pasca-pengawasan'}
+                            >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <CheckCircle className="-ml-16" />
+                                </ListItemIcon>}
+                                <ListItemText primary='Tahapan Pasca Pengawasan' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemButton className='ml-16 -mt-4'
+                                component={NavLink} to="/pengaturan/dokumen-perencanaan" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengaturan/dokumen-perencanaan'}
+                            >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <CheckCircle className="-ml-16" />
+                                </ListItemIcon>}
+                                <ListItemText primary='Dokumen Perencanaan' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemButton className='ml-16 -mt-4'
+                                component={NavLink} to="/pengaturan/dokumen-pengawasan" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengaturan/dokumen-pengawasan'}
+                            >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <CheckCircle className="-ml-16" />
+                                </ListItemIcon>}
+                                <ListItemText primary='Dokumen Pengawasan' />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemButton className='ml-16 -mt-4'
+                                component={NavLink} to="/pengaturan/dokumen-pasca-pengawasan" selected={`${fullpath[1]}/${fullpath[2]}` === 'pengaturan/dokumen-pasca-pengawasan'}
+                            >
+                                {sidebarCollapse && <ListItemIcon>
+                                    <CheckCircle className="-ml-16" />
+                                </ListItemIcon>}
+                                <ListItemText primary='Dokumen Pasca Pengawasan' />
                             </ListItemButton>
                         </ListItem>
                     </List>
                 </Collapse>
-            </List> */}
+            </List>
         </>
     );
 
@@ -578,7 +628,7 @@ const Layout = (props: props) => {
                             <Grid2 container gap={2}>
                                 {avatar
                                     ? <img src={avatar} className='font-semibold w-[48px] h-[48px] text-xl rounded-full' />
-                                    : <Avatar sx={{ bgcolor: '#EBFFFD', color: '#3c7d21' }} className='font-semibold w-[48px] h-[48px] text-xl'>{name!.split(' ').map((val, index) => { if (index < 2) return val.charAt(0).toUpperCase() })}</Avatar>
+                                    : <Avatar sx={{ bgcolor: '#EBFFFD', color: '#3c7d21' }} className='font-semibold w-[48px] h-[48px] text-xl'>{name!.split(' ').map((val: any, index: any) => { if (index < 2) return val.charAt(0).toUpperCase() })}</Avatar>
                                 }
                                 <Button color="inherit" onClick={handleClickProfile} className='text-general-500'>{auth.user_payload.name ?? 'username'} <ArrowDropDownIcon /></Button>
                             </Grid2>
