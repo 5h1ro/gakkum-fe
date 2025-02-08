@@ -74,6 +74,7 @@ import UpdateCompany from '../pages/backoffice/setting/company/update';
 import PascaPengawasanArsip from '../pages/backoffice/pasca_pengawasan/arsip';
 import PascaPengawasanArsipDetail from '../pages/backoffice/pasca_pengawasan/arsip/detail';
 import Notifikasi from '../pages/backoffice/notifikasi';
+import DetailSanksi from '../pages/backoffice/pasca_pengawasan/daftar/detail_sanksi';
 
 const App = () => {
   const [showSnackbar, setShowSnackbar] = useState<snackbarType>({
@@ -119,6 +120,7 @@ const App = () => {
         <Route path="/pasca-pengawasan/agenda-tim" element={<PascaPengawasanAgendaTim />} />
         <Route path="/pasca-pengawasan/arsip" element={<PascaPengawasanArsip />} />
         <Route path="/pasca-pengawasan/arsip/detail/:dataID" element={<PascaPengawasanArsipDetail />} />
+        <Route path="/pasca-pengawasan/daftar/detail/sanksi/:dataID/:sanksiID" element={<DetailSanksi />} />
 
         <Route path="/profil" element={<Profil />} />
 

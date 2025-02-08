@@ -165,6 +165,58 @@ export const api_pasca_pengawasan = api.injectEndpoints({
                 method: "DELETE",
             }),
         }),
+        createSanksiPascaPengawasan: builder.mutation<any, any>({
+            query: (credentials: FormData) => ({
+                url: `pasca-pengawasan/sanksi/create`,
+                method: "POST",
+                body: credentials,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        updateSanksiPascaPengawasan: builder.mutation<any, any>({
+            query: ({ data, id }) => ({
+                url: `pasca-pengawasan/sanksi/update/${id}`,
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        deleteSanksiPascaPengawasan: builder.mutation<any, string>({
+            query: (id: string) => ({
+                url: `pasca-pengawasan/sanksi/delete/${id}`,
+                method: "DELETE",
+            }),
+        }),
+        createTindakanSanksiPascaPengawasan: builder.mutation<any, any>({
+            query: (credentials: FormData) => ({
+                url: `pasca-pengawasan/tindakan-sanksi/create`,
+                method: "POST",
+                body: credentials,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        updateTindakanSanksiPascaPengawasan: builder.mutation<any, any>({
+            query: ({ data, id }) => ({
+                url: `pasca-pengawasan/tindakan-sanksi/update/${id}`,
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response: any, meta: any, arg: any) => {
+                return response;
+            },
+        }),
+        deleteTindakanSanksiPascaPengawasan: builder.mutation<any, string>({
+            query: (id: string) => ({
+                url: `pasca-pengawasan/tindakan-sanksi/delete/${id}`,
+                method: "DELETE",
+            }),
+        }),
         getAgendaPascaPengawasan: builder.query<any, void>({
             query: () => ({
                 url: `pasca-pengawasan/agenda`,
@@ -197,5 +249,11 @@ export const {
     useGetListTahapanPascaPengawasanQuery,
     useGetTahapanPascaPengawasanQuery,
     useGetStatusTahapanPascaPengawasanQuery,
-    useGetAgendaPascaPengawasanQuery
+    useGetAgendaPascaPengawasanQuery,
+    useCreateSanksiPascaPengawasanMutation,
+    useDeleteSanksiPascaPengawasanMutation,
+    useUpdateSanksiPascaPengawasanMutation,
+    useCreateTindakanSanksiPascaPengawasanMutation,
+    useDeleteTindakanSanksiPascaPengawasanMutation,
+    useUpdateTindakanSanksiPascaPengawasanMutation
 } = api_pasca_pengawasan;

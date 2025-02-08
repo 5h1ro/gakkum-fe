@@ -1,6 +1,6 @@
 import { Box, Button, Dialog, DialogContent, DialogContentText, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { RiAddLine, RiArrowLeftLine, RiArrowLeftRightFill, RiCloseLine, RiContactsBook2Line, RiDeleteBin2Fill, RiEdit2Fill, RiEyeLine, RiHome5Line } from '@remixicon/react';
+import { RiAddLine, RiArrowLeftLine, RiArrowLeftRightFill, RiCloseLine, RiContactsBook2Line, RiDeleteBin2Fill, RiEdit2Fill, RiEyeFill, RiEyeLine, RiHome5Line } from '@remixicon/react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Layout from '../../../../components/Layout';
@@ -13,7 +13,7 @@ import Table from '../../../../components/organism/Table';
 import { MRT_ColumnDef } from 'material-react-table';
 import TabPanelInside from '../../../../components/organism/TabPanelInside';
 import { useCreateCatatanMutation, useDeleteCatatanMutation, useGetBadanUsahaQuery, useGetDetailPascaPengawasanQuery, useGetRegistrasiQuery, useGetStatusDataQuery, useGetSumberDataQuery, useUpdateCatatanMutation, useUpdatePetamasalahMutation, useUpdateRegistrasiMutation } from '../../../../api/register.api';
-import { useCreateDokumenPascaPengawasanMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePascaPengawasanArsipMutation, useEskalasiPascaPengawasanMutation, useGetTahapanPascaPengawasanQuery, useGetStatusTahapanPascaPengawasanQuery, useCreateTahapanPascaPengawasanMutation, useUpdateTahapanPascaPengawasanMutation, useDeleteTahapanPascaPengawasanMutation } from '../../../../api/pascaPengawasan.api';
+import { useCreateDokumenPascaPengawasanMutation, useCreateTimMutation, useDeleteDokumenMutation, useDeleteTimMutation, useGetActiveEmployeeQuery, useGetDokumenQuery, useGetListDokumenQuery, useGetTimQuery, useUpdateDokumenMutation, useUpdateTimMutation, useCreatePascaPengawasanArsipMutation, useEskalasiPascaPengawasanMutation, useGetTahapanPascaPengawasanQuery, useGetStatusTahapanPascaPengawasanQuery, useCreateTahapanPascaPengawasanMutation, useUpdateTahapanPascaPengawasanMutation, useDeleteTahapanPascaPengawasanMutation, useCreateSanksiPascaPengawasanMutation, useUpdateSanksiPascaPengawasanMutation, useDeleteSanksiPascaPengawasanMutation } from '../../../../api/pascaPengawasan.api';
 
 export default function PascaPengawasanDaftarDetail() {
     const { dataID } = useParams();
@@ -83,7 +83,7 @@ export default function PascaPengawasanDaftarDetail() {
         window.location.reload();
     };
 
-    const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Tahapan', 'Catatan']
+    const labels = ['Data', 'Peta Masalah', 'Tim', 'Dokumen', 'Tahapan', 'Catatan', 'Sanksi']
     const documentLabels = ['Registrasi', 'Dokumen Perusahaan', 'Pengawasan', 'Pasca Pengawasan', 'Semua']
     const [updateRegistrasi] = useUpdateRegistrasiMutation();
     const { data: detailRegistrasi, isLoading: getting, isFetching } = useGetDetailPascaPengawasanQuery(dataID!);
@@ -747,6 +747,134 @@ export default function PascaPengawasanDaftarDetail() {
                     <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
                         await deleteTahapan(row.original.id).unwrap();
                         navigateToTab(4)
+                    }}>
+                        <RiDeleteBin2Fill />
+                    </IconButton>
+                </Grid2>
+            },
+            enableColumnFilter: false,
+        },
+    ];
+
+
+    const [sanksiOpen, setSanksiOpen] = useState<boolean>(false)
+    const [sanksiEdit, setSanksiEdit] = useState<boolean>(false)
+    const [idSanksi, setIdSanksi] = useState<string>('')
+    const [jenisDokumenSanksi, setJenisDokumenSanksi] = useState<string>('')
+    const [batasSanksi, setBatasSanksi] = useState<string>('')
+    const [nomorSanksi, setNomorSanksi] = useState<string>('')
+    const [tanggalTerbitSanksi, setTanggalTerbitSanksi] = useState<Moment | null>(null)
+    const [tanggalTerimaSanksi, setTanggalTerimaSanksi] = useState<Moment | null>(null)
+    const [createSanksi, { isLoading: isLoadingSanksi }] = useCreateSanksiPascaPengawasanMutation();
+    const [updateSanksi] = useUpdateSanksiPascaPengawasanMutation();
+    const [deleteSanksi] = useDeleteSanksiPascaPengawasanMutation();
+    const onCreateSanksi = async () => {
+        const formData = new FormData();
+        formData.append('data_id', dataID!);
+        formData.append('dokumen_pasca_pengawasan_id', jenisDokumenSanksi);
+        formData.append('batas_waktu', batasSanksi);
+        formData.append('nomor_surat', nomorSanksi);
+        formData.append('tanggal_terbit', tanggalTerbitSanksi?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
+        formData.append('tanggal_diterima', tanggalTerimaSanksi?.format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD'));
+        try {
+            if (sanksiEdit) {
+                await updateSanksi({
+                    data: formData,
+                    id: idSanksi
+                }).unwrap();
+            } else {
+                await createSanksi(formData).unwrap();
+            }
+            navigateToTab(4)
+        } catch (error: any) {
+        }
+    };
+    const columnsSanksi: MRT_ColumnDef<any>[] = [
+        {
+            accessorKey: 'id',
+            header: 'ID',
+            Cell: ({ row }) => row.index + 1,
+        },
+        {
+            Cell: ({ row }) => row.original.nomor_surat,
+            header: 'Nomor Surat',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            Cell: ({ row }) => row.original.jenis,
+            header: 'Jenis',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            Cell: ({ row }) => row.original.jatuh_tempo,
+            header: 'Jatuh Tempo',
+            enableClickToCopy: true,
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            filterFn: 'fuzzy',
+            filterVariant: 'select',
+            muiFilterTextFieldProps: {
+                variant: 'outlined',
+            }
+        },
+        {
+            accessorKey: "aksi",
+            header: 'Aksi',
+            muiTableHeadCellProps: {
+                align: 'left',
+            },
+            muiTableBodyCellProps: {
+                align: "left",
+            },
+            size: 50,
+            Cell: ({ row }) => {
+                return <Grid2 container gap={1}>
+                    <IconButton className="border-solid border-2 text-info-600" aria-label="confirm" onClick={() => {
+                        navigate(`/pasca-pengawasan/daftar/detail/sanksi/${dataID}/${row.original.id}`)
+                    }}>
+                        <RiEyeFill />
+                    </IconButton>
+                    <IconButton className="border-solid border-2 text-primary-600" aria-label="confirm" onClick={() => {
+                        setJenisDokumenSanksi(row.original.dokumen_pasca_pengawasan_id)
+                        setNomorSanksi(row.original.nomor_surat)
+                        setBatasSanksi(row.original.batas_waktu)
+                        setTanggalTerbitSanksi(moment(row.original.tanggal_terbit))
+                        setTanggalTerimaSanksi(moment(row.original.tanggal_diterima))
+                        setIdSanksi(row.original.id)
+                        setSanksiOpen(true)
+                        setSanksiEdit(true)
+                    }}>
+                        <RiEdit2Fill />
+                    </IconButton>
+                    <IconButton className="border-solid border-2 text-danger-600" aria-label="delete" onClick={async () => {
+                        await deleteSanksi(row.original.id).unwrap();
+                        navigateToTab(6)
                     }}>
                         <RiDeleteBin2Fill />
                     </IconButton>
@@ -1554,6 +1682,104 @@ export default function PascaPengawasanDaftarDetail() {
                     </Grid2>
                 </DialogContent>
             </Dialog>
+            <Dialog
+                open={sanksiOpen}
+                onClose={() => setSanksiOpen(false)}
+                maxWidth={'lg'}
+                sx={{
+                    '.MuiPaper-root': {
+                        borderRadius: '16px',
+                        '@media(minWidth: 960px)': {
+                            paddingX: '64px'
+                        },
+                    }
+                }}
+            >
+                <IconButton
+                    aria-label="close"
+                    onClick={() => setSanksiOpen(false)}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <RiCloseLine />
+                </IconButton>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" className='justify-center align-center text-center md:pt-16 w-full md:w-[622px] -mt-8'>
+                        <Typography className='text-[24px] md:text-[32px] font-semibold text-base-dark'>
+                            Tambah Sanksi
+                        </Typography>
+                    </DialogContentText>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">Jenis Dokumen <span className='text-danger-600'>*</span></Typography>
+                        <Select
+                            value={jenisDokumenSanksi}
+                            className='rounded-lg mt-2'
+                            fullWidth
+                            onChange={(event) => {
+                                setJenisDokumenSanksi(event.target.value)
+                            }}
+                        >
+                            {
+                                listDokumen?.data?.map((value: any, index: any) => {
+                                    return <MenuItem
+                                        key={`jenis_sanksi_dokumen_perusahaan_${index}`}
+                                        value={value.id}
+                                    >
+                                        {value.name}
+                                    </MenuItem>
+                                })
+                            }
+                        </Select>
+                    </Grid2>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">Nomor Surat <span className='text-danger-600'>*</span></Typography>
+                        <TextField value={nomorSanksi} onChange={(data) => setNomorSanksi(data.target.value)} variant="outlined" className='mt-2 w-full'
+                            InputProps={{
+                                style: {
+                                    borderRadius: "10px",
+                                }
+                            }} />
+                    </Grid2>
+                    <Grid2 container>
+                        <Typography className="text-base-dark w-full mt-6">Batas Waktu <span className='text-danger-600'>*</span></Typography>
+                        <TextField value={batasSanksi} onChange={(data) => setBatasSanksi(data.target.value)} variant="outlined" className='mt-2 w-full'
+                            InputProps={{
+                                style: {
+                                    borderRadius: "10px",
+                                }
+                            }} />
+                    </Grid2>
+                    <Grid2 container xs={12} mt={'1rem'}>
+                        <Typography className="text-base-dark w-full">Tanggal Terbit<span className='text-danger-600'>*</span></Typography>
+                        <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <MobileDateTimePicker
+                                ampm={false}
+                                value={tanggalTerbitSanksi}
+                                onChange={(data) => setTanggalTerbitSanksi(data)}
+                                className='mt-2 w-full' />
+                        </LocalizationProvider>
+                    </Grid2>
+                    <Grid2 container xs={12} mt={'1rem'}>
+                        <Typography className="text-base-dark w-full">Tanggal Terima<span className='text-danger-600'>*</span></Typography>
+                        <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <MobileDateTimePicker
+                                ampm={false}
+                                value={tanggalTerimaSanksi}
+                                onChange={(data) => setTanggalTerimaSanksi(data)}
+                                className='mt-2 w-full' />
+                        </LocalizationProvider>
+                    </Grid2>
+                    <Grid2 container className='flex gap-2 mt-6 justify-center pb-8 md:pb-16'>
+                        <Button onClick={onCreateSanksi} className='bg-primary-600 text-base-white hover:bg-primary-600 hover:text-base-white py-4 px-6 rounded-xl gap-3'>
+                            Simpan
+                        </Button>
+                    </Grid2>
+                </DialogContent>
+            </Dialog>
             <Grid2 container alignContent={'center'}>
                 <IconButton onClick={() => navigate('/pasca-pengawasan/daftar')}>
                     <RiArrowLeftLine className="w-8 h-8" color="#000000" />
@@ -2141,6 +2367,22 @@ export default function PascaPengawasanDaftarDetail() {
                             </Grid2>
                         </Grid2>
                         <Table openFilter={openFilterCatatan} setOpenFilter={setOpenFilterCatatan} columns={columnsCatatan} data={detailRegistrasi?.data?.catatan ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeCatatan}></Table>
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={6}>
+                        <Grid2 container>
+                            <Grid2 xs={12} container className='w-full justify-end'>
+                                <Button className="w-full mt-4 bg-primary-600 text-base-white rounded-lg py-4 px-6 hover:bg-primary-600 md:mt-0 md:w-auto gap-2" onClick={() => {
+                                    setJenisDokumenSanksi('')
+                                    setNomorSanksi('')
+                                    setBatasSanksi('')
+                                    setTanggalTerbitSanksi(moment())
+                                    setTanggalTerimaSanksi(moment())
+                                    setIdSanksi('')
+                                    setSanksiOpen(true)
+                                }}><RiAddLine /> Tambah</Button>
+                            </Grid2>
+                        </Grid2>
+                        <Table openFilter={openFilterTahapan} setOpenFilter={setOpenFilterTahapan} columns={columnsSanksi} data={detailRegistrasi?.data?.sanksi ?? []} state={{ isLoading: getting || isFetching }} filterExclude={filterExcludeTahapan}></Table>
                     </CustomTabPanel>
                 </TabPanel>
             </Grid2>
